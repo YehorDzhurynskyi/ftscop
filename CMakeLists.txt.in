@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.2)
 project(SDL2-download NONE)
 
 include(ExternalProject)
+
 ExternalProject_Add(SDL2
   GIT_REPOSITORY    https://github.com/spurious/SDL-mirror
   GIT_TAG           master

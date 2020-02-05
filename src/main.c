@@ -466,7 +466,7 @@ int main(int argc, char* argv[])
 
     GLint vertex_location = glGetAttribLocation(program_id, "a_position");
     GLint color_tint_location = glGetAttribLocation(program_id, "a_color_tint");
-    GLint view_projection_location = glGetUniformLocation(program_id, "u_view_projection_location");
+    GLint view_projection_location = glGetUniformLocation(program_id, "u_view_projection");
 
     t_camera camera = create_default_camera();
 
@@ -580,7 +580,6 @@ int main(int argc, char* argv[])
         vp.data[3][2] = 0.8f;
         vp.data[3][3] = 1.0f;
 #endif
-        vp = mat4f_transpose(&view);
 
         glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &vp.data[0][0]);
 
