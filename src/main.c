@@ -44,8 +44,6 @@ struct s_mesh
     int nvertices;
     int* faces3;
     int nfaces3;
-    int* faces4;
-    int nfaces4;
     t_material material;
 };
 
@@ -172,9 +170,7 @@ static t_bool load_obj(const t_byte* buffer, const size_t size, t_mesh* out_mesh
     out_mesh->colors = malloc(sizeof(t_vec4f) * 256);
     out_mesh->nvertices = 0;
     out_mesh->faces3 = malloc(sizeof(int) * 3 * 256);
-    out_mesh->faces4 = malloc(sizeof(int) * 4 * 256);
     out_mesh->nfaces3 = 0;
-    out_mesh->nfaces4 = 0;
 
     ctx.current = buffer;
     ctx.end = &buffer[size];
@@ -233,14 +229,17 @@ static t_bool load_obj(const t_byte* buffer, const size_t size, t_mesh* out_mesh
             assert(index == 3 || index == 4);
             if (index == 3)
             {
-                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, face, sizeof(int) * index);
+                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, face, sizeof(int) * 3);
             }
             else if (index == 4)
             {
-                ft_memcpy(out_mesh->faces4 + 4 * out_mesh->nfaces4++, face, sizeof(int) * index);
+                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, face, sizeof(int) * 3);
+                int temp[] = { face[2], face[3], face[0] };
+                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, temp, sizeof(int) * 3);
             }
             else
             {
+                // NOTE: convert to triangles to handle > 4 faces
                 assert(!"Unhandled case"); // TODO: handle
             }
         }
@@ -458,7 +457,6 @@ int main(int argc, char* argv[])
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -542,13 +540,6 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faces3_ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.nfaces3 * 3 * sizeof(int), mesh.faces3, GL_STATIC_DRAW);
 
-#if 0
-    GLuint faces4_ibo;
-    glGenBuffers(1, &faces4_ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faces4_ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.nfaces4 * 4 * sizeof(int), mesh.faces4, GL_STATIC_DRAW);
-#endif
-
     GLuint vertex_vbo;
     glGenBuffers(1, &vertex_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
@@ -564,6 +555,7 @@ int main(int argc, char* argv[])
     glVertexAttribPointer(color_tint_location, 4, GL_FLOAT, GL_FALSE, 0/*sizeof(t_vec4f)*/, (void*)0);
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glClearColor(0.62f, 0.59f, 0.52f, 1.0f);
 
     Uint64	freq = SDL_GetPerformanceFrequency();
@@ -597,11 +589,6 @@ int main(int argc, char* argv[])
 
         glDrawElements(GL_TRIANGLES, mesh.nfaces3 * 3, GL_UNSIGNED_INT, NULL);
 
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faces4_ibo);
-        //glDrawElements(GL_QUADS, mesh.nfaces4, GL_UNSIGNED_INT, NULL);
-
-        // NOTE: use glDrawElementsInstanced with GL_TRIANGLE_FAN to handle > 4 faces
-
         SDL_GL_SwapWindow(win);
         g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
         elapsed_time += g_dt;
@@ -612,10 +599,6 @@ int main(int argc, char* argv[])
     glDeleteBuffers(1, &vertex_vbo);
     glDeleteBuffers(1, &color_tint_vbo);
     glDeleteBuffers(1, &faces3_ibo);
-
-#if 0
-    glDeleteBuffers(1, &faces4_ibo);
-#endif
 
     glDeleteVertexArrays(1, &vao);
 
