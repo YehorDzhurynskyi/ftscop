@@ -22,6 +22,10 @@
 # undef main
 #endif
 
+t_camera g_camera;
+t_vec3f g_POI;
+float g_camera_distance = 1.0f;
+float g_dt;
 t_bool g_IsRunning;
 
 typedef struct s_material t_material;
@@ -382,6 +386,28 @@ static void poll_events()
             SDL_Event* event = &eventBuffer[index];
             switch (event->type)
             {
+            case SDL_KEYDOWN:
+            {
+                if (event->key.state == SDL_PRESSED)
+                {
+                    switch (event->key.keysym.sym)
+                    {
+                    case SDLK_EQUALS:
+                    case SDLK_PLUS:
+                    case SDLK_KP_PLUS:
+                    {
+                        g_camera_distance -= 1.0f;
+                        g_camera_distance = max(1.0f, g_camera_distance);
+                    } break;
+                    case SDLK_MINUS:
+                    case SDLK_KP_MINUS:
+                    {
+                        g_camera_distance += 1.0f;
+                        g_camera_distance = min(100.0f, g_camera_distance);
+                    } break;
+                    }
+                }
+            } break;
             case SDL_QUIT:
             {
                 g_IsRunning = FALSE;
@@ -403,7 +429,7 @@ static t_camera create_default_camera()
     cam.near = 0.1f;
     cam.far = 100.0f;
     cam.up = (t_vec3f) {0.0f, 1.0f, 0.0f};
-    cam.look_at = (t_vec3f) {0.0f, 0.0f, 0.0f};
+    cam.look_at = g_POI;
     cam.position = (t_vec3f) {0.0f, 0.0f, 1.0f};
 
     return (cam);
@@ -414,6 +440,8 @@ GLuint shader_create_program(const char* vert_code, const char* frag_code);
 int main(int argc, char* argv[])
 {
     srand(time(NULL)); // just for rofl
+
+    g_POI = (t_vec3f) { 0.0f, 0.0f, 0.0f };
 
     if (argc <= 1)
     {
@@ -468,7 +496,7 @@ int main(int argc, char* argv[])
     GLint color_tint_location = glGetAttribLocation(program_id, "a_color_tint");
     GLint view_projection_location = glGetUniformLocation(program_id, "u_view_projection");
 
-    t_camera camera = create_default_camera();
+    g_camera = create_default_camera();
 
     t_mesh mesh;
 #if 1
@@ -535,15 +563,20 @@ int main(int argc, char* argv[])
     glEnableVertexAttribArray(color_tint_location);
     glVertexAttribPointer(color_tint_location, 4, GL_FLOAT, GL_FALSE, 0/*sizeof(t_vec4f)*/, (void*)0);
 
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.62f, 0.59f, 0.52f, 1.0f);
+
+    Uint64	freq = SDL_GetPerformanceFrequency();
+    Uint64	start;
+    float elapsed_time = 0.0f;
     while (g_IsRunning)
     {
         poll_events();
 
         // tick
 
-        glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        start = SDL_GetPerformanceCounter();
 
         // TODO: update vbos
         // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->m_size * sizeof(T), (void*)this->m_data)
@@ -552,8 +585,13 @@ int main(int argc, char* argv[])
 
         glBindVertexArray(vao);
 
-        t_mat4f view = camera_calculate_view_matrix(&camera);
-        t_mat4f proj = camera_calculate_proj_matrix(&camera);
+        g_camera.position.x = sin(10.0f * elapsed_time) * g_camera_distance;
+        g_camera.position.z = cos(10.0f * elapsed_time) * g_camera_distance;
+        t_vec3f toeye = vec3f_sub(&g_camera.position, &g_POI);
+        toeye = vec3f_normalize(&toeye);
+        g_camera.position = vec3f_scalar(&toeye, g_camera_distance);
+        t_mat4f view = camera_calculate_view_matrix(&g_camera);
+        t_mat4f proj = camera_calculate_proj_matrix(&g_camera);
         t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
         glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &vp.data[0][0]);
 
@@ -565,6 +603,8 @@ int main(int argc, char* argv[])
         // NOTE: use glDrawElementsInstanced with GL_TRIANGLE_FAN to handle > 4 faces
 
         SDL_GL_SwapWindow(win);
+        g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
+        elapsed_time += g_dt;
     }
 
     glDeleteProgram(program_id);
