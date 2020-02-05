@@ -554,33 +554,7 @@ int main(int argc, char* argv[])
 
         t_mat4f view = camera_calculate_view_matrix(&camera);
         t_mat4f proj = camera_calculate_proj_matrix(&camera);
-        //proj = mat4f_identity();
-        t_mat4f vp = mat4f_mat4f_mult(&proj, &view);
-        vp = mat4f_transpose(&vp);
-
-#if 1
-        vp = mat4f_identity();
-        vp.data[0][0] = 0.75f;
-        vp.data[0][1] = 0.0f;
-        vp.data[0][2] = 0.0f;
-        vp.data[0][3] = 0.0f;
-
-        vp.data[1][0] = 0.0f;
-        vp.data[1][1] = 1.0f;
-        vp.data[1][2] = 0.0f;
-        vp.data[1][3] = 0.0f;
-
-        vp.data[2][0] = 0.0f;
-        vp.data[2][1] = 0.0f;
-        vp.data[2][2] = -1.02f;
-        vp.data[2][3] = -1.0f;
-
-        vp.data[3][0] = 0.0f;
-        vp.data[3][1] = 0.0f;
-        vp.data[3][2] = 0.8f;
-        vp.data[3][3] = 1.0f;
-#endif
-
+        t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
         glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &vp.data[0][0]);
 
         glDrawElements(GL_TRIANGLES, mesh.nfaces3 * 3, GL_UNSIGNED_INT, NULL);
