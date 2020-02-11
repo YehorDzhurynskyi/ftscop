@@ -27,7 +27,7 @@ struct s_camera
     float   fov;
 };
 
-t_mat4f camera_calculate_view_matrix(const t_camera* cam);
-t_mat4f camera_calculate_proj_matrix(const t_camera* cam);
+t_mat4f camera_calculate_view_matrix(const t_camera *cam);
+t_mat4f camera_calculate_proj_matrix(const t_camera *cam);
 
 #endif

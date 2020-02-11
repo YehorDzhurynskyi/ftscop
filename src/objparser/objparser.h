@@ -13,7 +13,7 @@
 #ifndef OBJPARSER_H
 # define OBJPARSER_H
 
-# include "ft.h"
+# include "scene/scene.h"
 # include <assert.h>
 
 /*
@@ -22,25 +22,6 @@
 
 # define OBJPARSER_READ(x) if (objparser_eos(&ctx) || objparser_skip_if_match(&ctx, #x)) { objparser_read_##x(&ctx); }
 # define OBJPARSER_NOT_IMPLEMENTED(x) void objparser_read_##x(t_objparser_ctx *ctx) { objparser_skip_until_nl(ctx); }
-
-typedef struct s_material t_material;
-struct s_material
-{
-    t_vec3f ambient;
-    t_vec3f diffuse;
-    t_vec3f transparency;
-};
-
-typedef struct s_mesh   t_mesh;
-struct  s_mesh
-{
-    t_vec4f     *vertices;
-    t_vec4f     *colors;
-    int         nvertices;
-    int         *faces3;
-    int         nfaces3;
-    t_material  material;
-};
 
 typedef struct s_objparser_ctx  t_objparser_ctx;
 struct  s_objparser_ctx

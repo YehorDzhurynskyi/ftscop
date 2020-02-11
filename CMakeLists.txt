@@ -26,10 +26,16 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/SDL2-src
 
 add_executable(scop
     src/main.c
+
     src/shader.h
     src/shader.c
+
     src/camera.h
     src/camera.c
+
+    src/scene/scene.h
+    src/scene/scene.c
+
     src/objparser/objparser.h
     src/objparser/objparser_common.c
     src/objparser/objparser_read_int.c
