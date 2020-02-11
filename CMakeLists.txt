@@ -31,43 +31,50 @@ add_executable(scop
     src/camera.h
     src/camera.c
     src/objparser/objparser.h
-    src/objparser/objparser.c
+    src/objparser/objparser_common.c
+    src/objparser/objparser_read_int.c
+    src/objparser/objparser_read_float.c
+    src/objparser/objparser_parse.c
+    src/objparser/objparser_vertexdata.c
+    src/objparser/objparser_polygonal.c
+    src/objparser/objparser_grouping.c
 
-    src/ft_strlen.c
-    src/ft_memcpy.c
-    src/ft_strchr.c
-    src/ft_strnchr.c
-    src/ft_isalpha.c
-    src/ft_atoi.c
-    src/ft_atod.c
-    src/ft_strncmp.c
-    src/ft_isws.c
-    src/ft_isdigit.c
+    src/libft/ft_strlen.c
+    src/libft/ft_memcpy.c
+    src/libft/ft_strchr.c
+    src/libft/ft_strnchr.c
+    src/libft/ft_isalpha.c
+    src/libft/ft_atoi.c
+    src/libft/ft_atod.c
+    src/libft/ft_strcmp.c
+    src/libft/ft_strncmp.c
+    src/libft/ft_isws.c
+    src/libft/ft_isdigit.c
 
-    src/vec/rgba2vec.c
-    src/vec/to_vec3.c
-    src/vec/vec2rgba.c
-    src/vec/vec_add.c
-    src/vec/vec_cross.c
-    src/vec/vec_dot.c
-    src/vec/vec_length.c
-    src/vec/vec_mult.c
-    src/vec/vec_normalize.c
-    src/vec/vec_reflect.c
-    src/vec/vec_scalar.c
-    src/vec/vec_sub.c
+    src/libft/vec/rgba2vec.c
+    src/libft/vec/to_vec3.c
+    src/libft/vec/vec2rgba.c
+    src/libft/vec/vec_add.c
+    src/libft/vec/vec_cross.c
+    src/libft/vec/vec_dot.c
+    src/libft/vec/vec_length.c
+    src/libft/vec/vec_mult.c
+    src/libft/vec/vec_normalize.c
+    src/libft/vec/vec_reflect.c
+    src/libft/vec/vec_scalar.c
+    src/libft/vec/vec_sub.c
 
-    src/mat/mat3_determinant.c
-    src/mat/mat4_determinant.c
-    src/mat/mat_create.c
-    src/mat/mat_identity.c
-    src/mat/mat_inverse.c
-    src/mat/mat_mat_mult.c
-    src/mat/mat_minor.c
-    src/mat/mat_scalar.c
-    src/mat/mat_transpose.c
-    src/mat/mat_vec_mult.c
-    src/mat/vec_mat_mult.c
+    src/libft/mat/mat3_determinant.c
+    src/libft/mat/mat4_determinant.c
+    src/libft/mat/mat_create.c
+    src/libft/mat/mat_identity.c
+    src/libft/mat/mat_inverse.c
+    src/libft/mat/mat_mat_mult.c
+    src/libft/mat/mat_minor.c
+    src/libft/mat/mat_scalar.c
+    src/libft/mat/mat_transpose.c
+    src/libft/mat/mat_vec_mult.c
+    src/libft/mat/vec_mat_mult.c
 )
 
 function(epi_pack_sources)

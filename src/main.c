@@ -13,6 +13,7 @@
 #include <SDL.h>
 #include <glad/glad.h>
 #include "ft.h"
+#include "objparser/objparser.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "assert.h"
@@ -27,151 +28,6 @@ t_vec3f g_POI;
 float g_camera_distance = 1.0f;
 float g_dt;
 t_bool g_IsRunning;
-
-static t_bool load_obj(const t_byte* buffer, const size_t size, t_mesh* out_mesh)
-{
-    // TODO: read http://paulbourke.net/dataformats/obj/
-    t_parsing_ctx ctx;
-
-    // TODO: remove magic
-    out_mesh->vertices = malloc(sizeof(t_vec4f) * 256);
-    out_mesh->colors = malloc(sizeof(t_vec4f) * 256);
-    out_mesh->nvertices = 0;
-    out_mesh->faces3 = malloc(sizeof(int) * 3 * 256);
-    out_mesh->nfaces3 = 0;
-
-    ctx.current = buffer;
-    ctx.end = &buffer[size];
-    ctx.total_size = size;
-    while (ctx.current < ctx.end)
-    {
-        _parsing_skip_ws(&ctx);
-        if (ctx.current >= ctx.end)
-        {
-            break;
-        }
-
-        const t_byte ch = ctx.current[0];
-        if (ch == 'o' || ch == 'g' || ch == '#')
-        {
-            // TODO: handle 'o' and 'g' params
-            _parsing_skip_until_nl(&ctx);
-        }
-        else if (ch == 's')
-        {
-            ctx.current++;
-            _parsing_skip_ws(&ctx);
-
-            if (_parsing_skip_if_match(&ctx, "off", sizeof("off") - 1) ||
-                _parsing_skip_if_match(&ctx, "0", sizeof("0") - 1))
-            {
-                // TODO: turn off smooth shading
-            }
-            else if (_parsing_skip_if_match(&ctx, "on", sizeof("on") - 1) ||
-                     _parsing_skip_if_match(&ctx, "1", sizeof("1") - 1))
-            {
-                // TODO: turn on smooth shading
-            }
-            else
-            {
-                assert(!"Error case");
-                return (FALSE);
-            }
-        }
-        else if (ch == 'f')
-        {
-            // TODO: test cases "f 4 3 1 {EOF}", "f 4 3 1{EOF}"
-
-            ctx.current++;
-            _parsing_skip_ws(&ctx);
-
-            int face[4];
-            int index = 0;
-            while (ctx.current < ctx.end && ft_isdigit(*ctx.current))
-            {
-                const int vertexid = _parsing_read_int(&ctx);
-                assert(vertexid > 0); // TODO: handle negative values
-                face[index++] = vertexid - 1;
-            }
-
-            assert(index == 3 || index == 4);
-            if (index == 3)
-            {
-                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, face, sizeof(int) * 3);
-            }
-            else if (index == 4)
-            {
-                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, face, sizeof(int) * 3);
-                int temp[] = { face[2], face[3], face[0] };
-                ft_memcpy(out_mesh->faces3 + 3 * out_mesh->nfaces3++, temp, sizeof(int) * 3);
-            }
-            else
-            {
-                // NOTE: convert to triangles to handle > 4 faces
-                assert(!"Unhandled case"); // TODO: handle
-            }
-        }
-        else if (ch == 'l')
-        {
-            assert(!"Unhandled case"); // TODO: handle
-        }
-        else if (ch == 'p')
-        {
-            assert(!"Unhandled case"); // TODO: handle
-        }
-        else if (ch == 'v')
-        {
-            if (ctx.current[1] == 't') // textures
-            {
-                assert(!"Unhandled case"); // TODO: handle
-            }
-            else if (ctx.current[1] == 'n') // normals
-            {
-                assert(!"Unhandled case"); // TODO: handle
-            }
-            else if (ctx.current[1] == 'p') // free-form geometry
-            {
-                assert(!"Unhandled case"); // TODO: handle
-            }
-            else
-            {
-                ctx.current++;
-
-                out_mesh->vertices[out_mesh->nvertices].x = _parsing_read_float(&ctx);
-                out_mesh->vertices[out_mesh->nvertices].y = _parsing_read_float(&ctx);
-                out_mesh->vertices[out_mesh->nvertices].z = _parsing_read_float(&ctx);
-#if 1
-                // TODO: handle optional W coord
-                out_mesh->vertices[out_mesh->nvertices].w = 1.0;
-#else
-                out_mesh->vertices[out_mesh->nvertices].w = _parsing_read_float(&ctx);
-#endif
-                // TODO: could be followed by a color in r, g, b [0.0 - 1.0] format
-                out_mesh->colors[out_mesh->nvertices] = (t_vec4f) {rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, 1.0f};
-
-                out_mesh->nvertices++;
-            }
-        }
-        else
-        {
-            if (_parsing_skip_if_match(&ctx, "mtllib", sizeof("mtllib") - 1))
-            {
-                // TODO: load material
-                _parsing_skip_until_nl(&ctx);
-            }
-            else if (_parsing_skip_if_match(&ctx, "usemtl", sizeof("usemtl") - 1))
-            {
-                // TODO: assign material
-                _parsing_skip_until_nl(&ctx);
-            }
-            else
-            {
-                assert(!"Unhandled case"); // TODO: handle
-            }
-        }
-    }
-    return (TRUE);
-}
 
 #ifdef WIN32
 char* ft_read_file(const char* filename)
@@ -219,7 +75,7 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     t_byte* buffer;
 
     buffer = ft_read_file(filename);
-    t_bool result = load_obj(buffer, ft_strlen(buffer), out_mesh);
+    t_bool result = objparser_parse(buffer, ft_strlen(buffer), out_mesh);
 
     free(buffer);
 
@@ -365,6 +221,13 @@ int main(int argc, char* argv[])
     g_camera = create_default_camera();
 
     t_mesh mesh;
+    // TODO: remove magic
+    mesh.vertices = malloc(sizeof(t_vec4f) * 256);
+    mesh.colors = malloc(sizeof(t_vec4f) * 256);
+    mesh.nvertices = 0;
+    mesh.faces3 = malloc(sizeof(int) * 3 * 256);
+    mesh.nfaces3 = 0;
+
 #if 1
     if ((g_IsRunning = load_obj_file(argv[1], &mesh)) != TRUE)
     {
