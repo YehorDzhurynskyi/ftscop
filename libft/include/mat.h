@@ -59,9 +59,28 @@ const double src[3][3], int r, int c);
 /*
 **	SINGLE PRECISION 4D Matrix
 */
-typedef struct
+typedef union
 {
 	float	data[4][4];
+    struct
+    {
+        float s0;
+        float s1;
+        float s2;
+        float s3;
+        float s4;
+        float s5;
+        float s6;
+        float s7;
+        float s8;
+        float s9;
+        float sa;
+        float sb;
+        float sc;
+        float sd;
+        float se;
+        float sf;
+    };
 }			t_mat4f;
 
 t_mat4f		mat4f_identity(void);

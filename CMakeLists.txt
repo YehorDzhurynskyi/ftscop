@@ -30,11 +30,11 @@ add_executable(scop
     src/shader.h
     src/shader.c
 
-    src/camera.h
-    src/camera.c
-
     src/scene/scene.h
     src/scene/scene.c
+    src/scene/camera.c
+
+    src/input/camera_handler.c
 
     src/objparser/objparser.h
     src/objparser/objparser_common.c

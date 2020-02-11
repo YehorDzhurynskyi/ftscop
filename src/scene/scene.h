@@ -14,7 +14,22 @@
 # define SCENE_H
 
 # include "ft.h"
-# include "camera.h"
+
+typedef struct s_camera t_camera;
+struct s_camera
+{
+    t_vec3f position;
+    t_mat4f orientation;
+    float   far;
+    float   near;
+    float   ar;
+    float   fov;
+};
+
+t_mat4f     camera_orientation(const t_vec3f *forward, const t_vec3f *right, const t_vec3f *up);
+void	    camera_look_at(t_camera *cam, const t_vec3f *pos, const t_vec3f *poi, const t_vec3f *up);
+t_mat4f     camera_calculate_view_matrix(const t_camera *cam);
+t_mat4f     camera_calculate_proj_matrix(const t_camera *cam);
 
 typedef struct s_material   t_material;
 struct  s_material
@@ -37,9 +52,9 @@ struct  s_mesh
 typedef struct s_actor  t_actor;
 struct  s_actor
 {
-    t_vec3f     position;
-    t_vec3f     orientation;
-    t_vec3f     scale;
+    t_vec4f     position;
+    t_vec4f     orientation;
+    t_vec4f     scale;
     t_mesh      *mesh;
     t_material  *material;
 };

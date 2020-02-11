@@ -17,7 +17,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "assert.h"
-#include "camera.h"
 
 #ifdef WIN32
 # undef main
@@ -88,6 +87,8 @@ static void poll_events()
     SDL_PumpEvents();
     while (TRUE)
     {
+        input_camera_handle(&g_camera);
+
         const int eventsCount = SDL_PeepEvents(eventBuffer,
                                                sizeof(eventBuffer) / sizeof(eventBuffer[0]),
                                                SDL_GETEVENT,
@@ -147,13 +148,14 @@ static t_camera create_default_camera()
 {
     t_camera cam;
 
+    t_vec3f pos = (t_vec3f){ 0.0f, 0.0f, 1.0f };
+    t_vec3f up = (t_vec3f){0.0f, 1.0f, 0.0f};
+
+    camera_look_at(&cam, &pos, &g_POI, &up);
     cam.fov = 90.0f;
     cam.ar = g_win_width / (float)g_win_height;
     cam.near = 0.1f;
     cam.far = 100.0f;
-    cam.up = (t_vec3f) {0.0f, 1.0f, 0.0f};
-    cam.look_at = g_POI;
-    cam.position = (t_vec3f) {0.0f, 0.0f, 1.0f};
 
     return (cam);
 }
@@ -308,11 +310,16 @@ int main(int argc, char* argv[])
 
         glBindVertexArray(vao);
 
+#if 0
         g_camera.position.x = sin(10.0f * elapsed_time) * g_camera_distance;
         g_camera.position.z = cos(10.0f * elapsed_time) * g_camera_distance;
         t_vec3f toeye = vec3f_sub(&g_camera.position, &g_POI);
         toeye = vec3f_normalize(&toeye);
         g_camera.position = vec3f_scalar(&toeye, g_camera_distance);
+        t_vec3f up = (t_vec3f){ 0.0f, 1.0f, 0.0f };
+        camera_look_at(&g_camera, &g_camera.position, &g_POI, &up);
+#endif
+
         t_mat4f view = camera_calculate_view_matrix(&g_camera);
         t_mat4f proj = camera_calculate_proj_matrix(&g_camera);
         t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
