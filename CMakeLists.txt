@@ -43,7 +43,6 @@ add_executable(scop
     src/objparser/objparser_parse.c
     src/objparser/objparser_vertexdata.c
     src/objparser/objparser_polygonal.c
-    src/objparser/objparser_grouping.c
 
     src/libft/ft_strlen.c
     src/libft/ft_memcpy.c

@@ -29,6 +29,7 @@ struct  s_objparser_ctx
     t_byte *current;
     t_byte *end;
     size_t  total_size;
+
     t_mesh  *mesh;
 };
 
