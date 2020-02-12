@@ -58,7 +58,7 @@ t_vec3f *right, t_vec3f *up)
 		*up = rodrigoues_rotation(up, forward, angle);
 		*right = rodrigoues_rotation(right, forward, angle);
 	}
-	return (camera_orientation(forward, right, up));
+	return (calculate_matrix_orientation_from_basis(right, up, forward));
 }
 
 static t_vec3f		camera_translate(const Uint8 *keystate,

@@ -283,7 +283,7 @@ int main(int argc, char* argv[])
         actor.material = NULL;
         actor.mesh = scene.meshes;
         actor.position = (t_vec3f) { 0.0f, 0.0f, 0.0f };
-        actor.rotation = (t_vec3f) { 0.0f, 0.0f, 0.0f };
+        actor.orientation = mat4f_identity();
         actor.scale = (t_vec3f) { 1.0f, 1.0f, 1.0f };
 
         memcpy(scene.actors, &actor, sizeof(t_actor));

@@ -14,24 +14,6 @@
 #include <math.h>
 #include "scene.h"
 
-t_mat4f	camera_orientation(const t_vec3f *forward,
-const t_vec3f *right, const t_vec3f *up)
-{
-    t_mat4f	mat;
-
-    mat = mat4f_identity();
-    mat.data[0][0] = right->x;
-    mat.data[1][0] = right->y;
-    mat.data[2][0] = right->z;
-    mat.data[0][1] = up->x;
-    mat.data[1][1] = up->y;
-    mat.data[2][1] = up->z;
-    mat.data[0][2] = -forward->x;
-    mat.data[1][2] = -forward->y;
-    mat.data[2][2] = -forward->z;
-    return (mat);
-}
-
 void	camera_look_at(t_camera *cam, const t_vec3f *pos,
 const t_vec3f *poi, const t_vec3f *up)
 {
@@ -47,7 +29,7 @@ const t_vec3f *poi, const t_vec3f *up)
 	right = vec3f_normalize(&right);
 	nup = vec3f_cross(&right, &forward);
 	nup = vec3f_normalize(&nup);
-	cam->orientation = camera_orientation(&forward, &right, &nup);
+	cam->orientation = calculate_matrix_orientation_from_basis(&right, &nup, &forward);
 }
 
 t_mat4f camera_calculate_matrix_view(const t_camera* cam)

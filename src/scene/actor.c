@@ -21,7 +21,7 @@ void    calculate_basis_from_rotation(const t_vec3f *rot,
 {
     t_mat4f orien;
 
-    orien = calculate_matrix_rotation(rot);
+    orien = calculate_matrix_orientation_from_rotation(rot);
     calculate_basis_from_orientation(&orien, i, j, k);
 }
 
@@ -47,9 +47,9 @@ t_mat4f calculate_matrix_scale(const t_vec3f *scl)
     return (scale);
 }
 
-t_mat4f calculate_matrix_rotation(const t_vec3f *rot)
+t_mat4f calculate_matrix_orientation_from_rotation(const t_vec3f *rot)
 {
-    t_mat4f rotation;
+    t_mat4f orientation;
     t_vec3f s;
     t_vec3f c;
 
@@ -59,17 +59,34 @@ t_mat4f calculate_matrix_rotation(const t_vec3f *rot)
     s.x = sinf(rot->x * (M_PI / 180.0f));
     s.y = sinf(rot->y * (M_PI / 180.0f));
     s.z = sinf(rot->z * (M_PI / 180.0f));
-    rotation = mat4f_identity();
-    rotation.data[0][0] = c.y * c.z;
-    rotation.data[0][1] = -c.y * s.z;
-    rotation.data[0][2] = s.y;
-    rotation.data[1][0] = s.x * s.y * c.z + c.x * s.z;
-    rotation.data[1][1] = -s.x * s.y * s.z + c.x * c.z;
-    rotation.data[1][2] = -s.x * c.y;
-    rotation.data[2][0] = -c.x * s.y * c.z + s.x * s.z;
-    rotation.data[2][1] = c.x * s.y * s.z + s.x * c.z;
-    rotation.data[2][2] = c.x * c.y;
-    return (rotation);
+    orientation = mat4f_identity();
+    orientation.data[0][0] = c.y * c.z;
+    orientation.data[0][1] = -c.y * s.z;
+    orientation.data[0][2] = s.y;
+    orientation.data[1][0] = s.x * s.y * c.z + c.x * s.z;
+    orientation.data[1][1] = -s.x * s.y * s.z + c.x * c.z;
+    orientation.data[1][2] = -s.x * c.y;
+    orientation.data[2][0] = -c.x * s.y * c.z + s.x * s.z;
+    orientation.data[2][1] = c.x * s.y * s.z + s.x * c.z;
+    orientation.data[2][2] = c.x * c.y;
+    return (orientation);
+}
+
+t_mat4f calculate_matrix_orientation_from_basis(const t_vec3f *i, const t_vec3f *j, const t_vec3f *k)
+{
+    t_mat4f	mat;
+
+    mat = mat4f_identity();
+    mat.data[0][0] = i->x;
+    mat.data[1][0] = i->y;
+    mat.data[2][0] = i->z;
+    mat.data[0][1] = j->x;
+    mat.data[1][1] = j->y;
+    mat.data[2][1] = j->z;
+    mat.data[0][2] = -k->x;
+    mat.data[1][2] = -k->y;
+    mat.data[2][2] = -k->z;
+    return (mat);
 }
 
 t_mat4f calculate_matrix_translation(const t_vec3f *pos)
@@ -86,13 +103,11 @@ t_mat4f calculate_matrix_translation(const t_vec3f *pos)
 t_mat4f actor_calculate_matrix_model(const t_actor *actor)
 {
     t_mat4f scale;
-    t_mat4f rotation;
     t_mat4f translation;
     t_mat4f sr;
 
     scale = calculate_matrix_scale(&actor->scale);
-    rotation = calculate_matrix_rotation(&actor->rotation);
     translation = calculate_matrix_translation(&actor->position);
-    sr = mat4f_mat4f_mult(&scale, &rotation);
+    sr = mat4f_mat4f_mult(&scale, &actor->orientation);
     return (mat4f_mat4f_mult(&sr, &translation));
 }

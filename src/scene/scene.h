@@ -26,7 +26,6 @@ struct s_camera
     float   fov;
 };
 
-t_mat4f     camera_orientation(const t_vec3f *forward, const t_vec3f *right, const t_vec3f *up);
 void        camera_look_at(t_camera *cam, const t_vec3f *pos, const t_vec3f *poi, const t_vec3f *up);
 t_mat4f     camera_calculate_matrix_view(const t_camera *cam);
 t_mat4f     camera_calculate_matrix_proj(const t_camera *cam);
@@ -53,7 +52,7 @@ typedef struct s_actor  t_actor;
 struct  s_actor
 {
     t_vec3f     position;
-    t_vec3f     rotation;
+    t_mat4f     orientation;
     t_vec3f     scale;
     t_mesh      *mesh;
     t_material  *material;
@@ -61,8 +60,9 @@ struct  s_actor
 
 void    calculate_basis_from_rotation(const t_vec3f *rot, t_vec3f *i, t_vec3f *j, t_vec3f *k);
 void    calculate_basis_from_orientation(const t_mat4f *orien, t_vec3f *i, t_vec3f *j, t_vec3f *k);
+t_mat4f calculate_matrix_orientation_from_rotation(const t_vec3f *rot);
+t_mat4f calculate_matrix_orientation_from_basis(const t_vec3f *i, const t_vec3f *j, const t_vec3f *k);
 t_mat4f calculate_matrix_scale(const t_vec3f *scl);
-t_mat4f calculate_matrix_rotation(const t_vec3f *rot);
 t_mat4f calculate_matrix_translation(const t_vec3f *pos);
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
 
