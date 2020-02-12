@@ -70,6 +70,28 @@ void	input_handle(t_scene_interactor *interactor)
                 translation = transform_translate(&interactor->actor_selected->orientation, &dpos);
                 interactor->actor_selected->position = vec3f_add(&interactor->actor_selected->position, &translation);
             }
+            else if (interactor->interaction_mode == ROTATION)
+            {
+                t_vec3f drot;
+
+                drot = (t_vec3f) { 0.0, 0.0, 0.0 };
+                if (keystate[SDL_SCANCODE_1] || keystate[SDL_SCANCODE_2])
+                {
+                    drot.x = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    drot.x = keystate[SDL_SCANCODE_1] ? drot.x : -drot.x;
+                }
+                if (keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4])
+                {
+                    drot.y = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    drot.y = keystate[SDL_SCANCODE_3] ? drot.y : -drot.y;
+                }
+                if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
+                {
+                    drot.z = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    drot.z = keystate[SDL_SCANCODE_5] ? drot.z : -drot.z;
+                }
+                interactor->actor_selected->orientation = transform_rotate(&interactor->actor_selected->orientation, &drot);
+            }
         }
     }
     input_handle_camera(&interactor->scene_target->camera);

@@ -74,6 +74,8 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     buffer = ft_read_file(filename);
     t_bool result = objparser_parse_mesh(buffer, ft_strlen(buffer), out_mesh);
 
+    // TODO: recalculate origin for a mesh
+
     free(buffer);
 
     return (result);
@@ -227,39 +229,12 @@ int main(int argc, char* argv[])
     mesh.faces3 = malloc(sizeof(int) * 3 * 256);
     mesh.nfaces3 = 0;
 
-#if 1
     if ((g_IsRunning = load_obj_file(argv[1], &mesh)) != TRUE)
     {
         perror("Invalid input file");
         return (-1);
     }
-#else
-    g_IsRunning = TRUE;
-    mesh.nvertices = 4;
 
-    mesh.vertices = malloc(sizeof(t_vec4f) * mesh.nvertices);
-    t_vec4f vertices[] = {
-        (t_vec4f) { 0.5f, 0.5f, 0.0f, 1.0f },
-        (t_vec4f) { -0.5f, 0.5f, 0.0f, 1.0f },
-        (t_vec4f) { 0.5f, -0.5f, 0.0f, 1.0f },
-        (t_vec4f) { -0.5f, -0.5f, 0.0f, 1.0f }
-    };
-    memcpy(mesh.vertices, vertices, sizeof(t_vec4f) * mesh.nvertices);
-
-    mesh.colors = malloc(sizeof(t_vec4f) * mesh.nvertices);
-    t_vec4f colors[] = {
-        (t_vec4f) { 1.0f, 1.0f, 1.0f, 1.0f },
-        (t_vec4f) { 1.0f, 0.0f, 1.0f, 1.0f },
-        (t_vec4f) { 1.0f, 1.0f, 0.0f, 1.0f },
-        (t_vec4f) { 0.0f, 1.0f, 1.0f, 1.0f }
-    };
-    memcpy(mesh.colors, colors, sizeof(t_vec4f) * mesh.nvertices);
-
-    mesh.nfaces3 = 2;
-    mesh.faces3 = malloc(sizeof(int) * 3 * mesh.nfaces3);
-    int indices[] = { 0, 1, 3, 3, 2, 0 };
-    memcpy(mesh.faces3, indices, sizeof(int) * 3 * mesh.nfaces3);
-#endif
     t_scene scene;
     t_scene_interactor interactor;
     interactor.scene_target = &scene;
