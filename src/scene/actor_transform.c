@@ -61,3 +61,5 @@ t_mat4f transform_rotate(const t_mat4f *orien, const t_vec3f *drot)
 
     return (calculate_matrix_orientation_from_basis(&i, &j, &k));
 }
+
+// TODO: create transform_scale

@@ -66,6 +66,8 @@ void	input_handle(t_scene_interactor *interactor)
                 if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
                     dpos.z = keystate[SDL_SCANCODE_5] ? -ACTOR_SPEED : ACTOR_SPEED;
 
+                // TODO: create option to translate locally and globally
+
                 t_vec3f translation;
                 translation = transform_translate(&interactor->actor_selected->orientation, &dpos);
                 interactor->actor_selected->position = vec3f_add(&interactor->actor_selected->position, &translation);
