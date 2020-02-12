@@ -46,6 +46,7 @@ struct  s_mesh
     int         nvertices;
     int         *faces3;
     int         nfaces3;
+    uint32_t    vao;
 };
 
 typedef struct s_actor  t_actor;

@@ -15,6 +15,7 @@
 #include "ft.h"
 #include "objparser/objparser.h"
 #include "input/input.h"
+#include "renderer/renderer.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "assert.h"
@@ -217,7 +218,6 @@ int main(int argc, char* argv[])
 
     GLint vertex_location = glGetAttribLocation(program_id, "a_position");
     GLint color_tint_location = glGetAttribLocation(program_id, "a_color_tint");
-    GLint model_location = glGetUniformLocation(program_id, "u_model");
     GLint view_location = glGetUniformLocation(program_id, "u_view");
     GLint projection_location = glGetUniformLocation(program_id, "u_projection");
 
@@ -270,6 +270,8 @@ int main(int argc, char* argv[])
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    scene.meshes->vao = vao;
+
     GLuint faces3_ibo;
     glGenBuffers(1, &faces3_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faces3_ibo);
@@ -311,29 +313,21 @@ int main(int argc, char* argv[])
 
         glUseProgram(program_id);
 
-        glBindVertexArray(vao);
+        t_gctx gctx;
+        gctx.program_id = program_id;
 
-#if 0
-        g_camera.position.x = sin(10.0f * elapsed_time) * g_camera_distance;
-        g_camera.position.z = cos(10.0f * elapsed_time) * g_camera_distance;
-        t_vec3f toeye = vec3f_sub(&g_camera.position, &g_POI);
-        toeye = vec3f_normalize(&toeye);
-        g_camera.position = vec3f_scalar(&toeye, g_camera_distance);
-        t_vec3f up = (t_vec3f){ 0.0f, 1.0f, 0.0f };
-        camera_look_at(&g_camera, &g_camera.position, &g_POI, &up);
-#endif
-
-        //t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
-
-        t_mat4f model = actor_calculate_matrix_model(&scene.actors[0]);
-        t_mat4f view = camera_calculate_matrix_view(&scene.camera);
-        t_mat4f proj = camera_calculate_matrix_proj(&scene.camera);
-
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
+        const t_mat4f view = camera_calculate_matrix_view(&scene.camera);
+        const t_mat4f proj = camera_calculate_matrix_proj(&scene.camera);
         glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);
         glUniformMatrix4fv(projection_location, 1, GL_FALSE, &proj.data[0][0]);
 
-        glDrawElements(GL_TRIANGLES, mesh.nfaces3 * 3, GL_UNSIGNED_INT, NULL);
+        int i = 0;
+        while (i < scene.nactors)
+        {
+            renderer_draw_actor(&gctx, &scene.actors[i++]);
+        }
+
+        renderer_draw_interactor(&gctx, &interactor);
 
         SDL_GL_SwapWindow(win);
         g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;

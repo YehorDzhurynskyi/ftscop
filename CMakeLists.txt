@@ -36,6 +36,9 @@ add_executable(scop
     src/scene/actor_transform.c
     src/scene/camera.c
 
+    src/renderer/renderer.h
+    src/renderer/renderer.c
+
     src/input/input.h
     src/input/camera_handler.c
     src/input/scene_handler.c
