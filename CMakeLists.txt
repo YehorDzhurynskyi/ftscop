@@ -32,6 +32,7 @@ add_executable(scop
 
     src/scene/scene.h
     src/scene/scene.c
+    src/scene/actor.c
     src/scene/camera.c
 
     src/input/camera_handler.c

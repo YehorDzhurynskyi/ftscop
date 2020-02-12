@@ -27,7 +27,7 @@ struct s_camera
 };
 
 t_mat4f     camera_orientation(const t_vec3f *forward, const t_vec3f *right, const t_vec3f *up);
-void	    camera_look_at(t_camera *cam, const t_vec3f *pos, const t_vec3f *poi, const t_vec3f *up);
+void        camera_look_at(t_camera *cam, const t_vec3f *pos, const t_vec3f *poi, const t_vec3f *up);
 t_mat4f     camera_calculate_view_matrix(const t_camera *cam);
 t_mat4f     camera_calculate_proj_matrix(const t_camera *cam);
 
@@ -52,14 +52,14 @@ struct  s_mesh
 typedef struct s_actor  t_actor;
 struct  s_actor
 {
-    t_vec4f     position;
-    t_vec4f     orientation;
-    t_vec4f     scale;
+    t_vec3f     position;
+    t_vec3f     orientation;
+    t_vec3f     scale;
     t_mesh      *mesh;
     t_material  *material;
 };
 
-t_mat4f actor_calculate_mvp_matrix(const t_actor *actor);
+t_mat4f actor_calculate_model_matrix(const t_actor *actor);
 
 typedef struct s_scene  t_scene;
 struct  s_scene

@@ -218,7 +218,9 @@ int main(int argc, char* argv[])
 
     GLint vertex_location = glGetAttribLocation(program_id, "a_position");
     GLint color_tint_location = glGetAttribLocation(program_id, "a_color_tint");
-    GLint view_projection_location = glGetUniformLocation(program_id, "u_view_projection");
+    GLint model_location = glGetUniformLocation(program_id, "u_model");
+    GLint view_location = glGetUniformLocation(program_id, "u_view");
+    GLint projection_location = glGetUniformLocation(program_id, "u_projection");
 
     g_camera = create_default_camera();
 
@@ -323,7 +325,11 @@ int main(int argc, char* argv[])
         t_mat4f view = camera_calculate_view_matrix(&g_camera);
         t_mat4f proj = camera_calculate_proj_matrix(&g_camera);
         t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
-        glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &vp.data[0][0]);
+        t_mat4f model = mat4f_identity();
+
+        glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
+        glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);
+        glUniformMatrix4fv(projection_location, 1, GL_FALSE, &proj.data[0][0]);
 
         glDrawElements(GL_TRIANGLES, mesh.nfaces3 * 3, GL_UNSIGNED_INT, NULL);
 

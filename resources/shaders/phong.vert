@@ -3,10 +3,12 @@ attribute vec4 a_color_tint;
 
 varying vec4 v_color_tint;
 
-uniform mat4 u_view_projection;
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
 
 void main(void)
 {
     v_color_tint = a_color_tint;
-    gl_Position = u_view_projection * a_position;
+    gl_Position = u_projection * u_view * u_model * a_position;
 }
