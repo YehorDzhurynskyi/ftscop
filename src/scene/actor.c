@@ -56,9 +56,9 @@ static t_mat4f  calculate_matrix_translation(const t_actor *actor)
     t_mat4f translation;
 
     translation = mat4f_identity();
-    translation.data[0][3] = actor->position.x;
-    translation.data[1][3] = actor->position.y;
-    translation.data[2][3] = actor->position.z;
+    translation.data[3][0] = actor->position.x;
+    translation.data[3][1] = actor->position.y;
+    translation.data[3][2] = actor->position.z;
     return (translation);
 }
 
