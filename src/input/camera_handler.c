@@ -76,7 +76,7 @@ const t_vec3f *forward, const t_vec3f *right)
 	speed.z * forward->z + speed.x * right->z});
 }
 
-void				input_camera_handle(t_camera *cam)
+void				input_handle_camera(t_camera *cam)
 {
 	const Uint8	*keystate;
 	t_vec3f		translation;
@@ -85,12 +85,7 @@ void				input_camera_handle(t_camera *cam)
 	t_vec3f		forward;
 
 	keystate = SDL_GetKeyboardState(NULL);
-	right = (t_vec3f){cam->orientation.s0, cam->orientation.s4,
-	cam->orientation.s8};
-	up = (t_vec3f){cam->orientation.s1, cam->orientation.s5,
-	cam->orientation.s9};
-	forward = (t_vec3f){-cam->orientation.s2, -cam->orientation.s6,
-	-cam->orientation.sa};
+    calculate_basis_from_orientation(&cam->orientation, &right, &up, &forward);
 	if (keystate[SDL_SCANCODE_UP] || keystate[SDL_SCANCODE_DOWN]
 	|| keystate[SDL_SCANCODE_LEFT] || keystate[SDL_SCANCODE_RIGHT]
 	|| keystate[SDL_SCANCODE_Q] || keystate[SDL_SCANCODE_E])

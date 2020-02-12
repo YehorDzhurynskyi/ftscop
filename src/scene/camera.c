@@ -50,7 +50,7 @@ const t_vec3f *poi, const t_vec3f *up)
 	cam->orientation = camera_orientation(&forward, &right, &nup);
 }
 
-t_mat4f camera_calculate_view_matrix(const t_camera* cam)
+t_mat4f camera_calculate_matrix_view(const t_camera* cam)
 {
     t_mat4f view;
     t_vec3f backward;
@@ -85,7 +85,7 @@ t_mat4f camera_calculate_view_matrix(const t_camera* cam)
     return (view);
 }
 
-t_mat4f camera_calculate_proj_matrix(const t_camera* cam)
+t_mat4f camera_calculate_matrix_proj(const t_camera* cam)
 {
     t_mat4f proj;
     float   slope;

@@ -35,7 +35,9 @@ add_executable(scop
     src/scene/actor.c
     src/scene/camera.c
 
+    src/input/input.h
     src/input/camera_handler.c
+    src/input/scene_handler.c
 
     src/objparser/objparser.h
     src/objparser/objparser_common.c

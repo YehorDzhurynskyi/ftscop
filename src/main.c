@@ -14,6 +14,7 @@
 #include <glad/glad.h>
 #include "ft.h"
 #include "objparser/objparser.h"
+#include "input/input.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "assert.h"
@@ -260,6 +261,8 @@ int main(int argc, char* argv[])
     memcpy(mesh.faces3, indices, sizeof(int) * 3 * mesh.nfaces3);
 #endif
     t_scene scene;
+    t_scene_interactor interactor;
+    interactor.scene_target = &scene;
     {
         // TODO: create abstraction for scene creation
 
@@ -280,11 +283,12 @@ int main(int argc, char* argv[])
         actor.material = NULL;
         actor.mesh = scene.meshes;
         actor.position = (t_vec3f) { 0.0f, 0.0f, 0.0f };
-        actor.orientation = (t_vec3f) { 0.0f, 90.0f, 45.0f };
+        actor.rotation = (t_vec3f) { 0.0f, 0.0f, 0.0f };
         actor.scale = (t_vec3f) { 1.0f, 1.0f, 1.0f };
 
         memcpy(scene.actors, &actor, sizeof(t_actor));
     }
+    interactor.actor_selected = scene.actors;
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -318,7 +322,7 @@ int main(int argc, char* argv[])
     float elapsed_time = 0.0f;
     while (g_IsRunning)
     {
-        input_camera_handle(&scene.camera);
+        input_handle(&interactor);
         poll_events();
 
         // tick
@@ -345,9 +349,9 @@ int main(int argc, char* argv[])
 
         //t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
 
-        t_mat4f model = actor_calculate_model_matrix(&scene.actors[0]);
-        t_mat4f view = camera_calculate_view_matrix(&scene.camera);
-        t_mat4f proj = camera_calculate_proj_matrix(&scene.camera);
+        t_mat4f model = actor_calculate_matrix_model(&scene.actors[0]);
+        t_mat4f view = camera_calculate_matrix_view(&scene.camera);
+        t_mat4f proj = camera_calculate_matrix_proj(&scene.camera);
 
         glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
         glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);
