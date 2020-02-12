@@ -22,9 +22,6 @@
 # undef main
 #endif
 
-t_camera g_camera;
-t_vec3f g_POI;
-float g_camera_distance = 1.0f;
 float g_dt;
 t_bool g_IsRunning;
 
@@ -74,7 +71,7 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     t_byte* buffer;
 
     buffer = ft_read_file(filename);
-    t_bool result = objparser_parse(buffer, ft_strlen(buffer), out_mesh);
+    t_bool result = objparser_parse_mesh(buffer, ft_strlen(buffer), out_mesh);
 
     free(buffer);
 
@@ -87,8 +84,6 @@ static void poll_events()
     SDL_PumpEvents();
     while (TRUE)
     {
-        input_camera_handle(&g_camera);
-
         const int eventsCount = SDL_PeepEvents(eventBuffer,
                                                sizeof(eventBuffer) / sizeof(eventBuffer[0]),
                                                SDL_GETEVENT,
@@ -110,6 +105,7 @@ static void poll_events()
             SDL_Event* event = &eventBuffer[index];
             switch (event->type)
             {
+#if 0
             case SDL_KEYDOWN:
             {
                 if (event->key.state == SDL_PRESSED)
@@ -132,6 +128,7 @@ static void poll_events()
                     }
                 }
             } break;
+#endif
             case SDL_QUIT:
             {
                 g_IsRunning = FALSE;
@@ -149,9 +146,10 @@ static t_camera create_default_camera()
     t_camera cam;
 
     t_vec3f pos = (t_vec3f){ 0.0f, 0.0f, 1.0f };
+    t_vec3f poi = (t_vec3f){ 0.0f, 0.0f, 0.0f };
     t_vec3f up = (t_vec3f){0.0f, 1.0f, 0.0f};
 
-    camera_look_at(&cam, &pos, &g_POI, &up);
+    camera_look_at(&cam, &pos, &poi, &up);
     cam.fov = 90.0f;
     cam.ar = g_win_width / (float)g_win_height;
     cam.near = 0.1f;
@@ -165,8 +163,6 @@ GLuint shader_create_program(const char* vert_code, const char* frag_code);
 int main(int argc, char* argv[])
 {
     srand(time(NULL)); // just for rofl
-
-    g_POI = (t_vec3f) { 0.0f, 0.0f, 0.0f };
 
     if (argc <= 1)
     {
@@ -222,8 +218,6 @@ int main(int argc, char* argv[])
     GLint view_location = glGetUniformLocation(program_id, "u_view");
     GLint projection_location = glGetUniformLocation(program_id, "u_projection");
 
-    g_camera = create_default_camera();
-
     t_mesh mesh;
     // TODO: remove magic
     mesh.vertices = malloc(sizeof(t_vec4f) * 256);
@@ -265,6 +259,41 @@ int main(int argc, char* argv[])
     int indices[] = { 0, 1, 3, 3, 2, 0 };
     memcpy(mesh.faces3, indices, sizeof(int) * 3 * mesh.nfaces3);
 #endif
+    t_scene scene;
+    {
+        // TODO: create abstraction for scene creation
+
+        scene.camera = create_default_camera();
+
+        scene.actors = malloc(sizeof(t_actor) * 10);
+        scene.nactors = 1;
+
+        scene.meshes = malloc(sizeof(t_mesh) * 10);
+        scene.nmeshes = 1;
+
+        scene.materials = malloc(sizeof(t_material) * 10);
+        scene.nmaterials = 0;
+
+        memcpy(scene.meshes, &mesh, sizeof(t_mesh));
+
+        t_actor actor;
+        actor.material = NULL;
+        actor.mesh = scene.meshes;
+        actor.position = (t_vec3f)
+        {
+            0.0f, 0.0f, 0.0f
+        };
+        actor.orientation = (t_vec3f)
+        {
+            0.0f, 0.0f, 0.0f
+        };
+        actor.scale = (t_vec3f)
+        {
+            1.0f, 1.0f, 1.0f
+        };
+
+        memcpy(scene.actors, &actor, sizeof(t_actor));
+    }
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -298,6 +327,7 @@ int main(int argc, char* argv[])
     float elapsed_time = 0.0f;
     while (g_IsRunning)
     {
+        input_camera_handle(&scene.camera);
         poll_events();
 
         // tick
@@ -322,10 +352,11 @@ int main(int argc, char* argv[])
         camera_look_at(&g_camera, &g_camera.position, &g_POI, &up);
 #endif
 
-        t_mat4f view = camera_calculate_view_matrix(&g_camera);
-        t_mat4f proj = camera_calculate_proj_matrix(&g_camera);
-        t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
-        t_mat4f model = mat4f_identity();
+        //t_mat4f vp = mat4f_mat4f_mult(&view, &proj);
+
+        t_mat4f model = actor_calculate_model_matrix(&scene.actors[0]);
+        t_mat4f view = camera_calculate_view_matrix(&scene.camera);
+        t_mat4f proj = camera_calculate_proj_matrix(&scene.camera);
 
         glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
         glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);

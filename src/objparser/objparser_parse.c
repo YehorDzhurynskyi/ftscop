@@ -42,7 +42,7 @@ OBJPARSER_NOT_IMPLEMENTED(deg)
 OBJPARSER_NOT_IMPLEMENTED(bmat)
 OBJPARSER_NOT_IMPLEMENTED(step)
 
-t_bool objparser_parse(const t_byte *buff, const size_t sz, t_mesh *out)
+t_bool objparser_parse_mesh(const t_byte *buff, const size_t sz, t_mesh *out)
 {
     t_objparser_ctx ctx;
 
