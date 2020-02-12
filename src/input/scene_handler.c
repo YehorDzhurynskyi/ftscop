@@ -48,11 +48,27 @@ void	input_handle(t_scene_interactor *interactor)
                 interactor->interaction_mode = TRANSLATION;
             }
         }
-        else if (keystate[SDL_SCANCODE_1])
+        else if (keystate[SDL_SCANCODE_1] || keystate[SDL_SCANCODE_2] ||
+                 keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4] || 
+                 keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
         {
             if (interactor->interaction_mode == TRANSLATION)
             {
+                t_vec3f dpos;
 
+                dpos = (t_vec3f) { 0.0, 0.0, 0.0 };
+                if (keystate[SDL_SCANCODE_1] || keystate[SDL_SCANCODE_2])
+                    dpos.x = keystate[SDL_SCANCODE_1] ? ACTOR_SPEED : -ACTOR_SPEED;
+
+                if (keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4])
+                    dpos.y = keystate[SDL_SCANCODE_3] ? -ACTOR_SPEED : ACTOR_SPEED;
+
+                if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
+                    dpos.z = keystate[SDL_SCANCODE_5] ? -ACTOR_SPEED : ACTOR_SPEED;
+
+                t_vec3f translation;
+                translation = transform_translate(&interactor->actor_selected->orientation, &dpos);
+                interactor->actor_selected->position = vec3f_add(&interactor->actor_selected->position, &translation);
             }
         }
     }

@@ -289,6 +289,7 @@ int main(int argc, char* argv[])
         memcpy(scene.actors, &actor, sizeof(t_actor));
     }
     interactor.actor_selected = scene.actors;
+    interactor.interaction_mode = TRANSLATION;
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
