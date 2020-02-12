@@ -61,21 +61,6 @@ t_vec3f *right, t_vec3f *up)
 	return (calculate_matrix_orientation_from_basis(right, up, forward));
 }
 
-static t_vec3f		camera_translate(const Uint8 *keystate,
-const t_vec3f *forward, const t_vec3f *right)
-{
-	t_vec3f	speed;
-
-	speed = (t_vec3f){0.0, 0.0, 0.0};
-	if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S])
-		speed.z = keystate[SDL_SCANCODE_W] ? CAM_SPEED : -CAM_SPEED;
-	if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_D])
-		speed.x = keystate[SDL_SCANCODE_A] ? -CAM_SPEED : CAM_SPEED;
-	return ((t_vec3f){speed.z * forward->x + speed.x * right->x,
-	speed.z * forward->y + speed.x * right->y,
-	speed.z * forward->z + speed.x * right->z});
-}
-
 void				input_handle_camera(t_camera *cam)
 {
 	const Uint8	*keystate;
@@ -93,7 +78,17 @@ void				input_handle_camera(t_camera *cam)
 	if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S]
 	|| keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_D])
 	{
-		translation = camera_translate(keystate, &forward, &right);
+        t_vec3f dpos;
+
+        dpos = (t_vec3f) { 0.0, 0.0, 0.0 };
+
+        if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S])
+            dpos.z = keystate[SDL_SCANCODE_W] ? CAM_SPEED : -CAM_SPEED;
+
+        if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_D])
+            dpos.x = keystate[SDL_SCANCODE_A] ? -CAM_SPEED : CAM_SPEED;
+
+        translation = transform_translate(&cam->orientation, &dpos);
 		cam->position.x += translation.x;
 		cam->position.y += translation.y;
 		cam->position.z += translation.z;

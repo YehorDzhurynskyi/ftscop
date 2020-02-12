@@ -64,6 +64,9 @@ t_mat4f calculate_matrix_orientation_from_rotation(const t_vec3f *rot);
 t_mat4f calculate_matrix_orientation_from_basis(const t_vec3f *i, const t_vec3f *j, const t_vec3f *k);
 t_mat4f calculate_matrix_scale(const t_vec3f *scl);
 t_mat4f calculate_matrix_translation(const t_vec3f *pos);
+
+t_vec3f transform_translate(const t_mat4f *orien, const t_vec3f *dpos);
+
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
 
 typedef struct s_scene  t_scene;

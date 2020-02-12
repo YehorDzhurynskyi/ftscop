@@ -33,6 +33,7 @@ add_executable(scop
     src/scene/scene.h
     src/scene/scene.c
     src/scene/actor.c
+    src/scene/actor_transform.c
     src/scene/camera.c
 
     src/input/input.h
