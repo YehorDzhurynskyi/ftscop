@@ -84,7 +84,7 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     return (result);
 }
 
-static void poll_events()
+static void poll_events(t_scene_interactor *interactor)
 {
     SDL_Event eventBuffer[4];
     SDL_PumpEvents();
@@ -111,30 +111,29 @@ static void poll_events()
             SDL_Event* event = &eventBuffer[index];
             switch (event->type)
             {
-#if 0
             case SDL_KEYDOWN:
             {
                 if (event->key.state == SDL_PRESSED)
                 {
                     switch (event->key.keysym.sym)
                     {
-                    case SDLK_EQUALS:
-                    case SDLK_PLUS:
-                    case SDLK_KP_PLUS:
+                    case SDLK_LEFTBRACKET:
                     {
-                        g_camera_distance -= 1.0f;
-                        g_camera_distance = max(1.0f, g_camera_distance);
+                        if (interactor->actor_selected == NULL)
+                        {
+                            interactor->actor_selected = interactor->scene_target->actors;
+                        }
                     } break;
-                    case SDLK_MINUS:
-                    case SDLK_KP_MINUS:
+                    case SDLK_RIGHTBRACKET:
                     {
-                        g_camera_distance += 1.0f;
-                        g_camera_distance = min(100.0f, g_camera_distance);
+                        if (interactor->actor_selected == NULL)
+                        {
+                            interactor->actor_selected = interactor->scene_target->actors;
+                        }
                     } break;
                     }
                 }
             } break;
-#endif
             case SDL_QUIT:
             {
                 // TODO: it doesn't work properly
@@ -280,7 +279,7 @@ int main(int argc, char* argv[])
     while (g_IsRunning)
     {
         input_handle(&interactor);
-        poll_events();
+        poll_events(&interactor);
 
         // tick
 

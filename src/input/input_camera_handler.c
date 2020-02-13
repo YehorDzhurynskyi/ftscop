@@ -15,7 +15,7 @@
 #include <math.h>
 
 #define CAM_SPEED		0.3
-#define CAM_ROT_SPEED	1.5
+#define CAM_ROT_SPEED	2.0
 
 void	input_handle_camera(t_camera *cam)
 {
