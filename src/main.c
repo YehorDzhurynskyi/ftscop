@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glClearColor(0.62f, 0.59f, 0.52f, 1.0f);
+    glClearColor(0.227f, 0.227f, 0.227f, 1.0f);
 
     Uint64	freq = SDL_GetPerformanceFrequency();
     Uint64	start;
