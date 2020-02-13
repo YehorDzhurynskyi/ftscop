@@ -32,12 +32,16 @@ add_executable(scop
 
     src/scene/scene.h
     src/scene/scene.c
+    src/scene/mesh.h
+    src/scene/mesh.c
     src/scene/actor.c
     src/scene/actor_transform.c
     src/scene/camera.c
 
     src/renderer/renderer.h
     src/renderer/renderer.c
+    src/renderer/renderer_actor.c
+    src/renderer/renderer_interactor.c
 
     src/input/input.h
     src/input/camera_handler.c
@@ -52,6 +56,7 @@ add_executable(scop
     src/objparser/objparser_polygonal.c
 
     src/libft/ft_strlen.c
+    src/libft/ft_memset.c
     src/libft/ft_memcpy.c
     src/libft/ft_strchr.c
     src/libft/ft_strnchr.c

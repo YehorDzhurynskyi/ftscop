@@ -14,6 +14,7 @@
 # define SCENE_H
 
 # include "ft.h"
+# include "mesh.h"
 
 typedef struct s_camera t_camera;
 struct s_camera
@@ -29,25 +30,6 @@ struct s_camera
 void        camera_look_at(t_camera *cam, const t_vec3f *pos, const t_vec3f *poi, const t_vec3f *up);
 t_mat4f     camera_calculate_matrix_view(const t_camera *cam);
 t_mat4f     camera_calculate_matrix_proj(const t_camera *cam);
-
-typedef struct s_material   t_material;
-struct  s_material
-{
-    t_vec3f ambient;
-    t_vec3f diffuse;
-    t_vec3f transparency;
-};
-
-typedef struct s_mesh   t_mesh;
-struct  s_mesh
-{
-    t_vec4f     *vertices;
-    t_vec4f     *colors;
-    int         nvertices;
-    int         *faces3;
-    int         nfaces3;
-    uint32_t    vao;
-};
 
 typedef struct s_actor  t_actor;
 struct  s_actor
@@ -85,5 +67,7 @@ struct  s_scene
     t_actor     *actors;
     size_t      nactors;
 };
+
+void    scene_delete(t_scene *scene);
 
 #endif

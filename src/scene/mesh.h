@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   scene.c                                            :+:      :+:    :+:   */
+/*   mesh.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ydzhuryn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,19 +10,40 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
+#ifndef MESH_H
+# define MESH_H
 
-void    scene_delete(t_scene *scene)
+# include "ft.h"
+# include <glad/glad.h>
+
+typedef struct s_material   t_material;
+struct  s_material
 {
-    int i;
+    t_vec3f ambient;
+    t_vec3f diffuse;
+    t_vec3f transparency;
+};
 
-    i = 0;
-    while (i < scene->nmeshes)
-    {
-        mesh_delete(&scene->meshes[i]);
-    }
+typedef struct s_mesh   t_mesh;
+struct  s_mesh
+{
+    t_vec4f     *vertices;
+    t_vec4f     *colors;
+    int         nvertices;
+    int         *faces3;
+    int         nfaces3;
 
-    FT_SAFE_FREE(scene->materials);
-    FT_SAFE_FREE(scene->meshes);
-    FT_SAFE_FREE(scene->actors);
-}
+    GLuint      vao;
+    GLuint      vbo_vertex;
+    GLuint      vbo_color_tint;
+    GLuint      ibo_faces;
+
+    // TODO: add lines ibo for `l` param in .obj file
+    // GLuint      ibo_lines;
+};
+
+t_mesh  mesh_init(void);
+void    mesh_init_gfx(t_mesh *mesh);
+void    mesh_delete(t_mesh *mesh);
+
+#endif

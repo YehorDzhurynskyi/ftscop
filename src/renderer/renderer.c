@@ -13,7 +13,7 @@
 #include "renderer.h"
 #include <glad/glad.h>
 
-void    renderer_draw_actor(const t_gctx *ctx, const t_actor *actor)
+void    renderer_draw_actor(const t_gctx_actor *ctx, const t_actor *actor)
 {
     t_mat4f model;
     GLint   model_location;
@@ -26,7 +26,7 @@ void    renderer_draw_actor(const t_gctx *ctx, const t_actor *actor)
     glDrawElements(GL_TRIANGLES, actor->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
 }
 
-static void renderer_draw_controls_translation(const t_gctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_translation(const t_gctx_interactor *ctx, const t_actor *actor)
 {
     t_mat4f model;
     GLint   model_location;
@@ -35,20 +35,33 @@ static void renderer_draw_controls_translation(const t_gctx *ctx, const t_actor 
     model_location = glGetUniformLocation(ctx->program_id, "u_model");
 }
 
-static void renderer_draw_controls_rotation(const t_gctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_rotation(const t_gctx_interactor *ctx, const t_actor *actor)
 {
 }
 
-static void renderer_draw_controls_scaling(const t_gctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_scaling(const t_gctx_interactor *ctx, const t_actor *actor)
 {
 }
 
-void    renderer_draw_interactor(const t_gctx *ctx, const t_scene_interactor *interactor)
+void        renderer_draw_interactor(const t_gctx_interactor *ctx, const t_scene_interactor *interactor)
 {
     if (interactor->actor_selected == NULL)
     {
         return;
     }
+    // TODO: draw outline for actor_selected
+    t_mat4f model;
+    GLint   model_location;
+
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+    model_location = glGetUniformLocation(ctx->program_id, "u_model");
+    glBindVertexArray(interactor->actor_selected->mesh->vao);
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
+    GLint color_tint_location = glGetAttribLocation(ctx->program_id, "a_color_tint");
+    glVertexAttribDivisor(color_tint_location, interactor->actor_selected->mesh->nfaces3 * 3);
+
+    glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
+
     if (interactor->interaction_mode == TRANSLATION)
     {
         renderer_draw_controls_translation(ctx, interactor->actor_selected);

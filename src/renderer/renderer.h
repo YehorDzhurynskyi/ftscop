@@ -15,13 +15,19 @@
 
 # include "input/input.h"
 
-typedef struct s_gctx   t_gctx;
-struct  s_gctx
+typedef struct s_gctx_actor    t_gctx_actor;
+struct  s_gctx_actor
 {
     uint32_t    program_id;
 };
 
-void    renderer_draw_actor(const t_gctx *ctx, const t_actor *actor);
-void    renderer_draw_interactor(const t_gctx *ctx, const t_scene_interactor *interactor);
+typedef struct s_gctx_interactor    t_gctx_interactor;
+struct  s_gctx_interactor
+{
+    uint32_t    program_id;
+};
+
+void    renderer_draw_actor(const t_gctx_actor *ctx, const t_actor *actor);
+void    renderer_draw_interactor(const t_gctx_interactor *ctx, const t_scene_interactor *interactor);
 
 #endif

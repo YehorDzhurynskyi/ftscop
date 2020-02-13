@@ -74,10 +74,13 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
 
     buffer = ft_read_file(filename);
     t_bool result = objparser_parse_mesh(buffer, ft_strlen(buffer), out_mesh);
-
-    // TODO: recalculate origin for a mesh
-
     free(buffer);
+
+    if (result)
+    {
+        // TODO: recalculate origin for a mesh
+        mesh_init_gfx(out_mesh);
+    }
 
     return (result);
 }
@@ -222,6 +225,8 @@ int main(int argc, char* argv[])
     GLint projection_location = glGetUniformLocation(program_id, "u_projection");
 
     t_mesh mesh;
+    mesh = mesh_init();
+
     // TODO: remove magic
     mesh.vertices = malloc(sizeof(t_vec4f) * 256);
     mesh.colors = malloc(sizeof(t_vec4f) * 256);
@@ -266,31 +271,6 @@ int main(int argc, char* argv[])
     interactor.actor_selected = scene.actors;
     interactor.interaction_mode = TRANSLATION;
 
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    scene.meshes->vao = vao;
-
-    GLuint faces3_ibo;
-    glGenBuffers(1, &faces3_ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faces3_ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.nfaces3 * 3 * sizeof(int), mesh.faces3, GL_STATIC_DRAW);
-
-    GLuint vertex_vbo;
-    glGenBuffers(1, &vertex_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.nvertices * sizeof(t_vec4f), mesh.vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(vertex_location);
-    glVertexAttribPointer(vertex_location, 4, GL_FLOAT, GL_FALSE, 0/*sizeof(t_vec4f)*/, (void*)0);
-
-    GLuint color_tint_vbo;
-    glGenBuffers(1, &color_tint_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, color_tint_vbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.nvertices * sizeof(t_vec4f), mesh.colors, GL_DYNAMIC_DRAW); // TODO: change color tint dynamically
-    glEnableVertexAttribArray(color_tint_location);
-    glVertexAttribPointer(color_tint_location, 4, GL_FLOAT, GL_FALSE, 0/*sizeof(t_vec4f)*/, (void*)0);
-
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.62f, 0.59f, 0.52f, 1.0f);
@@ -313,7 +293,7 @@ int main(int argc, char* argv[])
 
         glUseProgram(program_id);
 
-        t_gctx gctx;
+        t_gctx_actor gctx;
         gctx.program_id = program_id;
 
         const t_mat4f view = camera_calculate_matrix_view(&scene.camera);
@@ -321,6 +301,7 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);
         glUniformMatrix4fv(projection_location, 1, GL_FALSE, &proj.data[0][0]);
 
+        glVertexAttribDivisor(color_tint_location, 0);
         int i = 0;
         while (i < scene.nactors)
         {
@@ -336,11 +317,7 @@ int main(int argc, char* argv[])
 
     glDeleteProgram(program_id);
 
-    glDeleteBuffers(1, &vertex_vbo);
-    glDeleteBuffers(1, &color_tint_vbo);
-    glDeleteBuffers(1, &faces3_ibo);
-
-    glDeleteVertexArrays(1, &vao);
+    scene_delete(&scene);
 
     SDL_GL_DeleteContext(glctx);
     SDL_DestroyWindow(win);

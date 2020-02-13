@@ -21,6 +21,7 @@ typedef int				t_bool;
 
 # define TRUE 1
 # define FALSE 0
+# define FT_SAFE_FREE(x) free(x); x = NULL;
 
 typedef struct		s_list
 {
