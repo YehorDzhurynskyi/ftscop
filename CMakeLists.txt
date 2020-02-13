@@ -42,10 +42,13 @@ add_executable(scop
     src/renderer/renderer.c
     src/renderer/renderer_scene.c
     src/renderer/renderer_interactor.c
+    src/renderer/renderer_gfx_init.c
+    src/renderer/renderer_gfx_delete.c
 
     src/input/input.h
-    src/input/camera_handler.c
-    src/input/scene_handler.c
+    src/input/input_camera_handler.c
+    src/input/input_scene_handler.c
+    src/input/input_interactor.c
 
     src/objparser/objparser.h
     src/objparser/objparser_common.c

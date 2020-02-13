@@ -79,7 +79,6 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     if (result)
     {
         // TODO: recalculate origin for a mesh
-        mesh_init_gfx(out_mesh);
     }
 
     return (result);
@@ -217,9 +216,20 @@ int main(int argc, char* argv[])
         return (-1);
     }
 
+    const t_bool res = renderer_init_gfx_mesh(&gfx_context, &mesh);
+
+    FT_SAFE_FREE(mesh.faces);
+    FT_SAFE_FREE(mesh.vertices);
+    FT_SAFE_FREE(mesh.colors);
+
+    if (!res)
+    {
+        assert("ERROR");
+        // TODO: release resources
+        return (-1);
+    }
+
     t_scene scene;
-    t_scene_interactor interactor;
-    interactor.scene_target = &scene;
     {
         // TODO: create abstraction for scene creation
 
@@ -245,8 +255,15 @@ int main(int argc, char* argv[])
 
         memcpy(scene.actors, &actor, sizeof(t_actor));
     }
-    interactor.actor_selected = scene.actors;
-    interactor.interaction_mode = TRANSLATION;
+
+    t_scene_interactor interactor = input_interactor_init(&scene);
+    //if (!renderer_init_gfx_interactor(&gfx_context, &interactor))
+    //{
+    //    assert("ERROR");
+    //    // TODO: release resources
+    //    return (-1);
+    //}
+    //input_interactor_select_actor(&interactor, scene.actors);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -271,7 +288,7 @@ int main(int argc, char* argv[])
         // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->m_size * sizeof(T), (void*)this->m_data)
 
         renderer_draw_scene(&gfx_context, &scene);
-        renderer_draw_interactor(&gfx_context, &interactor);
+        //renderer_draw_interactor(&gfx_context, &interactor);
 
         SDL_GL_SwapWindow(win);
         g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
@@ -279,6 +296,7 @@ int main(int argc, char* argv[])
     }
 
     scene_delete(&scene);
+    renderer_delete_gfx_interactor(&interactor);
     renderer_delete(&gfx_context);
 
     SDL_GL_DeleteContext(glctx);

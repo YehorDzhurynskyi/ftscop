@@ -29,6 +29,15 @@ struct  s_gfx_program
             GLint   a_location_position;
             GLint   a_location_color_tint;
         } phong;
+        struct
+        {
+            GLint   u_location_model;
+            GLint   u_location_view;
+            GLint   u_location_proj;
+
+            GLint   a_location_position;
+            GLint   a_location_color_tint;
+        } noshading;
     };
     GLuint  id;
 };
@@ -37,6 +46,7 @@ typedef struct s_gfx_program_pool   t_gfx_program_pool;
 struct  s_gfx_program_pool
 {
     t_gfx_program   phong;
+    t_gfx_program   noshading;
 };
 
 typedef struct s_gfx_ctx t_gfx_ctx;
@@ -49,6 +59,11 @@ struct  s_gfx_ctx
 
 t_bool  renderer_init(t_gfx_ctx *ctx);
 void    renderer_delete(t_gfx_ctx *ctx);
+
+t_bool  renderer_init_gfx_mesh(const t_gfx_ctx *ctx, t_mesh *mesh);
+t_bool  renderer_init_gfx_interactor(const t_gfx_ctx *ctx, t_scene_interactor *interactor);
+void    renderer_delete_gfx_mesh(t_mesh *mesh);
+void    renderer_delete_gfx_interactor(t_scene_interactor *interactor);
 
 void    renderer_draw_scene(const t_gfx_ctx *ctx, const t_scene *scene);
 void    renderer_draw_interactor(const t_gfx_ctx *ctx, const t_scene_interactor *interactor);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ydzhuryn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mesh.h"
+#include "renderer.h"
 
-t_mesh  mesh_init(void)
+void    renderer_delete_gfx_mesh(t_mesh *mesh)
 {
-    t_mesh  mesh;
+    glDeleteBuffers(1, &mesh->vbo_vertex);
+    glDeleteBuffers(1, &mesh->vbo_color_tint);
+    glDeleteBuffers(1, &mesh->ibo_faces);
+    glDeleteVertexArrays(1, &mesh->vao);
+}
 
-    ft_memset(&mesh, 0x0, sizeof(t_mesh));
-    return (mesh);
+void    renderer_delete_gfx_interactor(t_scene_interactor *interactor)
+{
+    glDeleteVertexArrays(1, &interactor->vao);
+    glDeleteBuffers(1, &interactor->ibo_outline);
 }

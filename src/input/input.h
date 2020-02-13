@@ -14,6 +14,7 @@
 # define INPUT_H
 
 # include "scene/scene.h"
+# include <glad/glad.h>
 
 enum e_actor_interaction_mode
 {
@@ -29,10 +30,16 @@ struct  s_scene_interactor
 
     enum e_actor_interaction_mode   interaction_mode;
     t_actor                         *actor_selected;
+
+    GLuint                          vao;
+    GLuint                          ibo_outline;
 };
 
 void	input_handle(t_scene_interactor *interactor);
-
 void	input_handle_camera(t_camera *camera);
+
+t_scene_interactor  input_interactor_init(const t_scene *scene);
+
+void                input_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor);
 
 #endif

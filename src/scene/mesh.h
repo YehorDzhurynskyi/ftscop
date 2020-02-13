@@ -43,7 +43,5 @@ struct  s_mesh
 };
 
 t_mesh  mesh_init(void);
-void    mesh_init_gfx(t_mesh *mesh);
-void    mesh_delete(t_mesh *mesh);
 
 #endif

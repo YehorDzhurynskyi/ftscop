@@ -19,7 +19,7 @@ void    scene_delete(t_scene *scene)
     i = 0;
     while (i < scene->nmeshes)
     {
-        mesh_delete(&scene->meshes[i]);
+        renderer_delete_gfx_mesh(&scene->meshes[i]);
     }
 
     FT_SAFE_FREE(scene->materials);

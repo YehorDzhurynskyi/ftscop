@@ -12,6 +12,26 @@
 
 #include "renderer.h"
 
+static void renderer_draw_outlines(const t_gfx_ctx *ctx, const t_scene_interactor *interactor)
+{
+    t_mat4f         model;
+    t_gfx_program   *program;
+
+    program = &ctx->program_pool.noshading;
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+
+    glUseProgram(program->id);
+
+    glUniformMatrix4fv(program->noshading.u_location_view, 1, GL_FALSE, &ctx->view.data[0][0]);
+    glUniformMatrix4fv(program->noshading.u_location_proj, 1, GL_FALSE, &ctx->proj.data[0][0]);
+    glUniformMatrix4fv(program->noshading.u_location_model, 1, GL_FALSE, &model.data[0][0]);
+
+    glBindVertexArray(interactor->vao);
+    glVertexAttribDivisor(program->noshading.a_location_color_tint, interactor->actor_selected->mesh->nfaces * 6);
+
+    glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
+}
+
 static void renderer_draw_controls_translation(const t_gfx_ctx *ctx, const t_actor *actor)
 {
 #if 0
@@ -35,22 +55,7 @@ void        renderer_draw_interactor(const t_gfx_ctx *ctx, const t_scene_interac
     {
         return;
     }
-
-#if 0
-    // TODO: draw outline for actor_selected
-    t_mat4f model;
-    GLint   model_location;
-
-    model = actor_calculate_matrix_model(interactor->actor_selected);
-    model_location = glGetUniformLocation(ctx->program_id, "u_model");
-    glBindVertexArray(interactor->actor_selected->mesh->vao);
-    glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
-    GLint color_tint_location = glGetAttribLocation(ctx->program_id, "a_color_tint");
-    glVertexAttribDivisor(color_tint_location, interactor->actor_selected->mesh->nfaces3 * 3);
-
-    glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
-#endif
-
+    renderer_draw_outlines(ctx, interactor);
     if (interactor->interaction_mode == TRANSLATION)
     {
         renderer_draw_controls_translation(ctx, interactor->actor_selected);
