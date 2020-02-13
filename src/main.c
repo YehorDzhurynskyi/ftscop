@@ -137,6 +137,8 @@ static void poll_events()
 #endif
             case SDL_QUIT:
             {
+                // TODO: it doesn't work properly
+                // X or alt+f4 don't work
                 g_IsRunning = FALSE;
             } break;
             }
@@ -180,12 +182,16 @@ int main(int argc, char* argv[])
         return (-1);
     }
 
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
     SDL_Window* win = SDL_CreateWindow("Scop", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, g_win_width, g_win_height, SDL_WINDOW_OPENGL);
     SDL_GLContext* glctx = SDL_GL_CreateContext(win);
