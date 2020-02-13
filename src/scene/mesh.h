@@ -30,8 +30,8 @@ struct  s_mesh
     t_vec4f     *vertices;
     t_vec4f     *colors;
     int         nvertices;
-    int         *faces3;
-    int         nfaces3;
+    int         *faces;
+    int         nfaces;
 
     GLuint      vao;
     GLuint      vbo_vertex;

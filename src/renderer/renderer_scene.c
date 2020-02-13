@@ -28,7 +28,7 @@ static void renderer_draw_actor(const t_gfx_ctx *ctx, const t_actor *actor)
 
     glBindVertexArray(actor->mesh->vao);
 
-    glDrawElements(GL_TRIANGLES, actor->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
 }
 
 void        renderer_draw_scene(const t_gfx_ctx *ctx, const t_scene *scene)

@@ -27,7 +27,7 @@ void    mesh_init_gfx(t_mesh *mesh)
 
     glGenBuffers(1, &mesh->ibo_faces);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ibo_faces);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nfaces3 * 3 * sizeof(int), mesh->faces3, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nfaces * 3 * sizeof(int), mesh->faces, GL_STATIC_DRAW);
 
     glGenBuffers(1, &mesh->vbo_vertex);
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo_vertex);
@@ -41,7 +41,7 @@ void    mesh_init_gfx(t_mesh *mesh)
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    FT_SAFE_FREE(mesh->faces3);
+    FT_SAFE_FREE(mesh->faces);
     FT_SAFE_FREE(mesh->vertices);
     FT_SAFE_FREE(mesh->colors);
 }

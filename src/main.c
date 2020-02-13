@@ -208,8 +208,8 @@ int main(int argc, char* argv[])
     mesh.vertices = malloc(sizeof(t_vec4f) * 256);
     mesh.colors = malloc(sizeof(t_vec4f) * 256);
     mesh.nvertices = 0;
-    mesh.faces3 = malloc(sizeof(int) * 3 * 256);
-    mesh.nfaces3 = 0;
+    mesh.faces = malloc(sizeof(int) * 3 * 256);
+    mesh.nfaces = 0;
 
     if ((g_IsRunning = load_obj_file(argv[1], &mesh)) != TRUE)
     {

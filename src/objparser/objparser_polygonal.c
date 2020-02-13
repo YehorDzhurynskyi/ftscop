@@ -30,13 +30,13 @@ void objparser_read_f(t_objparser_ctx *ctx)
     assert(index == 3 || index == 4);
     if (index == 3)
     {
-        ft_memcpy(ctx->mesh->faces3 + 3 * ctx->mesh->nfaces3++, face, sizeof(int) * 3);
+        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, face, sizeof(int) * 3);
     }
     else if (index == 4)
     {
-        ft_memcpy(ctx->mesh->faces3 + 3 * ctx->mesh->nfaces3++, face, sizeof(int) * 3);
+        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, face, sizeof(int) * 3);
         int temp[] = { face[2], face[3], face[0] };
-        ft_memcpy(ctx->mesh->faces3 + 3 * ctx->mesh->nfaces3++, temp, sizeof(int) * 3);
+        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, temp, sizeof(int) * 3);
     }
     else
     {
