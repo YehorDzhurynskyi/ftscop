@@ -11,67 +11,44 @@
 /* ************************************************************************** */
 
 #include "renderer.h"
-#include <glad/glad.h>
 
-void    renderer_draw_actor(const t_gctx_actor *ctx, const t_actor *actor)
+static t_bool   init_phong_program(t_gfx_program *program)
 {
-    t_mat4f model;
-    GLint   model_location;
+    program->id = shader_load("shaders/phong.vert", "shaders/phong.frag");
+    if (!program->id)
+    {
+        return (FALSE);
+    }
 
-    model = actor_calculate_matrix_model(actor);
-    model_location = glGetUniformLocation(ctx->program_id, "u_model");
-    glBindVertexArray(actor->mesh->vao);
-    glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
+    program->phong.u_location_model = glGetUniformLocation(program->id, "u_model");
+    program->phong.u_location_view = glGetUniformLocation(program->id, "u_view");
+    program->phong.u_location_proj = glGetUniformLocation(program->id, "u_projection");
+    program->phong.a_location_position = glGetAttribLocation(program->id, "a_position");
+    program->phong.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
+    if (program->phong.a_location_position < 0 ||
+        program->phong.a_location_color_tint < 0 ||
+        program->phong.u_location_model < 0 ||
+        program->phong.u_location_view < 0 ||
+        program->phong.u_location_proj < 0)
+    {
+        glDeleteProgram(program->id);
+        return (FALSE);
+    }
 
-    glDrawElements(GL_TRIANGLES, actor->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
+    return (TRUE);
 }
 
-static void renderer_draw_controls_translation(const t_gctx_interactor *ctx, const t_actor *actor)
+t_bool          renderer_init(t_gfx_ctx *ctx)
 {
-    t_mat4f model;
-    GLint   model_location;
-
-    model = actor_calculate_matrix_model(actor);
-    model_location = glGetUniformLocation(ctx->program_id, "u_model");
+    if (!init_phong_program(&ctx->program_pool.phong))
+    {
+        // TODO: release all resources
+        return (FALSE);
+    }
+    return (TRUE);
 }
 
-static void renderer_draw_controls_rotation(const t_gctx_interactor *ctx, const t_actor *actor)
+void            renderer_delete(t_gfx_ctx *ctx)
 {
-}
-
-static void renderer_draw_controls_scaling(const t_gctx_interactor *ctx, const t_actor *actor)
-{
-}
-
-void        renderer_draw_interactor(const t_gctx_interactor *ctx, const t_scene_interactor *interactor)
-{
-    if (interactor->actor_selected == NULL)
-    {
-        return;
-    }
-    // TODO: draw outline for actor_selected
-    t_mat4f model;
-    GLint   model_location;
-
-    model = actor_calculate_matrix_model(interactor->actor_selected);
-    model_location = glGetUniformLocation(ctx->program_id, "u_model");
-    glBindVertexArray(interactor->actor_selected->mesh->vao);
-    glUniformMatrix4fv(model_location, 1, GL_FALSE, &model.data[0][0]);
-    GLint color_tint_location = glGetAttribLocation(ctx->program_id, "a_color_tint");
-    glVertexAttribDivisor(color_tint_location, interactor->actor_selected->mesh->nfaces3 * 3);
-
-    glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces3 * 3, GL_UNSIGNED_INT, NULL);
-
-    if (interactor->interaction_mode == TRANSLATION)
-    {
-        renderer_draw_controls_translation(ctx, interactor->actor_selected);
-    }
-    else if (interactor->interaction_mode == ROTATION)
-    {
-        renderer_draw_controls_rotation(ctx, interactor->actor_selected);
-    }
-    else if (interactor->interaction_mode == SCALING)
-    {
-        renderer_draw_controls_scaling(ctx, interactor->actor_selected);
-    }
+    glDeleteProgram(ctx->program_pool.phong.id);
 }

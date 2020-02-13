@@ -40,7 +40,7 @@ add_executable(scop
 
     src/renderer/renderer.h
     src/renderer/renderer.c
-    src/renderer/renderer_actor.c
+    src/renderer/renderer_scene.c
     src/renderer/renderer_interactor.c
 
     src/input/input.h

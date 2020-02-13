@@ -165,8 +165,6 @@ static t_camera create_default_camera()
     return (cam);
 }
 
-GLuint shader_create_program(const char* vert_code, const char* frag_code);
-
 int main(int argc, char* argv[])
 {
     srand(time(NULL)); // just for rofl
@@ -195,34 +193,13 @@ int main(int argc, char* argv[])
 
     gladLoadGL();
 
-    const char* vert_code = ft_read_file("shaders/phong.vert");
-    const char* frag_code = ft_read_file("shaders/phong.frag");
-
-    if (!vert_code || !frag_code)
+    t_gfx_ctx gfx_context;
+    if (!renderer_init(&gfx_context))
     {
-        assert(!"Error");
-        // TODO: free all resources
-        free(vert_code);
-        free(frag_code);
+        assert("ERROR");
+        // TODO: release resources
         return (-1);
     }
-
-    GLuint program_id = shader_create_program(vert_code, frag_code);
-
-    free(vert_code);
-    free(frag_code);
-
-    if (!program_id)
-    {
-        assert(!"Error");
-        // TODO: free all resources
-        return (-1);
-    }
-
-    GLint vertex_location = glGetAttribLocation(program_id, "a_position");
-    GLint color_tint_location = glGetAttribLocation(program_id, "a_color_tint");
-    GLint view_location = glGetUniformLocation(program_id, "u_view");
-    GLint projection_location = glGetUniformLocation(program_id, "u_projection");
 
     t_mesh mesh;
     mesh = mesh_init();
@@ -284,6 +261,8 @@ int main(int argc, char* argv[])
         poll_events();
 
         // tick
+        gfx_context.view = camera_calculate_matrix_view(&scene.camera);
+        gfx_context.proj = camera_calculate_matrix_proj(&scene.camera);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         start = SDL_GetPerformanceCounter();
@@ -291,33 +270,16 @@ int main(int argc, char* argv[])
         // TODO: update vbos
         // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->m_size * sizeof(T), (void*)this->m_data)
 
-        glUseProgram(program_id);
-
-        t_gctx_actor gctx;
-        gctx.program_id = program_id;
-
-        const t_mat4f view = camera_calculate_matrix_view(&scene.camera);
-        const t_mat4f proj = camera_calculate_matrix_proj(&scene.camera);
-        glUniformMatrix4fv(view_location, 1, GL_FALSE, &view.data[0][0]);
-        glUniformMatrix4fv(projection_location, 1, GL_FALSE, &proj.data[0][0]);
-
-        glVertexAttribDivisor(color_tint_location, 0);
-        int i = 0;
-        while (i < scene.nactors)
-        {
-            renderer_draw_actor(&gctx, &scene.actors[i++]);
-        }
-
-        renderer_draw_interactor(&gctx, &interactor);
+        renderer_draw_scene(&gfx_context, &scene);
+        renderer_draw_interactor(&gfx_context, &interactor);
 
         SDL_GL_SwapWindow(win);
         g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
         elapsed_time += g_dt;
     }
 
-    glDeleteProgram(program_id);
-
     scene_delete(&scene);
+    renderer_delete(&gfx_context);
 
     SDL_GL_DeleteContext(glctx);
     SDL_DestroyWindow(win);

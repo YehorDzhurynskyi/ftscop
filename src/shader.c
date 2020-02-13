@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft.h"
-#include <glad/glad.h>
+#include "shader.h"
 
-static GLuint shader_compile(GLenum shader_type, const char* code)
+static GLuint  shader_compile(GLenum shader_type, const char* code)
 {
     GLuint  shader_id;
     GLint   result;
@@ -35,7 +34,7 @@ static GLuint shader_compile(GLenum shader_type, const char* code)
     return (shader_id);
 }
 
-GLuint shader_create_program(const char* vert_code, const char* frag_code)
+GLuint  shader_create_program(const char* vert_code, const char* frag_code)
 {
     GLuint  program_id;
     GLuint  vert_id;
@@ -71,5 +70,25 @@ GLuint shader_create_program(const char* vert_code, const char* frag_code)
     glDeleteShader(vert_id);
     glDeleteShader(frag_id);
 
-    return program_id;
+    return (program_id);
+}
+
+GLuint  shader_load(const char *vert_filename, const char *frag_filename)
+{
+    GLuint      program_id;
+    const char  *vert_code;
+    const char  *frag_code;
+
+    vert_code = ft_read_file(vert_filename);
+    frag_code = ft_read_file(frag_filename);
+    if (!vert_code || !frag_code)
+    {
+        FT_SAFE_FREE(vert_code);
+        FT_SAFE_FREE(frag_code);
+        return (0);
+    }
+    program_id = shader_create_program(vert_code, frag_code);
+    FT_SAFE_FREE(vert_code);
+    FT_SAFE_FREE(frag_code);
+    return (program_id);
 }
