@@ -192,8 +192,7 @@ int main(int argc, char* argv[])
 
     gladLoadGL();
 
-    t_gfx_ctx gfx_context;
-    if (!renderer_init(&gfx_context))
+    if (!renderer_init(&g_gfx_program_pool))
     {
         assert("ERROR");
         // TODO: release resources
@@ -216,7 +215,7 @@ int main(int argc, char* argv[])
         return (-1);
     }
 
-    const t_bool res = renderer_init_gfx_mesh(&gfx_context, &mesh);
+    const t_bool res = renderer_init_gfx_mesh(&mesh);
 
     FT_SAFE_FREE(mesh.faces);
     FT_SAFE_FREE(mesh.vertices);
@@ -257,13 +256,13 @@ int main(int argc, char* argv[])
     }
 
     t_scene_interactor interactor = input_interactor_init(&scene);
-    //if (!renderer_init_gfx_interactor(&gfx_context, &interactor))
-    //{
-    //    assert("ERROR");
-    //    // TODO: release resources
-    //    return (-1);
-    //}
-    //input_interactor_select_actor(&interactor, scene.actors);
+    if (!renderer_init_gfx_interactor(&interactor))
+    {
+        assert("ERROR");
+        // TODO: release resources
+        return (-1);
+    }
+    input_interactor_select_actor(&interactor, scene.actors);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -278,8 +277,6 @@ int main(int argc, char* argv[])
         poll_events();
 
         // tick
-        gfx_context.view = camera_calculate_matrix_view(&scene.camera);
-        gfx_context.proj = camera_calculate_matrix_proj(&scene.camera);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         start = SDL_GetPerformanceCounter();
@@ -287,8 +284,8 @@ int main(int argc, char* argv[])
         // TODO: update vbos
         // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->m_size * sizeof(T), (void*)this->m_data)
 
-        renderer_draw_scene(&gfx_context, &scene);
-        //renderer_draw_interactor(&gfx_context, &interactor);
+        renderer_draw_scene(&scene);
+        renderer_draw_interactor(&interactor);
 
         SDL_GL_SwapWindow(win);
         g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
@@ -297,7 +294,7 @@ int main(int argc, char* argv[])
 
     scene_delete(&scene);
     renderer_delete_gfx_interactor(&interactor);
-    renderer_delete(&gfx_context);
+    renderer_delete(&g_gfx_program_pool);
 
     SDL_GL_DeleteContext(glctx);
     SDL_DestroyWindow(win);

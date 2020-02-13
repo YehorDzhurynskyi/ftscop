@@ -13,6 +13,7 @@
 #include "input.h"
 #include <SDL.h> // TODO: remove
 #include <assert.h>
+#include "renderer/renderer.h"
 
 t_scene_interactor  input_interactor_init(const t_scene *scene)
 {
@@ -26,9 +27,10 @@ t_scene_interactor  input_interactor_init(const t_scene *scene)
 
 void    input_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor)
 {
-    int *mapped;
-    int *indices;
-    int i;
+    t_gfx_program   *program;
+    int             *mapped;
+    int             *indices;
+    int             i;
 
     indices = malloc(actor->mesh->nfaces * 6 * sizeof(int));
     assert(indices);
@@ -52,8 +54,15 @@ void    input_interactor_select_actor(t_scene_interactor *interactor, const t_ac
 
     glUnmapNamedBuffer(actor->mesh->ibo_faces);
 
+    program = &g_gfx_program_pool.noshading;
+
     glBindVertexArray(interactor->vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, interactor->ibo_outline);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->nfaces * 6 * sizeof(int), indices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, actor->mesh->vbo_vertex);
+    glEnableVertexAttribArray(program->noshading.a_location_position);
+    glVertexAttribPointer(program->noshading.a_location_position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     FT_SAFE_FREE(indices);
 

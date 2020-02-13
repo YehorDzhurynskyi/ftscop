@@ -12,18 +12,14 @@
 
 #include "renderer.h"
 
-static void renderer_draw_actor(const t_gfx_ctx *ctx, const t_actor *actor)
+static void renderer_draw_actor(const t_actor *actor)
 {
-    t_mat4f         model;
     t_gfx_program   *program;
+    t_mat4f         model;
 
-    program = &ctx->program_pool.phong;
+    program = &g_gfx_program_pool.phong;
     model = actor_calculate_matrix_model(actor);
 
-    glUseProgram(program->id);
-
-    glUniformMatrix4fv(program->phong.u_location_view, 1, GL_FALSE, &ctx->view.data[0][0]);
-    glUniformMatrix4fv(program->phong.u_location_proj, 1, GL_FALSE, &ctx->proj.data[0][0]);
     glUniformMatrix4fv(program->phong.u_location_model, 1, GL_FALSE, &model.data[0][0]);
 
     glBindVertexArray(actor->mesh->vao);
@@ -31,13 +27,24 @@ static void renderer_draw_actor(const t_gfx_ctx *ctx, const t_actor *actor)
     glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
 }
 
-void        renderer_draw_scene(const t_gfx_ctx *ctx, const t_scene *scene)
+void        renderer_draw_scene(const t_scene *scene)
 {
-    int i;
+    t_gfx_program   *program;
+    t_mat4f         view;
+    t_mat4f         proj;
+    int             i;
+
+    program = &g_gfx_program_pool.phong;
+    glUseProgram(program->id);
+
+    view = camera_calculate_matrix_view(&scene->camera);
+    proj = camera_calculate_matrix_proj(&scene->camera);
+    glUniformMatrix4fv(program->phong.u_location_view, 1, GL_FALSE, &view.data[0][0]);
+    glUniformMatrix4fv(program->phong.u_location_proj, 1, GL_FALSE, &proj.data[0][0]);
 
     i = 0;
     while (i < scene->nactors)
     {
-        renderer_draw_actor(ctx, &scene->actors[i++]);
+        renderer_draw_actor(&scene->actors[i++]);
     }
 }

@@ -12,18 +12,23 @@
 
 #include "renderer.h"
 
-static void renderer_draw_outlines(const t_gfx_ctx *ctx, const t_scene_interactor *interactor)
+static void renderer_draw_outlines(const t_scene_interactor *interactor)
 {
     t_mat4f         model;
+    t_mat4f         view;
+    t_mat4f         proj;
     t_gfx_program   *program;
 
-    program = &ctx->program_pool.noshading;
+    program = &g_gfx_program_pool.noshading;
     model = actor_calculate_matrix_model(interactor->actor_selected);
 
     glUseProgram(program->id);
 
-    glUniformMatrix4fv(program->noshading.u_location_view, 1, GL_FALSE, &ctx->view.data[0][0]);
-    glUniformMatrix4fv(program->noshading.u_location_proj, 1, GL_FALSE, &ctx->proj.data[0][0]);
+    view = camera_calculate_matrix_view(&interactor->scene_target->camera);
+    proj = camera_calculate_matrix_proj(&interactor->scene_target->camera);
+
+    glUniformMatrix4fv(program->noshading.u_location_view, 1, GL_FALSE, &view.data[0][0]);
+    glUniformMatrix4fv(program->noshading.u_location_proj, 1, GL_FALSE, &proj.data[0][0]);
     glUniformMatrix4fv(program->noshading.u_location_model, 1, GL_FALSE, &model.data[0][0]);
 
     glBindVertexArray(interactor->vao);
@@ -32,7 +37,7 @@ static void renderer_draw_outlines(const t_gfx_ctx *ctx, const t_scene_interacto
     glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
 }
 
-static void renderer_draw_controls_translation(const t_gfx_ctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_translation(const t_actor *actor)
 {
 #if 0
     t_mat4f model;
@@ -43,29 +48,29 @@ static void renderer_draw_controls_translation(const t_gfx_ctx *ctx, const t_act
 #endif
 }
 
-static void renderer_draw_controls_rotation(const t_gfx_ctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_rotation(const t_actor *actor)
 {}
 
-static void renderer_draw_controls_scaling(const t_gfx_ctx *ctx, const t_actor *actor)
+static void renderer_draw_controls_scaling(const t_actor *actor)
 {}
 
-void        renderer_draw_interactor(const t_gfx_ctx *ctx, const t_scene_interactor *interactor)
+void        renderer_draw_interactor(const t_scene_interactor *interactor)
 {
     if (interactor->actor_selected == NULL)
     {
         return;
     }
-    renderer_draw_outlines(ctx, interactor);
+    renderer_draw_outlines(interactor);
     if (interactor->interaction_mode == TRANSLATION)
     {
-        renderer_draw_controls_translation(ctx, interactor->actor_selected);
+        renderer_draw_controls_translation(interactor->actor_selected);
     }
     else if (interactor->interaction_mode == ROTATION)
     {
-        renderer_draw_controls_rotation(ctx, interactor->actor_selected);
+        renderer_draw_controls_rotation(interactor->actor_selected);
     }
     else if (interactor->interaction_mode == SCALING)
     {
-        renderer_draw_controls_scaling(ctx, interactor->actor_selected);
+        renderer_draw_controls_scaling(interactor->actor_selected);
     }
 }

@@ -12,6 +12,8 @@
 
 #include "renderer.h"
 
+t_gfx_program_pool  g_gfx_program_pool;
+
 static t_bool   init_noshading_program(t_gfx_program *program)
 {
     program->id = shader_load("shaders/noshading.vert", "shaders/noshading.frag");
@@ -64,22 +66,22 @@ static t_bool   init_phong_program(t_gfx_program *program)
     return (TRUE);
 }
 
-t_bool          renderer_init(t_gfx_ctx *ctx)
+t_bool          renderer_init(t_gfx_program_pool *pool)
 {
     t_bool  valid;
 
     valid = TRUE;
-    valid = valid && init_noshading_program(&ctx->program_pool.noshading);
-    valid = valid && init_phong_program(&ctx->program_pool.phong);
+    valid = valid && init_noshading_program(&pool->noshading);
+    valid = valid && init_phong_program(&pool->phong);
     if (!valid)
     {
-        renderer_delete(ctx);
+        renderer_delete(pool);
     }
     return (valid);
 }
 
-void            renderer_delete(t_gfx_ctx *ctx)
+void            renderer_delete(t_gfx_program_pool *pool)
 {
-    glDeleteProgram(ctx->program_pool.phong.id);
-    glDeleteProgram(ctx->program_pool.noshading.id);
+    glDeleteProgram(pool->phong.id);
+    glDeleteProgram(pool->noshading.id);
 }

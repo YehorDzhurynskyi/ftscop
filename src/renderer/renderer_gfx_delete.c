@@ -22,6 +22,7 @@ void    renderer_delete_gfx_mesh(t_mesh *mesh)
 
 void    renderer_delete_gfx_interactor(t_scene_interactor *interactor)
 {
-    glDeleteVertexArrays(1, &interactor->vao);
     glDeleteBuffers(1, &interactor->ibo_outline);
+    glDeleteBuffers(1, &interactor->vbo_outline_color);
+    glDeleteVertexArrays(1, &interactor->vao);
 }

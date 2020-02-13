@@ -33,6 +33,7 @@ struct  s_scene_interactor
 
     GLuint                          vao;
     GLuint                          ibo_outline;
+    GLuint                          vbo_outline_color;
 };
 
 void	input_handle(t_scene_interactor *interactor);
