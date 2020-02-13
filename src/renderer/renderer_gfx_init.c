@@ -68,7 +68,7 @@ t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor)
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, interactor->ibo_outline);
     glBindBuffer(GL_ARRAY_BUFFER, interactor->vbo_outline_color);
-    const t_vec4f color = (t_vec4f) { 1.0f, 0.0f, 1.0f, 1.0f };
+    const t_vec4f color = (t_vec4f) { 0.05f, 0.05f, 0.05f, 1.0f };
     glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec4f), &color, GL_STATIC_DRAW);
     glEnableVertexAttribArray(program->noshading.a_location_color_tint);
     glVertexAttribPointer(program->noshading.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);

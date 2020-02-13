@@ -46,6 +46,16 @@ t_bool objparser_parse_mesh(const t_byte *buff, const size_t sz, t_mesh *out)
 {
     t_objparser_ctx ctx;
 
+    // TODO: figure out
+    //
+    // (from subject)
+    //
+    // The correct management of some ambiguous.obj files, concave, non coplanar... The
+    // teapot given with as resources exists in two versions : the first is the original, with
+    // some strange border effects.The second is an import - export in Blender, with no
+    // human touch, but normalized a little by the program.It’s about rendering correctly
+    // the first version.
+
     ctx.current = buff;
     ctx.end = &buff[sz];
     ctx.total_size = sz;
