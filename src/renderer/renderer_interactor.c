@@ -73,6 +73,7 @@ static void renderer_draw_controls_translation(const t_actor *actor)
     glVertexAttribPointer(program->noshading.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(program->noshading.a_location_color_tint);
 
+    glLineWidth(2.0f);
     glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, NULL);
 
     glDeleteBuffers(2, vbos);

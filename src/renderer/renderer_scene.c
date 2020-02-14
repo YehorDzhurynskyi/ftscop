@@ -36,7 +36,7 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     glGenVertexArrays(1, &tempVAO);
     glBindVertexArray(tempVAO);
 
-    glLineWidth(1.0f);
+    glLineWidth(0.15f);
     glDrawArrays(GL_POINTS, 0, 1);
 
     glDeleteVertexArrays(1, &tempVAO);
