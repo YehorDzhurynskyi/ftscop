@@ -38,6 +38,14 @@ struct  s_gfx_program
             GLint   a_location_position;
             GLint   a_location_color_tint;
         } noshading;
+        struct
+        {
+            GLint   u_location_model;
+            GLint   u_location_view;
+            GLint   u_location_proj;
+            GLint   u_location_dimension;
+            GLint   u_location_nsteps;
+        } grid;
     };
     GLuint  id;
 };

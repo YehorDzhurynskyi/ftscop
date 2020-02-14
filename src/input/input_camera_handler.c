@@ -12,7 +12,7 @@
 
 #include "scene/scene.h"
 #include <SDL.h>
-#include <math.h>
+#include <math.h> // TODO: remove
 
 #define CAM_SPEED		0.3
 #define CAM_ROT_SPEED	2.0

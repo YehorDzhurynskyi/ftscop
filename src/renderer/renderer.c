@@ -73,6 +73,20 @@ static t_bool   init_grid_program(t_gfx_program *program)
     {
         return (FALSE);
     }
+    program->grid.u_location_model = glGetUniformLocation(program->id, "u_model");
+    program->grid.u_location_view = glGetUniformLocation(program->id, "u_view");
+    program->grid.u_location_proj = glGetUniformLocation(program->id, "u_projection");
+    program->grid.u_location_dimension = glGetUniformLocation(program->id, "u_dimension");
+    program->grid.u_location_nsteps = glGetUniformLocation(program->id, "u_nsteps");
+    if (program->grid.u_location_model < 0 ||
+        program->grid.u_location_view < 0 ||
+        program->grid.u_location_proj < 0 ||
+        program->grid.u_location_dimension < 0 ||
+        program->grid.u_location_nsteps < 0)
+    {
+        glDeleteProgram(program->id);
+        return (FALSE);
+    }
 
     return (TRUE);
 }

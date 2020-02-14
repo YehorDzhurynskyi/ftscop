@@ -10,11 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#define _USE_MATH_DEFINES // TODO: remove
+#include <math.h>
 #include "renderer.h"
 
-static void renderer_draw_grid()
+static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
 {
-    glUseProgram(g_gfx_program_pool.grid.id);
+    t_gfx_program   *program;
+    t_mat4f         model;
+
+    program = &g_gfx_program_pool.grid;
+    glUseProgram(program->id);
+
+    glUniformMatrix4fv(program->grid.u_location_view, 1, GL_FALSE, &view->data[0][0]);
+    glUniformMatrix4fv(program->grid.u_location_proj, 1, GL_FALSE, &proj->data[0][0]);
+
+    t_vec3f drot = (t_vec3f) { M_PI / 2.0f, 0.0f, 0.0f };
+    model = mat4f_identity();
+    model = transform_rotate(&model, &drot);
+    glUniformMatrix4fv(program->grid.u_location_model, 1, GL_FALSE, &model.data[0][0]);
+    glUniform1f(program->grid.u_location_dimension, 10.0f);
+    glUniform1i(program->grid.u_location_nsteps, 10);
 
     GLuint tempVAO;
     glGenVertexArrays(1, &tempVAO);
@@ -48,13 +64,12 @@ void        renderer_draw_scene(const t_scene *scene)
     t_mat4f         proj;
     int             i;
 
-    renderer_draw_grid();
+    view = camera_calculate_matrix_view(&scene->camera);
+    proj = camera_calculate_matrix_proj(&scene->camera);
+    renderer_draw_grid(&view, &proj);
 
     program = &g_gfx_program_pool.phong;
     glUseProgram(program->id);
-
-    view = camera_calculate_matrix_view(&scene->camera);
-    proj = camera_calculate_matrix_proj(&scene->camera);
     glUniformMatrix4fv(program->phong.u_location_view, 1, GL_FALSE, &view.data[0][0]);
     glUniformMatrix4fv(program->phong.u_location_proj, 1, GL_FALSE, &proj.data[0][0]);
 
