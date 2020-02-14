@@ -40,9 +40,7 @@ struct  s_gfx_program
         } noshading;
         struct
         {
-            GLint   u_location_model;
-            GLint   u_location_view;
-            GLint   u_location_proj;
+            GLint   u_location_mvp;
             GLint   u_location_dimension;
             GLint   u_location_nsteps;
         } grid;

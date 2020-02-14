@@ -18,17 +18,18 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
 {
     t_gfx_program   *program;
     t_mat4f         model;
+    t_mat4f         mvp;
 
     program = &g_gfx_program_pool.grid;
     glUseProgram(program->id);
 
-    glUniformMatrix4fv(program->grid.u_location_view, 1, GL_FALSE, &view->data[0][0]);
-    glUniformMatrix4fv(program->grid.u_location_proj, 1, GL_FALSE, &proj->data[0][0]);
-
+    mvp = mat4f_mat4f_mult(view, proj);
     t_vec3f drot = (t_vec3f) { M_PI / 2.0f, 0.0f, 0.0f };
+
     model = mat4f_identity();
     model = transform_rotate(&model, &drot);
-    glUniformMatrix4fv(program->grid.u_location_model, 1, GL_FALSE, &model.data[0][0]);
+    mvp = mat4f_mat4f_mult(&model, &mvp);
+    glUniformMatrix4fv(program->grid.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
     glUniform1f(program->grid.u_location_dimension, 50.0f);
     glUniform1i(program->grid.u_location_nsteps, 50);
 

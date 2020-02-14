@@ -3,16 +3,13 @@
 layout (points) in;
 layout (line_strip, max_vertices = 225) out;
 
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
+uniform mat4 u_mvp;
 
 uniform float u_dimension;
 uniform int u_nsteps;
 
 void main()
 {
-    mat4 mvp = u_projection * u_view * u_model;
     float half_dim = u_dimension / 2.0;
 
     {
@@ -22,10 +19,10 @@ void main()
         float dx = dy;
         for (int r = 0; r < u_nsteps; ++r)
         {
-            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            gl_Position = u_mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             x += dx * (u_nsteps - 1);
-            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            gl_Position = u_mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             dx = -dx;
             y += dy;
@@ -39,10 +36,10 @@ void main()
         float dx = dy;
         for (int r = 0; r < u_nsteps; ++r)
         {
-            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            gl_Position = u_mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             y += dy * (u_nsteps - 1);
-            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            gl_Position = u_mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             dy = -dy;
             x += dx;
