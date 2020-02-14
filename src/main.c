@@ -152,7 +152,7 @@ static t_camera create_default_camera()
 {
     t_camera cam;
 
-    t_vec3f pos = (t_vec3f){ 5.0f, 5.0f, 5.0f };
+    t_vec3f pos = (t_vec3f){ 5.0f, 5.0f, 5.0f }; // TODO: set pos according to maximum radius of input meshes
     t_vec3f poi = (t_vec3f){ 0.0f, 0.0f, 0.0f };
     t_vec3f up = (t_vec3f){0.0f, 1.0f, 0.0f};
 
