@@ -22,12 +22,9 @@ void main()
         float dx = dy;
         for (int r = 0; r < u_nsteps; ++r)
         {
-            for (int c = 0; c < u_nsteps - 1; ++c)
-            {
-                gl_Position = mvp * vec4(x, y, 0.0, 1.0);
-                EmitVertex();
-                x += dx;
-            }
+            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            EmitVertex();
+            x += dx * (u_nsteps - 1);
             gl_Position = mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             dx = -dx;
@@ -42,12 +39,9 @@ void main()
         float dx = dy;
         for (int r = 0; r < u_nsteps; ++r)
         {
-            for (int c = 0; c < u_nsteps - 1; ++c)
-            {
-                gl_Position = mvp * vec4(x, y, 0.0, 1.0);
-                EmitVertex();
-                y += dy;
-            }
+            gl_Position = mvp * vec4(x, y, 0.0, 1.0);
+            EmitVertex();
+            y += dy * (u_nsteps - 1);
             gl_Position = mvp * vec4(x, y, 0.0, 1.0);
             EmitVertex();
             dy = -dy;

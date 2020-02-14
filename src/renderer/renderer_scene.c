@@ -29,8 +29,8 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     model = mat4f_identity();
     model = transform_rotate(&model, &drot);
     glUniformMatrix4fv(program->grid.u_location_model, 1, GL_FALSE, &model.data[0][0]);
-    glUniform1f(program->grid.u_location_dimension, 10.0f);
-    glUniform1i(program->grid.u_location_nsteps, 10);
+    glUniform1f(program->grid.u_location_dimension, 50.0f);
+    glUniform1i(program->grid.u_location_nsteps, 50);
 
     GLuint tempVAO;
     glGenVertexArrays(1, &tempVAO);
