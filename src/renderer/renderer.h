@@ -43,7 +43,15 @@ struct  s_gfx_program
             GLint   u_location_mvp;
             GLint   u_location_dimension;
             GLint   u_location_nsteps;
+            GLint   u_location_color_tint;
         } grid;
+        struct
+        {
+            GLint   u_location_mvp;
+            GLint   u_location_nsegments;
+            GLint   u_location_color_tint;
+            GLint   u_location_radius;
+        } circle;
     };
     GLuint  id;
 };
@@ -54,6 +62,7 @@ struct  s_gfx_program_pool
     t_gfx_program   phong;
     t_gfx_program   noshading;
     t_gfx_program   grid;
+    t_gfx_program   circle;
 };
 extern t_gfx_program_pool   g_gfx_program_pool;
 

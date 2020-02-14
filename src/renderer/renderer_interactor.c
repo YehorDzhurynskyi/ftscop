@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#define _USE_MATH_DEFINES // TODO: remove
+#include <math.h>
 #include "renderer.h"
 
 static void renderer_draw_outlines(const t_scene_interactor *interactor)
@@ -33,13 +35,13 @@ static void renderer_draw_outlines(const t_scene_interactor *interactor)
     glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
 }
 
-static void renderer_draw_controls_translation(const t_actor *actor)
+static void renderer_draw_controls_translation(const t_scene_interactor *interactor)
 {
     t_mat4f         model;
     t_gfx_program   *program;
 
     program = &g_gfx_program_pool.noshading;
-    model = actor_calculate_matrix_model(actor);
+    model = actor_calculate_matrix_model(interactor->actor_selected);
     glUniformMatrix4fv(program->noshading.u_location_model, 1, GL_FALSE, &model.data[0][0]);
 
     t_vec4f basis[] = {
@@ -81,10 +83,37 @@ static void renderer_draw_controls_translation(const t_actor *actor)
     glDeleteVertexArrays(1, &tempVAO);
 }
 
-static void renderer_draw_controls_rotation(const t_actor *actor)
-{}
+static void renderer_draw_controls_rotation(const t_scene_interactor *interactor)
+{
+    t_gfx_program   *program;
+    t_mat4f         view;
+    t_mat4f         proj;
+    t_mat4f         model;
 
-static void renderer_draw_controls_scaling(const t_actor *actor)
+    program = &g_gfx_program_pool.circle;
+    glUseProgram(program->id);
+
+    view = camera_calculate_matrix_view(&interactor->scene_target->camera);
+    proj = camera_calculate_matrix_proj(&interactor->scene_target->camera);
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+    view = mat4f_mat4f_mult(&view, &proj);
+    view = mat4f_mat4f_mult(&model, &view);
+    glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &view.data[0][0]);
+    glUniform1i(program->circle.u_location_nsegments, 40);
+    glUniform1f(program->circle.u_location_radius, 1.5f);
+    glUniform4f(program->circle.u_location_color_tint, 1.0f, 0.0f, 0.0f, 1.0f);
+
+    GLuint tempVAO;
+    glGenVertexArrays(1, &tempVAO);
+    glBindVertexArray(tempVAO);
+
+    glLineWidth(2.0f);
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    glDeleteVertexArrays(1, &tempVAO);
+}
+
+static void renderer_draw_controls_scaling(const t_scene_interactor *interactor)
 {}
 
 void        renderer_draw_interactor(const t_scene_interactor *interactor)
@@ -110,14 +139,14 @@ void        renderer_draw_interactor(const t_scene_interactor *interactor)
     renderer_draw_outlines(interactor);
     if (interactor->interaction_mode == TRANSLATION)
     {
-        renderer_draw_controls_translation(interactor->actor_selected);
+        renderer_draw_controls_translation(interactor);
     }
     else if (interactor->interaction_mode == ROTATION)
     {
-        renderer_draw_controls_rotation(interactor->actor_selected);
+        renderer_draw_controls_rotation(interactor);
     }
     else if (interactor->interaction_mode == SCALING)
     {
-        renderer_draw_controls_scaling(interactor->actor_selected);
+        renderer_draw_controls_scaling(interactor);
     }
 }

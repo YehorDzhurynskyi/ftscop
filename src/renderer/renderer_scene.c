@@ -32,6 +32,7 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     glUniformMatrix4fv(program->grid.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
     glUniform1f(program->grid.u_location_dimension, 50.0f);
     glUniform1i(program->grid.u_location_nsteps, 50);
+    glUniform4f(program->grid.u_location_color_tint, 0.55f, 0.55f, 0.55f, 1.0f);
 
     GLuint tempVAO;
     glGenVertexArrays(1, &tempVAO);
