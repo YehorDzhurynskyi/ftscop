@@ -64,7 +64,7 @@ GLuint  shader_create_program(const char *vert_code, const char *frag_code, cons
     glGetProgramiv(program_id, GL_LINK_STATUS, &result);
     if (result == GL_FALSE)
     {
-        glGetShaderInfoLog(program_id, sizeof(log), NULL, log);
+        glGetProgramInfoLog(program_id, sizeof(log), NULL, log);
         glDeleteShader(vert_id);
         glDeleteShader(frag_id);
         glDeleteShader(geom_id);
