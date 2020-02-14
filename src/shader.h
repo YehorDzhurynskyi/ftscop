@@ -16,7 +16,7 @@
 # include "ft.h"
 # include <glad/glad.h>
 
-GLuint  shader_create_program(const char* vert_code, const char* frag_code);
-GLuint  shader_load(const char *vert_filename, const char *frag_filename);
+GLuint  shader_create_program(const char *vert_code, const char *frag_code, const char *geom_code);
+GLuint  shader_load(const char *vert_filename, const char *frag_filename, const char *geom_filename);
 
 #endif

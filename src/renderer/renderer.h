@@ -47,6 +47,7 @@ struct  s_gfx_program_pool
 {
     t_gfx_program   phong;
     t_gfx_program   noshading;
+    t_gfx_program   grid;
 };
 extern t_gfx_program_pool   g_gfx_program_pool;
 

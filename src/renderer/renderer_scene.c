@@ -12,6 +12,20 @@
 
 #include "renderer.h"
 
+static void renderer_draw_grid()
+{
+    glUseProgram(g_gfx_program_pool.grid.id);
+
+    GLuint tempVAO;
+    glGenVertexArrays(1, &tempVAO);
+    glBindVertexArray(tempVAO);
+
+    glLineWidth(1.0f);
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    glDeleteVertexArrays(1, &tempVAO);
+}
+
 static void renderer_draw_actor(const t_actor *actor)
 {
     t_gfx_program   *program;
@@ -33,6 +47,8 @@ void        renderer_draw_scene(const t_scene *scene)
     t_mat4f         view;
     t_mat4f         proj;
     int             i;
+
+    renderer_draw_grid();
 
     program = &g_gfx_program_pool.phong;
     glUseProgram(program->id);
