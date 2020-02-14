@@ -95,19 +95,40 @@ static void renderer_draw_controls_rotation(const t_scene_interactor *interactor
 
     view = camera_calculate_matrix_view(&interactor->scene_target->camera);
     proj = camera_calculate_matrix_proj(&interactor->scene_target->camera);
-    model = actor_calculate_matrix_model(interactor->actor_selected);
     view = mat4f_mat4f_mult(&view, &proj);
-    view = mat4f_mat4f_mult(&model, &view);
-    glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &view.data[0][0]);
+
     glUniform1i(program->circle.u_location_nsegments, 40);
     glUniform1f(program->circle.u_location_radius, 1.5f);
-    glUniform4f(program->circle.u_location_color_tint, 1.0f, 0.0f, 0.0f, 1.0f);
 
     GLuint tempVAO;
     glGenVertexArrays(1, &tempVAO);
     glBindVertexArray(tempVAO);
 
     glLineWidth(2.0f);
+
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+    proj = mat4f_mat4f_mult(&model, &view);
+    glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &proj.data[0][0]);
+    glUniform4f(program->circle.u_location_color_tint, 1.0f, 0.0f, 0.0f, 1.0f);
+
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+    t_vec3f drot1 = (t_vec3f) { M_PI / 2.0f, 0.0f, 0.0f };
+    model = transform_rotate(&model, &drot1);
+    proj = mat4f_mat4f_mult(&model, &view);
+    glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &proj.data[0][0]);
+    glUniform4f(program->circle.u_location_color_tint, 0.0f, 1.0f, 0.0f, 1.0f);
+
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    model = actor_calculate_matrix_model(interactor->actor_selected);
+    t_vec3f drot2 = (t_vec3f) { 0.0f, M_PI / 2.0f, 0.0f };
+    model = transform_rotate(&model, &drot2);
+    proj = mat4f_mat4f_mult(&model, &view);
+    glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &proj.data[0][0]);
+    glUniform4f(program->circle.u_location_color_tint, 0.0f, 0.0f, 1.0f, 1.0f);
+
     glDrawArrays(GL_POINTS, 0, 1);
 
     glDeleteVertexArrays(1, &tempVAO);
