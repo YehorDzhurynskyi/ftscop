@@ -92,25 +92,26 @@ static void renderer_draw_controls_rotation(const t_scene_interactor *interactor
 {
     t_actor actor;
     t_mat4f model;
+    t_vec4f colors[3];
 
+    colors[0] = (t_vec4f) { 0.0f, 0.0f, 1.0f, 1.0f };
+    colors[1] = (t_vec4f) { 0.0f, 1.0f, 0.0f, 1.0f };
+    colors[2] = (t_vec4f) { 1.0f, 0.0f, 0.0f, 1.0f };
     model = actor_calculate_matrix_model(interactor->actor_selected);
     model = mat4f_mat4f_mult(&model, vp);
-    t_vec4f color1 = (t_vec4f) { 0.0f, 0.0f, 1.0f, 1.0f };
-    renderer_draw_circle(&model, &color1, 40, 1.5f);
+    renderer_draw_circle(&model, &colors[0], 40, 1.5f);
 
     ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
     actor.orientation = transform_rotate_x(&actor.orientation, M_PI_2);
     model = actor_calculate_matrix_model(&actor);
     model = mat4f_mat4f_mult(&model, vp);
-    t_vec4f color2 = (t_vec4f){ 0.0f, 1.0f, 0.0f, 1.0f };
-    renderer_draw_circle(&model, &color2, 40, 1.5f);
+    renderer_draw_circle(&model, &colors[1], 40, 1.5f);
 
     ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
     actor.orientation = transform_rotate_y(&actor.orientation, M_PI_2);
     model = actor_calculate_matrix_model(&actor);
     model = mat4f_mat4f_mult(&model, vp);
-    t_vec4f color3 = (t_vec4f){ 1.0f, 0.0f, 0.0f, 1.0f };
-    renderer_draw_circle(&model, &color3, 40, 1.5f);
+    renderer_draw_circle(&model, &colors[2], 40, 1.5f);
 }
 
 static void renderer_draw_controls_scaling(const t_scene_interactor *interactor)
