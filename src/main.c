@@ -79,6 +79,29 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     if (result)
     {
         // TODO: recalculate origin for a mesh
+
+        for (int i = 0; i < out_mesh->nfaces; ++i)
+        {
+            t_vec4f a = out_mesh->vertices[out_mesh->faces[i * 3 + 0]];
+            t_vec4f b = out_mesh->vertices[out_mesh->faces[i * 3 + 1]];
+            t_vec4f c = out_mesh->vertices[out_mesh->faces[i * 3 + 2]];
+            t_vec3f aa = vec4f_to_vec3f(&a);
+            t_vec3f bb = vec4f_to_vec3f(&b);
+            t_vec3f cc = vec4f_to_vec3f(&c);
+            t_vec3f d = vec3f_sub(&aa, &bb);
+            t_vec3f e = vec3f_sub(&cc, &bb);
+            t_vec3f cross = vec3f_cross(&d, &e);
+            cross = vec3f_normalize(&cross);
+
+            //out_mesh->normals[out_mesh->faces[i * 3 + 0]] = (t_vec4f) { fabsf(cross.x), fabsf(cross.y), fabsf(cross.z), 1.0f };
+            //out_mesh->normals[out_mesh->faces[i * 3 + 1]] = (t_vec4f) { fabsf(cross.x), fabsf(cross.y), fabsf(cross.z), 1.0f };
+            //out_mesh->normals[out_mesh->faces[i * 3 + 2]] = (t_vec4f) { fabsf(cross.x), fabsf(cross.y), fabsf(cross.z), 1.0f };
+        }
+
+        //for (int i = 0; i < out_mesh->nvertices; ++i)
+        //{
+        //    out_mesh->colors[i] = (t_vec4f) {1.0f, 1.0f, 0.0f, 1.0f};
+        //}
     }
 
     return (result);
@@ -254,7 +277,16 @@ int main(int argc, char* argv[])
         actor.material = NULL;
         actor.mesh = scene.meshes;
         actor.position = (t_vec3f) { 0.0f, 0.0f, 0.0f };
+        t_vec3f i, j, k;
+        //float a = sqrtf(2.0f) / 2.0f;
+        //i = (t_vec3f){ a, a, 0.0f };
+        //j = (t_vec3f){ -a, a, 0.0f };
+        //k = (t_vec3f){ 0.0f, 0.0f, 1.0f };
+        i = (t_vec3f){ 0.0f, 0.0f, 1.0f };
+        j = (t_vec3f){ 0.0f, 1.0f, 0.0f };
+        k = (t_vec3f){ -1.0f, 0.0f, 0.0f };
         actor.orientation = mat4f_identity();
+        //actor.orientation = calculate_matrix_orientation_from_basis(&i, &j, &k);
         actor.scale = (t_vec3f) { 1.0f, 1.0f, 1.0f };
 
         memcpy(scene.actors, &actor, sizeof(t_actor));

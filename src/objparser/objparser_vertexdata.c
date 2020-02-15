@@ -24,7 +24,7 @@ void objparser_read_v(t_objparser_ctx *ctx)
     ctx->mesh->vertices[ctx->mesh->nvertices].z = objparser_read_float(ctx);
 #if 1
     // TODO: handle optional W coord
-    ctx->mesh->vertices[ctx->mesh->nvertices].w = 1.0;
+    ctx->mesh->vertices[ctx->mesh->nvertices].w = 1.0f;
 #else
     ctx->mesh->vertices[ctx->mesh->nvertices].w = objparser_read_float(ctx);
 #endif

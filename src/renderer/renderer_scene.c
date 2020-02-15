@@ -24,10 +24,8 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     glUseProgram(program->id);
 
     mvp = mat4f_mat4f_mult(view, proj);
-    t_vec3f drot = (t_vec3f) { M_PI / 2.0f, 0.0f, 0.0f };
-
     model = mat4f_identity();
-    model = transform_rotate(&model, &drot);
+    model = transform_rotate_x(&model, M_PI / 2.0f);
     mvp = mat4f_mat4f_mult(&model, &mvp);
     glUniformMatrix4fv(program->grid.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
     glUniform1f(program->grid.u_location_dimension, 50.0f);

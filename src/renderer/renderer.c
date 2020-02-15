@@ -22,16 +22,16 @@ static t_bool   init_noshading_program(t_gfx_program *program)
         return (FALSE);
     }
 
-    program->phong.u_location_model = glGetUniformLocation(program->id, "u_model");
-    program->phong.u_location_view = glGetUniformLocation(program->id, "u_view");
-    program->phong.u_location_proj = glGetUniformLocation(program->id, "u_projection");
-    program->phong.a_location_position = glGetAttribLocation(program->id, "a_position");
-    program->phong.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
-    if (program->phong.a_location_position < 0 ||
-        program->phong.a_location_color_tint < 0 ||
-        program->phong.u_location_model < 0 ||
-        program->phong.u_location_view < 0 ||
-        program->phong.u_location_proj < 0)
+    program->noshading.u_location_model = glGetUniformLocation(program->id, "u_model");
+    program->noshading.u_location_view = glGetUniformLocation(program->id, "u_view");
+    program->noshading.u_location_proj = glGetUniformLocation(program->id, "u_projection");
+    program->noshading.a_location_position = glGetAttribLocation(program->id, "a_position");
+    program->noshading.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
+    if (program->noshading.a_location_position < 0 ||
+        program->noshading.a_location_color_tint < 0 ||
+        program->noshading.u_location_model < 0 ||
+        program->noshading.u_location_view < 0 ||
+        program->noshading.u_location_proj < 0)
     {
         glDeleteProgram(program->id);
         return (FALSE);
@@ -42,7 +42,7 @@ static t_bool   init_noshading_program(t_gfx_program *program)
 
 static t_bool   init_phong_program(t_gfx_program *program)
 {
-    program->id = shader_load("shaders/phong.vert", "shaders/phong.frag", NULL);
+    program->id = shader_load("shaders/phong.vert", "shaders/phong.frag", "shaders/phong.geom");
     if (!program->id)
     {
         return (FALSE);
@@ -52,7 +52,7 @@ static t_bool   init_phong_program(t_gfx_program *program)
     program->phong.u_location_view = glGetUniformLocation(program->id, "u_view");
     program->phong.u_location_proj = glGetUniformLocation(program->id, "u_projection");
     program->phong.a_location_position = glGetAttribLocation(program->id, "a_position");
-    program->phong.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
+    program->phong.a_location_color_tint = 1; // glGetAttribLocation(program->id, "a_color_tint");
     if (program->phong.a_location_position < 0 ||
         program->phong.a_location_color_tint < 0 ||
         program->phong.u_location_model < 0 ||
@@ -133,4 +133,5 @@ void            renderer_delete(t_gfx_program_pool *pool)
     glDeleteProgram(pool->phong.id);
     glDeleteProgram(pool->noshading.id);
     glDeleteProgram(pool->grid.id);
+    glDeleteProgram(pool->circle.id);
 }

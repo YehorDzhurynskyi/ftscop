@@ -29,7 +29,9 @@ const t_vec3f *poi, const t_vec3f *up)
 	right = vec3f_normalize(&right);
 	nup = vec3f_cross(&right, &forward);
 	nup = vec3f_normalize(&nup);
+    forward = vec3f_scalar(&forward, -1.0f);
 	cam->orientation = calculate_matrix_orientation_from_basis(&right, &nup, &forward);
+    cam->orientation = mat4f_transpose(&cam->orientation);
 }
 
 t_mat4f camera_calculate_matrix_view(const t_camera* cam)

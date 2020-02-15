@@ -15,8 +15,8 @@
 #include <math.h>
 #include <assert.h>
 
-#define ACTOR_SPEED		0.3
-#define ACTOR_ROT_SPEED	1.5
+#define ACTOR_SPEED		0.03
+#define ACTOR_ROT_SPEED	0.2
 
 void	input_handle(t_scene_interactor *interactor)
 {
@@ -74,25 +74,24 @@ void	input_handle(t_scene_interactor *interactor)
             }
             else if (interactor->interaction_mode == ROTATION)
             {
-                t_vec3f drot;
-
-                drot = (t_vec3f) { 0.0, 0.0, 0.0 };
                 if (keystate[SDL_SCANCODE_1] || keystate[SDL_SCANCODE_2])
                 {
-                    drot.x = ACTOR_ROT_SPEED * M_PI / 180.0;
-                    drot.x = keystate[SDL_SCANCODE_1] ? drot.x : -drot.x;
+                    float rot = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    rot = keystate[SDL_SCANCODE_1] ? rot : -rot;
+                    interactor->actor_selected->orientation = transform_rotate_x(&interactor->actor_selected->orientation, rot);
                 }
-                if (keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4])
+                else if (keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4])
                 {
-                    drot.y = ACTOR_ROT_SPEED * M_PI / 180.0;
-                    drot.y = keystate[SDL_SCANCODE_3] ? drot.y : -drot.y;
+                    float rot = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    rot = keystate[SDL_SCANCODE_3] ? rot : -rot;
+                    interactor->actor_selected->orientation = transform_rotate_y(&interactor->actor_selected->orientation, rot);
                 }
-                if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
+                else if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
                 {
-                    drot.z = ACTOR_ROT_SPEED * M_PI / 180.0;
-                    drot.z = keystate[SDL_SCANCODE_5] ? drot.z : -drot.z;
+                    float rot = ACTOR_ROT_SPEED * M_PI / 180.0;
+                    rot = keystate[SDL_SCANCODE_5] ? rot : -rot;
+                    interactor->actor_selected->orientation = transform_rotate_z(&interactor->actor_selected->orientation, rot);
                 }
-                interactor->actor_selected->orientation = transform_rotate(&interactor->actor_selected->orientation, &drot);
             }
         }
     }

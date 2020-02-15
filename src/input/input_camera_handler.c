@@ -14,8 +14,8 @@
 #include <SDL.h>
 #include <math.h> // TODO: remove
 
-#define CAM_SPEED		0.3
-#define CAM_ROT_SPEED	2.0
+#define CAM_SPEED		0.03
+#define CAM_ROT_SPEED	0.2
 
 void	input_handle_camera(t_camera *cam)
 {
@@ -45,7 +45,7 @@ void	input_handle_camera(t_camera *cam)
             drot.z = CAM_ROT_SPEED * M_PI / 180.0;
             drot.z = keystate[SDL_SCANCODE_E] ? drot.z : -drot.z;
         }
-        cam->orientation = transform_rotate(&cam->orientation, &drot);
+        // cam->orientation = transform_rotate(&cam->orientation, &drot);
     }
 
     if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S]
