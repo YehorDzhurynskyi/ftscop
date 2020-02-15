@@ -48,6 +48,14 @@ struct  s_gfx_program
             GLint   u_location_color_tint;
             GLint   u_location_radius;
         } circle;
+        struct
+        {
+            GLint   u_location_mvp;
+            GLint   u_location_height;
+            GLint   u_location_radius;
+            GLint   u_location_nsegments;
+            GLint   u_location_color_tint;
+        } cone;
     };
     GLuint  id;
 };
@@ -59,6 +67,7 @@ struct  s_gfx_program_pool
     t_gfx_program   noshading;
     t_gfx_program   grid;
     t_gfx_program   circle;
+    t_gfx_program   cone;
 };
 
 typedef struct s_gfx_ctx    t_gfx_ctx;
@@ -81,5 +90,7 @@ void    renderer_draw_scene(const t_scene *scene);
 void    renderer_draw_interactor(const t_scene_interactor *interactor);
 
 void    renderer_draw_circle(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius);
+void    renderer_draw_cone(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius, const float height);
+void    renderer_draw_actor_basis(const t_actor* actor, const t_mat4f* vp);
 
 #endif

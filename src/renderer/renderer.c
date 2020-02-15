@@ -104,6 +104,31 @@ static t_bool   init_circle_program(t_gfx_program *program)
     return (TRUE);
 }
 
+static t_bool   init_cone_program(t_gfx_program* program)
+{
+    program->id = shader_load("shaders/grid.vert", "shaders/grid.frag", "shaders/cone.geom");
+    if (!program->id)
+    {
+        return (FALSE);
+    }
+    program->cone.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
+    program->cone.u_location_nsegments = glGetUniformLocation(program->id, "u_nsegments");
+    program->cone.u_location_height = glGetUniformLocation(program->id, "u_height");
+    program->cone.u_location_color_tint = glGetUniformLocation(program->id, "u_color_tint");
+    program->cone.u_location_radius = glGetUniformLocation(program->id, "u_radius");
+    if (program->cone.u_location_mvp < 0 ||
+        program->cone.u_location_nsegments < 0 ||
+        program->cone.u_location_height < 0 ||
+        program->cone.u_location_color_tint < 0 ||
+        program->cone.u_location_radius < 0)
+    {
+        glDeleteProgram(program->id);
+        return (FALSE);
+    }
+
+    return (TRUE);
+}
+
 t_bool          renderer_init(t_gfx_ctx *ctx)
 {
     t_bool  valid;
@@ -115,6 +140,7 @@ t_bool          renderer_init(t_gfx_ctx *ctx)
     valid = valid && init_phong_program(&ctx->pool.phong);
     valid = valid && init_grid_program(&ctx->pool.grid);
     valid = valid && init_circle_program(&ctx->pool.circle);
+    valid = valid && init_cone_program(&ctx->pool.cone);
     if (!valid)
     {
         renderer_delete(ctx);
@@ -129,4 +155,5 @@ void            renderer_delete(t_gfx_ctx *ctx)
     glDeleteProgram(ctx->pool.noshading.id);
     glDeleteProgram(ctx->pool.grid.id);
     glDeleteProgram(ctx->pool.circle.id);
+    glDeleteProgram(ctx->pool.cone.id);
 }

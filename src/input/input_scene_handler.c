@@ -33,7 +33,7 @@ void	input_handle(t_scene_interactor *interactor)
         {
             interactor->actor_selected = NULL;
         }
-        else if (mod & KMOD_LCTRL)
+        else if (mod & KMOD_ALT)
         {
             if (keystate[SDL_SCANCODE_S])
             {
