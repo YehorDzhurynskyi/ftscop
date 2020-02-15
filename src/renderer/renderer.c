@@ -12,7 +12,7 @@
 
 #include "renderer.h"
 
-t_gfx_program_pool  g_gfx_program_pool;
+t_gfx_ctx   g_gfx_ctx;
 
 static t_bool   init_noshading_program(t_gfx_program *program)
 {
@@ -22,16 +22,12 @@ static t_bool   init_noshading_program(t_gfx_program *program)
         return (FALSE);
     }
 
-    program->noshading.u_location_model = glGetUniformLocation(program->id, "u_model");
-    program->noshading.u_location_view = glGetUniformLocation(program->id, "u_view");
-    program->noshading.u_location_proj = glGetUniformLocation(program->id, "u_projection");
+    program->noshading.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
     program->noshading.a_location_position = glGetAttribLocation(program->id, "a_position");
     program->noshading.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
     if (program->noshading.a_location_position < 0 ||
         program->noshading.a_location_color_tint < 0 ||
-        program->noshading.u_location_model < 0 ||
-        program->noshading.u_location_view < 0 ||
-        program->noshading.u_location_proj < 0)
+        program->noshading.u_location_mvp < 0)
     {
         glDeleteProgram(program->id);
         return (FALSE);
@@ -108,26 +104,29 @@ static t_bool   init_circle_program(t_gfx_program *program)
     return (TRUE);
 }
 
-t_bool          renderer_init(t_gfx_program_pool *pool)
+t_bool          renderer_init(t_gfx_ctx *ctx)
 {
     t_bool  valid;
 
+    glGenVertexArrays(1, &ctx->vao_null);
     valid = TRUE;
-    valid = valid && init_noshading_program(&pool->noshading);
-    valid = valid && init_phong_program(&pool->phong);
-    valid = valid && init_grid_program(&pool->grid);
-    valid = valid && init_circle_program(&pool->circle);
+    valid = valid && ctx->vao_null;
+    valid = valid && init_noshading_program(&ctx->pool.noshading);
+    valid = valid && init_phong_program(&ctx->pool.phong);
+    valid = valid && init_grid_program(&ctx->pool.grid);
+    valid = valid && init_circle_program(&ctx->pool.circle);
     if (!valid)
     {
-        renderer_delete(pool);
+        renderer_delete(ctx);
     }
     return (valid);
 }
 
-void            renderer_delete(t_gfx_program_pool *pool)
+void            renderer_delete(t_gfx_ctx *ctx)
 {
-    glDeleteProgram(pool->phong.id);
-    glDeleteProgram(pool->noshading.id);
-    glDeleteProgram(pool->grid.id);
-    glDeleteProgram(pool->circle.id);
+    glDeleteVertexArrays(1, &ctx->vao_null);
+    glDeleteProgram(ctx->pool.phong.id);
+    glDeleteProgram(ctx->pool.noshading.id);
+    glDeleteProgram(ctx->pool.grid.id);
+    glDeleteProgram(ctx->pool.circle.id);
 }

@@ -16,7 +16,7 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
 {
     t_gfx_program   *program;
 
-    program = &g_gfx_program_pool.phong;
+    program = &g_gfx_ctx.pool.phong;
 
     glGenVertexArrays(1, &mesh->vao);
     glGenBuffers(1, &mesh->ibo_faces);
@@ -45,6 +45,8 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
     glEnableVertexAttribArray(program->phong.a_location_color_tint);
     glVertexAttribPointer(program->phong.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    glBindVertexArray(0);
+
     return (TRUE);
 }
 
@@ -52,7 +54,7 @@ t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor)
 {
     t_gfx_program   *program;
 
-    program = &g_gfx_program_pool.noshading;
+    program = &g_gfx_ctx.pool.noshading;
 
     glGenVertexArrays(1, &interactor->vao);
     glGenBuffers(1, &interactor->ibo_outline);
@@ -73,6 +75,8 @@ t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor)
     glEnableVertexAttribArray(program->noshading.a_location_color_tint);
     glVertexAttribPointer(program->noshading.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glVertexAttribDivisor(program->noshading.a_location_color_tint, 0);
+
+    glBindVertexArray(0);
 
     return (TRUE);
 }

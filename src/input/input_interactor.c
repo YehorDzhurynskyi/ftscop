@@ -54,15 +54,18 @@ void    input_interactor_select_actor(t_scene_interactor *interactor, const t_ac
 
     glUnmapNamedBuffer(actor->mesh->ibo_faces);
 
-    program = &g_gfx_program_pool.noshading;
-
+    program = &g_gfx_ctx.pool.noshading;
     glBindVertexArray(interactor->vao);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, interactor->ibo_outline);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->nfaces * 6 * sizeof(int), indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, actor->mesh->vbo_vertex);
     glEnableVertexAttribArray(program->noshading.a_location_position);
     glVertexAttribPointer(program->noshading.a_location_position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribDivisor(program->noshading.a_location_color_tint, actor->mesh->nfaces * 6);
+
+    glBindVertexArray(0);
 
     FT_SAFE_FREE(indices);
 

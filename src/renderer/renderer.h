@@ -29,9 +29,7 @@ struct  s_gfx_program
         } phong;
         struct
         {
-            GLint   u_location_model;
-            GLint   u_location_view;
-            GLint   u_location_proj;
+            GLint   u_location_mvp;
 
             GLint   a_location_position;
             GLint   a_location_color_tint;
@@ -62,10 +60,17 @@ struct  s_gfx_program_pool
     t_gfx_program   grid;
     t_gfx_program   circle;
 };
-extern t_gfx_program_pool   g_gfx_program_pool;
 
-t_bool  renderer_init(t_gfx_program_pool *pool);
-void    renderer_delete(t_gfx_program_pool *pool);
+typedef struct s_gfx_ctx    t_gfx_ctx;
+struct  s_gfx_ctx
+{
+    t_gfx_program_pool  pool;
+    GLuint              vao_null;
+};
+extern t_gfx_ctx    g_gfx_ctx;
+
+t_bool  renderer_init(t_gfx_ctx* ctx);
+void    renderer_delete(t_gfx_ctx* ctx);
 
 t_bool  renderer_init_gfx_mesh(t_mesh *mesh);
 t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor);
@@ -74,5 +79,7 @@ void    renderer_delete_gfx_interactor(t_scene_interactor *interactor);
 
 void    renderer_draw_scene(const t_scene *scene);
 void    renderer_draw_interactor(const t_scene_interactor *interactor);
+
+void    renderer_draw_circle(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius);
 
 #endif

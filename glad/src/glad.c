@@ -39,6 +39,7 @@ void _post_call_callback_default(const char *name, void *funcptr, int len_args, 
 
     if (error_code != GL_NO_ERROR) {
         fprintf(stderr, "ERROR %d in %s\n", error_code, name);
+        __debugbreak();
     }
 }
 

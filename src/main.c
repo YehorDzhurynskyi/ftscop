@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
 
     gladLoadGL();
 
-    if (!renderer_init(&g_gfx_program_pool))
+    if (!renderer_init(&g_gfx_ctx))
     {
         assert("ERROR");
         // TODO: release resources
@@ -299,7 +299,7 @@ int main(int argc, char* argv[])
 
     scene_delete(&scene);
     renderer_delete_gfx_interactor(&interactor);
-    renderer_delete(&g_gfx_program_pool);
+    renderer_delete(&g_gfx_ctx);
 
     SDL_GL_DeleteContext(glctx);
     SDL_DestroyWindow(win);
