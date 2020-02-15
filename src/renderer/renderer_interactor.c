@@ -85,7 +85,6 @@ static void renderer_draw_controls_translation(const t_scene_interactor *interac
 
 static void renderer_draw_controls_rotation(const t_scene_interactor *interactor)
 {
-#if 0
     t_gfx_program   *program;
     t_mat4f         view;
     t_mat4f         proj;
@@ -110,7 +109,7 @@ static void renderer_draw_controls_rotation(const t_scene_interactor *interactor
     model = actor_calculate_matrix_model(interactor->actor_selected);
     proj = mat4f_mat4f_mult(&model, &view);
     glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &proj.data[0][0]);
-    glUniform4f(program->circle.u_location_color_tint, 1.0f, 0.0f, 0.0f, 1.0f);
+    glUniform4f(program->circle.u_location_color_tint, 0.0f, 0.0f, 1.0f, 1.0f);
 
     glDrawArrays(GL_POINTS, 0, 1);
 
@@ -128,12 +127,11 @@ static void renderer_draw_controls_rotation(const t_scene_interactor *interactor
     model = transform_rotate(&model, &drot2);
     proj = mat4f_mat4f_mult(&model, &view);
     glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &proj.data[0][0]);
-    glUniform4f(program->circle.u_location_color_tint, 0.0f, 0.0f, 1.0f, 1.0f);
+    glUniform4f(program->circle.u_location_color_tint, 1.0f, 0.0f, 0.0f, 1.0f);
 
     glDrawArrays(GL_POINTS, 0, 1);
 
     glDeleteVertexArrays(1, &tempVAO);
-#endif
 }
 
 static void renderer_draw_controls_scaling(const t_scene_interactor *interactor)
@@ -160,14 +158,13 @@ void        renderer_draw_interactor(const t_scene_interactor *interactor)
     glUniformMatrix4fv(program->noshading.u_location_proj, 1, GL_FALSE, &proj.data[0][0]);
 
     renderer_draw_outlines(interactor);
-    renderer_draw_controls_translation(interactor);
     if (interactor->interaction_mode == TRANSLATION)
     {
-        // renderer_draw_controls_translation(interactor);
+        renderer_draw_controls_translation(interactor);
     }
     else if (interactor->interaction_mode == ROTATION)
     {
-        // renderer_draw_controls_rotation(interactor);
+        renderer_draw_controls_rotation(interactor);
     }
     else if (interactor->interaction_mode == SCALING)
     {
