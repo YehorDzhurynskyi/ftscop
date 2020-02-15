@@ -49,6 +49,7 @@ t_mat4f calculate_matrix_scale(const t_vec3f *scl);
 t_mat4f calculate_matrix_translation(const t_vec3f *pos);
 
 t_vec3f transform_translate(const t_mat4f *orien, const t_vec3f *dpos);
+t_vec3f transform_scale(const t_mat4f* orien, const t_vec3f* dscale);
 t_mat4f transform_rotate(const t_mat4f* orien, const t_vec3f *rot);
 t_mat4f transform_rotate_x(const t_mat4f* orien, const float rotx);
 t_mat4f transform_rotate_y(const t_mat4f* orien, const float roty);

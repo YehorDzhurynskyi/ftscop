@@ -32,7 +32,7 @@ void    renderer_draw_circle(const t_mat4f *mvp, const t_vec4f *color, const uns
     glUseProgram(0);
 }
 
-void    renderer_draw_cone(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius, const float height)
+void    renderer_draw_cone(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius, const float height)
 {
     t_gfx_program* program;
 
@@ -45,6 +45,24 @@ void    renderer_draw_cone(const t_mat4f* mvp, const t_vec4f* color, const unsig
     glUniform1i(program->cone.u_location_nsegments, nsegments);
     glUniform1f(program->cone.u_location_height, height);
     glUniform1f(program->cone.u_location_radius, radius);
+
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
+void    renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float size)
+{
+    t_gfx_program* program;
+
+    program = &g_gfx_ctx.pool.cube;
+    glUseProgram(program->id);
+    glBindVertexArray(g_gfx_ctx.vao_null);
+
+    glUniformMatrix4fv(program->cube.u_location_mvp, 1, GL_FALSE, &mvp->data[0][0]);
+    glUniform4fv(program->cube.u_location_color_tint, 1, color);
+    glUniform1f(program->cube.u_location_size, size);
 
     glDrawArrays(GL_POINTS, 0, 1);
 

@@ -66,7 +66,7 @@ void	input_handle(t_scene_interactor *interactor)
                 if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
                     dpos.z = keystate[SDL_SCANCODE_5] ? -ACTOR_SPEED : ACTOR_SPEED;
 
-                // TODO: create option to translate locally and globally
+                // TODO: create an option to translate locally and globally
 
                 t_vec3f translation;
                 translation = transform_translate(&interactor->actor_selected->orientation, &dpos);
@@ -92,6 +92,29 @@ void	input_handle(t_scene_interactor *interactor)
                     rot = keystate[SDL_SCANCODE_5] ? rot : -rot;
                     interactor->actor_selected->orientation = transform_rotate_z(&interactor->actor_selected->orientation, rot);
                 }
+            }
+            else if (interactor->interaction_mode == SCALING)
+            {
+                t_vec3f dscale;
+
+                dscale = (t_vec3f){ 0.0, 0.0, 0.0 };
+                if (keystate[SDL_SCANCODE_1] || keystate[SDL_SCANCODE_2])
+                    dscale.x = keystate[SDL_SCANCODE_1] ? ACTOR_SPEED : -ACTOR_SPEED;
+
+                if (keystate[SDL_SCANCODE_3] || keystate[SDL_SCANCODE_4])
+                    dscale.y = keystate[SDL_SCANCODE_3] ? -ACTOR_SPEED : ACTOR_SPEED;
+
+                if (keystate[SDL_SCANCODE_5] || keystate[SDL_SCANCODE_6])
+                    dscale.z = keystate[SDL_SCANCODE_5] ? -ACTOR_SPEED : ACTOR_SPEED;
+
+                // TODO: create an option to scale preserving proportions
+
+                t_vec3f scaling;
+                scaling = transform_scale(&interactor->actor_selected->orientation, &dscale);
+                interactor->actor_selected->scale = vec3f_add(&interactor->actor_selected->scale, &scaling);
+                interactor->actor_selected->scale.x = fmaxf(0.1f, interactor->actor_selected->scale.x);
+                interactor->actor_selected->scale.y = fmaxf(0.1f, interactor->actor_selected->scale.y);
+                interactor->actor_selected->scale.z = fmaxf(0.1f, interactor->actor_selected->scale.z);
             }
         }
     }

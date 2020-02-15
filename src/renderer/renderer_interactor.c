@@ -104,8 +104,45 @@ static void renderer_draw_controls_rotation(const t_scene_interactor *interactor
     renderer_draw_circle(&model, &colors[2], 40, 1.5f);
 }
 
-static void renderer_draw_controls_scaling(const t_scene_interactor *interactor)
-{}
+static void renderer_draw_controls_scaling(const t_scene_interactor *interactor, const t_mat4f *vp)
+{
+    t_actor actor;
+    t_mat4f model;
+    t_vec3f i;
+    t_vec3f j;
+    t_vec3f k;
+    t_vec4f colors[3];
+
+    colors[0] = (t_vec4f){ 0.0f, 0.0f, 1.0f, 1.0f };
+    colors[1] = (t_vec4f){ 0.0f, 1.0f, 0.0f, 1.0f };
+    colors[2] = (t_vec4f){ 1.0f, 0.0f, 0.0f, 1.0f };
+    const float size = 0.15f;
+    renderer_draw_actor_basis(interactor->actor_selected, vp);
+    calculate_basis_from_orientation(&interactor->actor_selected->orientation, &i, &j, &k);
+
+    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
+    j = vec3f_scalar(&j, 3.0f + size);
+    actor.position = vec3f_add(&actor.position, &j);
+    model = actor_calculate_matrix_model(&actor);
+    model = mat4f_mat4f_mult(&model, vp);
+    renderer_draw_cube(&model, &colors[1], size);
+
+    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
+    i = vec3f_scalar(&i, 3.0f + size);
+    actor.orientation = transform_rotate_z(&actor.orientation, M_PI_2);
+    actor.position = vec3f_add(&actor.position, &i);
+    model = actor_calculate_matrix_model(&actor);
+    model = mat4f_mat4f_mult(&model, vp);
+    renderer_draw_cube(&model, &colors[2], size);
+
+    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
+    k = vec3f_scalar(&k, 3.0f + size);
+    actor.orientation = transform_rotate_x(&actor.orientation, -M_PI_2);
+    actor.position = vec3f_add(&actor.position, &k);
+    model = actor_calculate_matrix_model(&actor);
+    model = mat4f_mat4f_mult(&model, vp);
+    renderer_draw_cube(&model, &colors[0], size);
+}
 
 void        renderer_draw_interactor(const t_scene_interactor *interactor)
 {
@@ -131,6 +168,6 @@ void        renderer_draw_interactor(const t_scene_interactor *interactor)
     }
     else if (interactor->interaction_mode == SCALING)
     {
-        // renderer_draw_controls_scaling(interactor);
+        renderer_draw_controls_scaling(interactor, &view);
     }
 }

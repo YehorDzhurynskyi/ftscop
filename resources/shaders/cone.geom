@@ -1,7 +1,7 @@
 #version 460
 
 layout (points) in;
-layout (triangle_strip, max_vertices = 225) out;
+layout (triangle_strip, max_vertices = 32) out;
 
 uniform mat4 u_mvp;
 

@@ -23,6 +23,11 @@ void	input_handle_camera(t_camera *cam)
 	t_vec3f		translation;
 
 	keystate = SDL_GetKeyboardState(NULL);
+    if (SDL_GetModState() & KMOD_ALT)
+    {
+        return;
+    }
+
     if (keystate[SDL_SCANCODE_UP] || keystate[SDL_SCANCODE_DOWN] ||
         keystate[SDL_SCANCODE_LEFT] || keystate[SDL_SCANCODE_RIGHT] ||
         keystate[SDL_SCANCODE_Q] || keystate[SDL_SCANCODE_E])

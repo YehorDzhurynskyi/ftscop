@@ -56,6 +56,12 @@ struct  s_gfx_program
             GLint   u_location_nsegments;
             GLint   u_location_color_tint;
         } cone;
+        struct
+        {
+            GLint   u_location_mvp;
+            GLint   u_location_size;
+            GLint   u_location_color_tint;
+        } cube;
     };
     GLuint  id;
 };
@@ -68,6 +74,7 @@ struct  s_gfx_program_pool
     t_gfx_program   grid;
     t_gfx_program   circle;
     t_gfx_program   cone;
+    t_gfx_program   cube;
 };
 
 typedef struct s_gfx_ctx    t_gfx_ctx;
@@ -89,8 +96,9 @@ void    renderer_delete_gfx_interactor(t_scene_interactor *interactor);
 void    renderer_draw_scene(const t_scene *scene);
 void    renderer_draw_interactor(const t_scene_interactor *interactor);
 
-void    renderer_draw_circle(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius);
-void    renderer_draw_cone(const t_mat4f* mvp, const t_vec4f* color, const unsigned int nsegments, const float radius, const float height);
-void    renderer_draw_actor_basis(const t_actor* actor, const t_mat4f* vp);
+void    renderer_draw_circle(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius);
+void    renderer_draw_cone(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius, const float height);
+void    renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float size);
+void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp);
 
 #endif

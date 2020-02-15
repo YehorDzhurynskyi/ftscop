@@ -30,6 +30,7 @@ static t_bool   init_noshading_program(t_gfx_program *program)
         program->noshading.u_location_mvp < 0)
     {
         glDeleteProgram(program->id);
+        program->id = 0;
         return (FALSE);
     }
 
@@ -52,6 +53,7 @@ static t_bool   init_phong_program(t_gfx_program *program)
         program->phong.u_location_mvp < 0)
     {
         glDeleteProgram(program->id);
+        program->id = 0;
         return (FALSE);
     }
 
@@ -75,6 +77,7 @@ static t_bool   init_grid_program(t_gfx_program *program)
         program->grid.u_location_color_tint < 0)
     {
         glDeleteProgram(program->id);
+        program->id = 0;
         return (FALSE);
     }
 
@@ -98,6 +101,7 @@ static t_bool   init_circle_program(t_gfx_program *program)
         program->circle.u_location_radius < 0)
     {
         glDeleteProgram(program->id);
+        program->id = 0;
         return (FALSE);
     }
 
@@ -123,6 +127,29 @@ static t_bool   init_cone_program(t_gfx_program* program)
         program->cone.u_location_radius < 0)
     {
         glDeleteProgram(program->id);
+        program->id = 0;
+        return (FALSE);
+    }
+
+    return (TRUE);
+}
+
+static t_bool   init_cube_program(t_gfx_program* program)
+{
+    program->id = shader_load("shaders/grid.vert", "shaders/grid.frag", "shaders/cube.geom");
+    if (!program->id)
+    {
+        return (FALSE);
+    }
+    program->cube.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
+    program->cube.u_location_size = glGetUniformLocation(program->id, "u_size");
+    program->cube.u_location_color_tint = glGetUniformLocation(program->id, "u_color_tint");
+    if (program->cube.u_location_mvp < 0 ||
+        program->cube.u_location_size < 0 ||
+        program->cube.u_location_color_tint < 0)
+    {
+        glDeleteProgram(program->id);
+        program->id = 0;
         return (FALSE);
     }
 
@@ -141,6 +168,7 @@ t_bool          renderer_init(t_gfx_ctx *ctx)
     valid = valid && init_grid_program(&ctx->pool.grid);
     valid = valid && init_circle_program(&ctx->pool.circle);
     valid = valid && init_cone_program(&ctx->pool.cone);
+    valid = valid && init_cube_program(&ctx->pool.cube);
     if (!valid)
     {
         renderer_delete(ctx);
@@ -156,4 +184,5 @@ void            renderer_delete(t_gfx_ctx *ctx)
     glDeleteProgram(ctx->pool.grid.id);
     glDeleteProgram(ctx->pool.circle.id);
     glDeleteProgram(ctx->pool.cone.id);
+    glDeleteProgram(ctx->pool.cube.id);
 }
