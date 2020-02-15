@@ -35,26 +35,6 @@ void    calculate_basis_from_orientation(const t_mat4f *orien,
     *k = (t_vec3f) { orien->s8, orien->s9, orien->sa };
 }
 
-void    calculate_basis_from_orientation1(const t_mat4f* orien,
-                                         t_vec3f* i,
-                                         t_vec3f* j,
-                                         t_vec3f* k)
-{
-    *i = (t_vec3f){ orien->s0, orien->s4, -orien->s8 };
-    *j = (t_vec3f){ orien->s1, orien->s5, orien->s9 };
-    *k = (t_vec3f){ -orien->s2, orien->s6, orien->sa };
-}
-
-void    calculate_basis_from_orientation2(const t_mat4f* orien,
-                                          t_vec3f* i,
-                                          t_vec3f* j,
-                                          t_vec3f* k)
-{
-    *i = (t_vec3f){ orien->s0, -orien->s4, orien->s8 };
-    *j = (t_vec3f){ -orien->s1, orien->s5, orien->s9 };
-    *k = (t_vec3f){ orien->s2, orien->s6, orien->sa };
-}
-
 t_mat4f calculate_matrix_scale(const t_vec3f *scl)
 {
     t_mat4f scale;
@@ -105,40 +85,6 @@ t_mat4f calculate_matrix_orientation_from_basis(const t_vec3f *i, const t_vec3f 
     mat.data[1][2] = j->z;
     mat.data[2][0] = k->x;
     mat.data[2][1] = k->y;
-    mat.data[2][2] = k->z;
-    return (mat);
-}
-
-t_mat4f calculate_matrix_orientation_from_basis1(const t_vec3f* i, const t_vec3f* j, const t_vec3f* k)
-{
-    t_mat4f	mat;
-
-    mat = mat4f_identity();
-    mat.data[0][0] = i->x;
-    mat.data[1][0] = i->y;
-    mat.data[2][0] = -i->z;
-    mat.data[0][1] = j->x;
-    mat.data[1][1] = j->y;
-    mat.data[2][1] = j->z;
-    mat.data[0][2] = -k->x;
-    mat.data[1][2] = k->y;
-    mat.data[2][2] = k->z;
-    return (mat);
-}
-
-t_mat4f calculate_matrix_orientation_from_basis2(const t_vec3f* i, const t_vec3f* j, const t_vec3f* k)
-{
-    t_mat4f	mat;
-
-    mat = mat4f_identity();
-    mat.data[0][0] = i->x;
-    mat.data[1][0] = -i->y;
-    mat.data[2][0] = i->z;
-    mat.data[0][1] = -j->x;
-    mat.data[1][1] = j->y;
-    mat.data[2][1] = j->z;
-    mat.data[0][2] = k->x;
-    mat.data[1][2] = k->y;
     mat.data[2][2] = k->z;
     return (mat);
 }

@@ -14,7 +14,7 @@
 #include <math.h>
 #include "renderer.h"
 
-static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
+static void renderer_draw_grid(const t_mat4f *vp)
 {
     t_gfx_program   *program;
     t_mat4f         model;
@@ -23,10 +23,9 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     program = &g_gfx_program_pool.grid;
     glUseProgram(program->id);
 
-    mvp = mat4f_mat4f_mult(view, proj);
     model = mat4f_identity();
     model = transform_rotate_x(&model, M_PI / 2.0f);
-    mvp = mat4f_mat4f_mult(&model, &mvp);
+    mvp = mat4f_mat4f_mult(&model, vp);
     glUniformMatrix4fv(program->grid.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
     glUniform1f(program->grid.u_location_dimension, 50.0f);
     glUniform1i(program->grid.u_location_nsteps, 50);
@@ -42,15 +41,15 @@ static void renderer_draw_grid(const t_mat4f *view, const t_mat4f *proj)
     glDeleteVertexArrays(1, &tempVAO);
 }
 
-static void renderer_draw_actor(const t_actor *actor)
+static void renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
 {
     t_gfx_program   *program;
     t_mat4f         model;
 
     program = &g_gfx_program_pool.phong;
     model = actor_calculate_matrix_model(actor);
-
-    glUniformMatrix4fv(program->phong.u_location_model, 1, GL_FALSE, &model.data[0][0]);
+    model = mat4f_mat4f_mult(&model, vp);
+    glUniformMatrix4fv(program->phong.u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
 
     glBindVertexArray(actor->mesh->vao);
 
@@ -66,16 +65,15 @@ void        renderer_draw_scene(const t_scene *scene)
 
     view = camera_calculate_matrix_view(&scene->camera);
     proj = camera_calculate_matrix_proj(&scene->camera);
-    renderer_draw_grid(&view, &proj);
+    view = mat4f_mat4f_mult(&view, &proj);
+    renderer_draw_grid(&view);
 
     program = &g_gfx_program_pool.phong;
     glUseProgram(program->id);
-    glUniformMatrix4fv(program->phong.u_location_view, 1, GL_FALSE, &view.data[0][0]);
-    glUniformMatrix4fv(program->phong.u_location_proj, 1, GL_FALSE, &proj.data[0][0]);
 
     i = 0;
     while (i < scene->nactors)
     {
-        renderer_draw_actor(&scene->actors[i++]);
+        renderer_draw_actor(&scene->actors[i++], &view);
     }
 }

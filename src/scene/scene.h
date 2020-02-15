@@ -43,16 +43,13 @@ struct  s_actor
 
 void    calculate_basis_from_rotation(const t_vec3f *rot, t_vec3f *i, t_vec3f *j, t_vec3f *k);
 void    calculate_basis_from_orientation(const t_mat4f *orien, t_vec3f *i, t_vec3f *j, t_vec3f *k);
-void    calculate_basis_from_orientation1(const t_mat4f* orien, t_vec3f* i, t_vec3f* j, t_vec3f* k);
-void    calculate_basis_from_orientation2(const t_mat4f* orien, t_vec3f* i, t_vec3f* j, t_vec3f* k);
 t_mat4f calculate_matrix_orientation_from_rotation(const t_vec3f *rot);
 t_mat4f calculate_matrix_orientation_from_basis(const t_vec3f *i, const t_vec3f *j, const t_vec3f *k);
-t_mat4f calculate_matrix_orientation_from_basis1(const t_vec3f* i, const t_vec3f* j, const t_vec3f* k);
-t_mat4f calculate_matrix_orientation_from_basis2(const t_vec3f* i, const t_vec3f* j, const t_vec3f* k);
 t_mat4f calculate_matrix_scale(const t_vec3f *scl);
 t_mat4f calculate_matrix_translation(const t_vec3f *pos);
 
 t_vec3f transform_translate(const t_mat4f *orien, const t_vec3f *dpos);
+t_mat4f transform_rotate(const t_mat4f* orien, const t_vec3f *rot);
 t_mat4f transform_rotate_x(const t_mat4f* orien, const float rotx);
 t_mat4f transform_rotate_y(const t_mat4f* orien, const float roty);
 t_mat4f transform_rotate_z(const t_mat4f* orien, const float rotz);

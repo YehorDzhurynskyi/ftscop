@@ -31,42 +31,24 @@ const t_vec3f *poi, const t_vec3f *up)
 	nup = vec3f_normalize(&nup);
     forward = vec3f_scalar(&forward, -1.0f);
 	cam->orientation = calculate_matrix_orientation_from_basis(&right, &nup, &forward);
-    cam->orientation = mat4f_transpose(&cam->orientation);
 }
 
 t_mat4f camera_calculate_matrix_view(const t_camera* cam)
 {
     t_mat4f view;
-    t_vec3f backward;
-    t_vec3f side;
-    t_vec3f up;
+    t_vec3f i;
+    t_vec3f j;
+    t_vec3f k;
 
-    side = (t_vec3f)
-    {
-        cam->orientation.data[0][0],
-        cam->orientation.data[1][0],
-        cam->orientation.data[2][0]
-    };
-    up = (t_vec3f)
-    {
-        cam->orientation.data[0][1],
-        cam->orientation.data[1][1],
-        cam->orientation.data[2][1]
-    };
-    backward = (t_vec3f)
-    {
-        cam->orientation.data[0][2],
-        cam->orientation.data[1][2],
-        cam->orientation.data[2][2]
-    };
+    calculate_basis_from_orientation(&cam->orientation, &i, &j, &k);
 
     view = mat4f_identity();
     view = mat4f_mat4f_mult(&view, &cam->orientation);
-    view.data[3][0] = -vec3f_dot(&cam->position, &side);
-    view.data[3][1] = -vec3f_dot(&cam->position, &up);
-    view.data[3][2] = -vec3f_dot(&cam->position, &backward);
+    view.data[0][3] = -vec3f_dot(&cam->position, &i);
+    view.data[1][3] = -vec3f_dot(&cam->position, &j);
+    view.data[2][3] = -vec3f_dot(&cam->position, &k);
 
-    return (view);
+    return (mat4f_transpose(&view));
 }
 
 t_mat4f camera_calculate_matrix_proj(const t_camera* cam)

@@ -33,19 +33,20 @@ void	input_handle_camera(t_camera *cam)
         if (keystate[SDL_SCANCODE_UP] || keystate[SDL_SCANCODE_DOWN])
         {
             drot.x = CAM_ROT_SPEED * M_PI / 180.0;
-            drot.x = keystate[SDL_SCANCODE_UP] ? drot.x : -drot.x;
+            drot.x = keystate[SDL_SCANCODE_UP] ? -drot.x : drot.x;
         }
         if (keystate[SDL_SCANCODE_LEFT] || keystate[SDL_SCANCODE_RIGHT])
         {
             drot.y = CAM_ROT_SPEED * M_PI / 180.0;
-            drot.y = keystate[SDL_SCANCODE_LEFT] ? drot.y : -drot.y;
+            drot.y = keystate[SDL_SCANCODE_LEFT] ? -drot.y : drot.y;
         }
         if (keystate[SDL_SCANCODE_Q] || keystate[SDL_SCANCODE_E])
         {
             drot.z = CAM_ROT_SPEED * M_PI / 180.0;
             drot.z = keystate[SDL_SCANCODE_E] ? drot.z : -drot.z;
         }
-        // cam->orientation = transform_rotate(&cam->orientation, &drot);
+
+        cam->orientation = transform_rotate(&cam->orientation, &drot);
     }
 
     if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S]
@@ -56,7 +57,7 @@ void	input_handle_camera(t_camera *cam)
         dpos = (t_vec3f) { 0.0, 0.0, 0.0 };
 
         if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_S])
-            dpos.z = keystate[SDL_SCANCODE_W] ? CAM_SPEED : -CAM_SPEED;
+            dpos.z = keystate[SDL_SCANCODE_W] ? -CAM_SPEED : CAM_SPEED;
 
         if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_D])
             dpos.x = keystate[SDL_SCANCODE_A] ? -CAM_SPEED : CAM_SPEED;

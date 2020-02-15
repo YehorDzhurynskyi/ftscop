@@ -83,4 +83,23 @@ t_mat4f transform_rotate_z(const t_mat4f* orien, const float rotz)
 
     return (calculate_matrix_orientation_from_basis(&i, &j, &k));
 }
-// TODO: create transform_scale
+
+t_mat4f transform_rotate(const t_mat4f* orien, const t_vec3f *rot)
+{
+    t_vec3f i;
+    t_vec3f j;
+    t_vec3f k;
+
+    calculate_basis_from_orientation(orien, &i, &j, &k);
+
+    j = rodrigoues_rotation(&j, &i, rot->x);
+    k = rodrigoues_rotation(&k, &i, rot->x);
+
+    i = rodrigoues_rotation(&i, &j, rot->y);
+    k = rodrigoues_rotation(&k, &j, rot->y);
+
+    i = rodrigoues_rotation(&i, &k, rot->z);
+    j = rodrigoues_rotation(&j, &k, rot->z);
+
+    return (calculate_matrix_orientation_from_basis(&i, &j, &k));
+}

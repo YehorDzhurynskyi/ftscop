@@ -42,22 +42,18 @@ static t_bool   init_noshading_program(t_gfx_program *program)
 
 static t_bool   init_phong_program(t_gfx_program *program)
 {
-    program->id = shader_load("shaders/phong.vert", "shaders/phong.frag", "shaders/phong.geom");
+    program->id = shader_load("shaders/phong.vert", "shaders/phong.frag", NULL);
     if (!program->id)
     {
         return (FALSE);
     }
 
-    program->phong.u_location_model = glGetUniformLocation(program->id, "u_model");
-    program->phong.u_location_view = glGetUniformLocation(program->id, "u_view");
-    program->phong.u_location_proj = glGetUniformLocation(program->id, "u_projection");
+    program->phong.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
     program->phong.a_location_position = glGetAttribLocation(program->id, "a_position");
-    program->phong.a_location_color_tint = 1; // glGetAttribLocation(program->id, "a_color_tint");
+    program->phong.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
     if (program->phong.a_location_position < 0 ||
         program->phong.a_location_color_tint < 0 ||
-        program->phong.u_location_model < 0 ||
-        program->phong.u_location_view < 0 ||
-        program->phong.u_location_proj < 0)
+        program->phong.u_location_mvp < 0)
     {
         glDeleteProgram(program->id);
         return (FALSE);

@@ -22,9 +22,7 @@ struct  s_gfx_program
     {
         struct
         {
-            GLint   u_location_model;
-            GLint   u_location_view;
-            GLint   u_location_proj;
+            GLint   u_location_mvp;
 
             GLint   a_location_position;
             GLint   a_location_color_tint;
