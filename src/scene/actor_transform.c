@@ -28,11 +28,6 @@ t_vec3f transform_translate(const t_mat4f *orien, const t_vec3f *dpos)
     return (translate);
 }
 
-t_vec3f transform_scale(const t_mat4f* orien, const t_vec3f* dscale)
-{
-    return (transform_translate(orien, dscale));
-}
-
 static t_vec3f	rodrigoues_rotation(const t_vec3f *v, const t_vec3f *n, const float angle)
 {
     t_vec3f a;

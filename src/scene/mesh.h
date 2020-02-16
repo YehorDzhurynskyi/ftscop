@@ -33,6 +33,8 @@ struct  s_mesh
     int         *faces;
     int         nfaces;
 
+    t_vec3f     size;
+
     GLuint      vao;
     GLuint      vbo_vertex;
     GLuint      vbo_color_tint;
@@ -43,5 +45,6 @@ struct  s_mesh
 };
 
 t_mesh  mesh_init(void);
+void    mesh_align(t_mesh *mesh);
 
 #endif

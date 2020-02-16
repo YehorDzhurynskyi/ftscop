@@ -22,6 +22,9 @@ typedef int				t_bool;
 # define TRUE 1
 # define FALSE 0
 # define FT_SAFE_FREE(x) free(x); x = NULL;
+# define FT_MIN(x, y) (x) < (y) ? (x) : (y)
+# define FT_MAX(x, y) (x) > (y) ? (x) : (y)
+# define FT_CLAMP(v, min, max) FT_MIN(max, FT_MAX(min, v))
 
 typedef struct		s_list
 {

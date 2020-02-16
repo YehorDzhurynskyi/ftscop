@@ -49,13 +49,14 @@ t_mat4f calculate_matrix_scale(const t_vec3f *scl);
 t_mat4f calculate_matrix_translation(const t_vec3f *pos);
 
 t_vec3f transform_translate(const t_mat4f *orien, const t_vec3f *dpos);
-t_vec3f transform_scale(const t_mat4f* orien, const t_vec3f* dscale);
 t_mat4f transform_rotate(const t_mat4f* orien, const t_vec3f *rot);
 t_mat4f transform_rotate_x(const t_mat4f* orien, const float rotx);
 t_mat4f transform_rotate_y(const t_mat4f* orien, const float roty);
 t_mat4f transform_rotate_z(const t_mat4f* orien, const float rotz);
 
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
+t_vec3f actor_radius_get(const t_actor *actor);
+float   actor_radius_max_get(const t_actor *actor);
 
 typedef struct s_scene  t_scene;
 struct  s_scene

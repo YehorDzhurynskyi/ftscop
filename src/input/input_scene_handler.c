@@ -109,12 +109,10 @@ void	input_handle(t_scene_interactor *interactor)
 
                 // TODO: create an option to scale preserving proportions
 
-                t_vec3f scaling;
-                scaling = transform_scale(&interactor->actor_selected->orientation, &dscale);
-                interactor->actor_selected->scale = vec3f_add(&interactor->actor_selected->scale, &scaling);
-                interactor->actor_selected->scale.x = fmaxf(0.1f, interactor->actor_selected->scale.x);
-                interactor->actor_selected->scale.y = fmaxf(0.1f, interactor->actor_selected->scale.y);
-                interactor->actor_selected->scale.z = fmaxf(0.1f, interactor->actor_selected->scale.z);
+                interactor->actor_selected->scale = vec3f_add(&interactor->actor_selected->scale, &dscale);
+                interactor->actor_selected->scale.x = FT_MAX(0.1f, interactor->actor_selected->scale.x);
+                interactor->actor_selected->scale.y = FT_MAX(0.1f, interactor->actor_selected->scale.y);
+                interactor->actor_selected->scale.z = FT_MAX(0.1f, interactor->actor_selected->scale.z);
             }
         }
     }

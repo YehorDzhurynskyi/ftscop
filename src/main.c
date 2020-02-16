@@ -78,7 +78,7 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
 
     if (result)
     {
-        // TODO: recalculate origin for a mesh
+        mesh_align(out_mesh);
     }
 
     return (result);
