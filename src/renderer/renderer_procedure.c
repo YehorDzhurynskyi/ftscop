@@ -73,15 +73,16 @@ void    renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float
 void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp)
 {
     t_gfx_program   *program;
-    t_mat4f         model;
+    t_mat4f         mvp;
+    t_vec3f         origin;
 
     program = &g_gfx_ctx.pool.noshading;
     glUseProgram(program->id);
     glBindVertexArray(g_gfx_ctx.vao_null);
 
-    model = actor_calculate_matrix_model(actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    glUniformMatrix4fv(program->noshading.u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
+    origin = (t_vec3f) { 0.0f, 0.0f, 0.0f };
+    mvp = renderer_calculate_local_mvp(actor, vp, &origin, &origin);
+    glUniformMatrix4fv(program->noshading.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
 
     t_vec4f basis[] = {
         (t_vec4f) { 3.0f, 0.0f, 0.0f, 1.0f },

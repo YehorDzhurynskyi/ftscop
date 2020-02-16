@@ -95,10 +95,15 @@ void    renderer_delete_gfx_interactor(t_scene_interactor *interactor);
 
 void    renderer_draw_scene(const t_scene *scene);
 void    renderer_draw_interactor(const t_scene_interactor *interactor);
+void    renderer_draw_controls_translation(const t_scene_interactor *interactor, const t_mat4f *vp);
+void    renderer_draw_controls_orientation(const t_scene_interactor *interactor, const t_mat4f *vp);
+void    renderer_draw_controls_scaling(const t_scene_interactor *interactor, const t_mat4f *vp);
 
 void    renderer_draw_circle(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius);
 void    renderer_draw_cone(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius, const float height);
 void    renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float size);
 void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp);
+
+t_mat4f renderer_calculate_local_mvp(const t_actor* actor, const t_mat4f* vp, const t_vec3f* offset, const t_vec3f* rot);
 
 #endif

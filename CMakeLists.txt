@@ -42,6 +42,9 @@ add_executable(scop
     src/renderer/renderer.c
     src/renderer/renderer_scene.c
     src/renderer/renderer_interactor.c
+    src/renderer/renderer_interactor_translation.c
+    src/renderer/renderer_interactor_rotation.c
+    src/renderer/renderer_interactor_scaling.c
     src/renderer/renderer_procedure.c
     src/renderer/renderer_gfx_init.c
     src/renderer/renderer_gfx_delete.c

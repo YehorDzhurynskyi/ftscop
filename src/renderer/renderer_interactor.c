@@ -38,110 +38,16 @@ static void renderer_draw_outlines(const t_scene_interactor *interactor, const t
     glUseProgram(0);
 }
 
-static void renderer_draw_controls_translation(const t_scene_interactor *interactor, const t_mat4f* vp)
+t_mat4f  renderer_calculate_local_mvp(const t_actor *actor, const t_mat4f *vp, const t_vec3f *offset, const t_vec3f *rot)
 {
-    t_actor actor;
+    t_actor fake;
     t_mat4f model;
-    t_vec3f i;
-    t_vec3f j;
-    t_vec3f k;
-    t_vec4f colors[3];
 
-    colors[0] = (t_vec4f){ 0.0f, 0.0f, 1.0f, 1.0f };
-    colors[1] = (t_vec4f){ 0.0f, 1.0f, 0.0f, 1.0f };
-    colors[2] = (t_vec4f){ 1.0f, 0.0f, 0.0f, 1.0f };
-    const float height = 0.5f;
-    renderer_draw_actor_basis(interactor->actor_selected, vp);
-    calculate_basis_from_orientation(&interactor->actor_selected->orientation, &i, &j, &k);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    j = vec3f_scalar(&j, 3.0f + height);
-    actor.position = vec3f_add(&actor.position, &j);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cone(&model, &colors[1], 8, 0.15f, height);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    i = vec3f_scalar(&i, 3.0f + height);
-    actor.orientation = transform_rotate_z(&actor.orientation, M_PI_2);
-    actor.position = vec3f_add(&actor.position, &i);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cone(&model, &colors[2], 8, 0.15f, height);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    k = vec3f_scalar(&k, 3.0f + height);
-    actor.orientation = transform_rotate_x(&actor.orientation, -M_PI_2);
-    actor.position = vec3f_add(&actor.position, &k);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cone(&model, &colors[0], 8, 0.15f, height);
-}
-
-static void renderer_draw_controls_rotation(const t_scene_interactor *interactor, const t_mat4f* vp)
-{
-    t_actor actor;
-    t_mat4f model;
-    t_vec4f colors[3];
-
-    colors[0] = (t_vec4f) { 0.0f, 0.0f, 1.0f, 1.0f };
-    colors[1] = (t_vec4f) { 0.0f, 1.0f, 0.0f, 1.0f };
-    colors[2] = (t_vec4f) { 1.0f, 0.0f, 0.0f, 1.0f };
-    model = actor_calculate_matrix_model(interactor->actor_selected);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_circle(&model, &colors[0], 40, 1.5f);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    actor.orientation = transform_rotate_x(&actor.orientation, M_PI_2);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_circle(&model, &colors[1], 40, 1.5f);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    actor.orientation = transform_rotate_y(&actor.orientation, M_PI_2);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_circle(&model, &colors[2], 40, 1.5f);
-}
-
-static void renderer_draw_controls_scaling(const t_scene_interactor *interactor, const t_mat4f *vp)
-{
-    t_actor actor;
-    t_mat4f model;
-    t_vec3f i;
-    t_vec3f j;
-    t_vec3f k;
-    t_vec4f colors[3];
-
-    colors[0] = (t_vec4f){ 0.0f, 0.0f, 1.0f, 1.0f };
-    colors[1] = (t_vec4f){ 0.0f, 1.0f, 0.0f, 1.0f };
-    colors[2] = (t_vec4f){ 1.0f, 0.0f, 0.0f, 1.0f };
-    const float size = 0.15f;
-    renderer_draw_actor_basis(interactor->actor_selected, vp);
-    calculate_basis_from_orientation(&interactor->actor_selected->orientation, &i, &j, &k);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    j = vec3f_scalar(&j, 3.0f + size);
-    actor.position = vec3f_add(&actor.position, &j);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cube(&model, &colors[1], size);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    i = vec3f_scalar(&i, 3.0f + size);
-    actor.orientation = transform_rotate_z(&actor.orientation, M_PI_2);
-    actor.position = vec3f_add(&actor.position, &i);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cube(&model, &colors[2], size);
-
-    ft_memcpy(&actor, interactor->actor_selected, sizeof(t_actor));
-    k = vec3f_scalar(&k, 3.0f + size);
-    actor.orientation = transform_rotate_x(&actor.orientation, -M_PI_2);
-    actor.position = vec3f_add(&actor.position, &k);
-    model = actor_calculate_matrix_model(&actor);
-    model = mat4f_mat4f_mult(&model, vp);
-    renderer_draw_cube(&model, &colors[0], size);
+    fake.position = vec3f_add(&actor->position, offset);
+    fake.orientation = transform_rotate(&actor->orientation, rot);
+    fake.scale = (t_vec3f) { 1.0f, 1.0f, 1.0f };
+    model = actor_calculate_matrix_model(&fake);
+    return (mat4f_mat4f_mult(&model, vp));
 }
 
 void        renderer_draw_interactor(const t_scene_interactor *interactor)
