@@ -103,7 +103,8 @@ add_executable(scop
 
 function(epi_pack_sources)
     if(NOT MSVC OR NOT WIN32)
-        message(FATAL_ERROR "This function doesn't support selected platform, it's necessary replace slashes by back-slashes only on WIN platform")
+		message(WARNING "This function doesn't support selected platform, it's necessary replace slashes by back-slashes only on WIN platform")
+		return()
     endif()
     foreach(_source IN ITEMS ${ARGN})
         if (IS_ABSOLUTE "${_source}")
@@ -135,6 +136,22 @@ target_include_directories(scop
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/src
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
+
+if (UNIX)
+	message(STATUS "linking libft")
+
+	add_subdirectory(libft)
+
+	target_link_libraries(scop
+		PUBLIC
+			ft
+	)
+	
+	target_compile_options(scop
+		PRIVATE
+			-Wall -Werror -Wunused
+	)
+endif ()
 
 add_custom_command(TARGET scop POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:SDL2> $<TARGET_FILE_DIR:scop>

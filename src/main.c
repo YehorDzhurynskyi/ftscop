@@ -16,9 +16,10 @@
 #include "objparser/objparser.h"
 #include "input/input.h"
 #include "renderer/renderer.h"
+#include <stdlib.h>
 #include "stdio.h"
-#include "stdlib.h"
-#include "assert.h"
+#include <assert.h>
+#include <time.h>
 
 #ifdef WIN32
 # undef main
@@ -72,8 +73,8 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
 {
     t_byte* buffer;
 
-    buffer = ft_read_file(filename);
-    t_bool result = objparser_parse_mesh(buffer, ft_strlen(buffer), out_mesh);
+    buffer = (t_byte*)ft_read_file(filename);
+    t_bool result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh);
     free(buffer);
 
     if (result)
@@ -188,12 +189,17 @@ int main(int argc, char* argv[])
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
     SDL_Window* win = SDL_CreateWindow("Scop", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, g_win_width, g_win_height, SDL_WINDOW_OPENGL);
+	if (!win)
+		return (-1);
+
     SDL_GLContext* glctx = SDL_GL_CreateContext(win);
+	if (!glctx)
+		return (-1);
 
     gladLoadGL();
 

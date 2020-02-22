@@ -64,10 +64,10 @@ struct  s_scene
     t_camera    camera;
 
     t_mesh      *meshes;
-    size_t      *nmeshes;
+    size_t      nmeshes;
 
     t_material  *materials;
-    size_t      *nmaterials;
+    size_t      nmaterials;
 
     t_actor     *actors;
     size_t      nactors;

@@ -48,7 +48,7 @@ t_bool  objparser_skip_if_match_ex(t_objparser_ctx *ctx, const char *str, size_t
         return (FALSE);
     }
 
-    if (0 != ft_strncmp(ctx->current, str, len) || !ft_isws(ctx->current[len]))
+    if (0 != ft_strncmp((const char*)ctx->current, str, len) || !ft_isws(ctx->current[len]))
     {
         return (FALSE);
     }

@@ -28,7 +28,7 @@ static GLuint  shader_compile(GLenum shader_type, const char* code)
     if (result == GL_FALSE)
     {
         glGetShaderInfoLog(shader_id, sizeof(log), NULL, log);
-        printf(log); // TODO: remove
+        printf("%s", log); // TODO: remove
         glDeleteShader(shader_id);
         return (0);
     }
@@ -67,7 +67,7 @@ GLuint  shader_create_program(const char *vert_code, const char *frag_code, cons
     if (result == GL_FALSE)
     {
         glGetProgramInfoLog(program_id, sizeof(log), NULL, log);
-        printf(log); // TODO: remove
+        printf("%s", log); // TODO: remove
         glDeleteShader(vert_id);
         glDeleteShader(frag_id);
         glDeleteShader(geom_id);

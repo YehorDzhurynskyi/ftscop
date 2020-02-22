@@ -21,11 +21,11 @@ void    renderer_draw_circle(const t_mat4f *mvp, const t_vec4f *color, const uns
     glBindVertexArray(g_gfx_ctx.vao_null);
 
     glUniformMatrix4fv(program->circle.u_location_mvp, 1, GL_FALSE, &mvp->data[0][0]);
-    glUniform4fv(program->circle.u_location_color_tint, 1, color);
+    glUniform4fv(program->circle.u_location_color_tint, 1, (GLfloat*)color);
     glUniform1i(program->circle.u_location_nsegments, nsegments);
     glUniform1f(program->circle.u_location_radius, radius);
 
-    glLineWidth(2.0f);
+    //glLineWidth(2.0f);
     glDrawArrays(GL_POINTS, 0, 1);
 
     glBindVertexArray(0);
@@ -41,7 +41,7 @@ void    renderer_draw_cone(const t_mat4f *mvp, const t_vec4f *color, const unsig
     glBindVertexArray(g_gfx_ctx.vao_null);
 
     glUniformMatrix4fv(program->cone.u_location_mvp, 1, GL_FALSE, &mvp->data[0][0]);
-    glUniform4fv(program->cone.u_location_color_tint, 1, color);
+    glUniform4fv(program->cone.u_location_color_tint, 1, (GLfloat*)color);
     glUniform1i(program->cone.u_location_nsegments, nsegments);
     glUniform1f(program->cone.u_location_height, height);
     glUniform1f(program->cone.u_location_radius, radius);
@@ -61,7 +61,7 @@ void    renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float
     glBindVertexArray(g_gfx_ctx.vao_null);
 
     glUniformMatrix4fv(program->cube.u_location_mvp, 1, GL_FALSE, &mvp->data[0][0]);
-    glUniform4fv(program->cube.u_location_color_tint, 1, color);
+    glUniform4fv(program->cube.u_location_color_tint, 1, (GLfloat*)color);
     glUniform1f(program->cube.u_location_size, size);
 
     glDrawArrays(GL_POINTS, 0, 1);
@@ -79,7 +79,10 @@ void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp)
 
     program = &g_gfx_ctx.pool.noshading;
     glUseProgram(program->id);
-    glBindVertexArray(g_gfx_ctx.vao_null);
+
+	GLuint tempvao;
+	glGenVertexArrays(1, &tempvao);
+    glBindVertexArray(tempvao);
 
     origin = (t_vec3f) { 0.0f, 0.0f, 0.0f };
     mvp = renderer_calculate_local_mvp(actor, vp, &origin, &origin);
@@ -93,10 +96,10 @@ void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp)
     basis[3] = (t_vec4f) { 0.0f, 0.0f, 0.0f, 1.0f };
     int indices[6] = { 3, 0, 3, 1, 3, 2 };
 
-    GLint ibo;
+    GLuint ibo;
     glGenBuffers(1, &ibo);
 
-    GLint vbos[2];
+    GLuint vbos[2];
     glGenBuffers(2, vbos);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -112,11 +115,12 @@ void    renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp)
     glVertexAttribPointer(program->noshading.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(program->noshading.a_location_color_tint);
 
-    glLineWidth(2.0f);
+    // glLineWidth(2.0f);
     glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, NULL);
 
     glDeleteBuffers(2, vbos);
     glDeleteBuffers(1, &ibo);
+	glDeleteVertexArrays(1, &tempvao);
 
     glBindVertexArray(0);
     glUseProgram(0);

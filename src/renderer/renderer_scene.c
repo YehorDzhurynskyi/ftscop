@@ -32,7 +32,7 @@ static void renderer_draw_grid(const t_mat4f *vp)
     glUniform1i(program->grid.u_location_nsteps, 50);
     glUniform4f(program->grid.u_location_color_tint, 0.55f, 0.55f, 0.55f, 1.0f);
 
-    glLineWidth(0.15f);
+    //glLineWidth(0.15f);
 
     glDrawArrays(GL_POINTS, 0, 1);
 

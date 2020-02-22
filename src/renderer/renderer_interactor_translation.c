@@ -16,7 +16,6 @@
 
 void    renderer_draw_controls_translation(const t_scene_interactor *interactor, const t_mat4f* vp)
 {
-    t_mat4f mvp;
     t_vec3f ijk[3];
     t_vec3f rxryrz[3];
     t_vec4f colors[3];
@@ -28,10 +27,12 @@ void    renderer_draw_controls_translation(const t_scene_interactor *interactor,
     rxryrz[0] = (t_vec3f){ 0.0f, 0.0f, M_PI_2 };
     rxryrz[1] = (t_vec3f){ 0.0f, M_PI_2, 0.0f };
     rxryrz[2] = (t_vec3f){ -M_PI_2, 0.0f, 0.0f };
-    const float height = 0.5f;
     radius = actor_radius_get(interactor->actor_selected);
     renderer_draw_actor_basis(interactor->actor_selected, vp);
     calculate_basis_from_orientation(&interactor->actor_selected->orientation, &ijk[0], &ijk[1], &ijk[2]);
+
+    t_mat4f		mvp;
+    const float	height = 0.5f;
 
     ijk[0] = vec3f_scalar(&ijk[0], 1.0f + radius.x + height);
     mvp = renderer_calculate_local_mvp(interactor->actor_selected, vp, &ijk[0], &rxryrz[0]);

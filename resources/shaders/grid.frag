@@ -1,8 +1,10 @@
-#version 460
+#version 400
 
 uniform vec4 u_color_tint;
 
+out vec4 fragcolor;
+
 void main(void)
 {
-    gl_FragColor = u_color_tint;
+    fragcolor = u_color_tint;
 }

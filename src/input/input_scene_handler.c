@@ -15,8 +15,8 @@
 #include <math.h>
 #include <assert.h>
 
-#define ACTOR_SPEED		0.03
-#define ACTOR_ROT_SPEED	0.2
+#define ACTOR_SPEED		0.3
+#define ACTOR_ROT_SPEED	2.0
 
 void	input_handle(t_scene_interactor *interactor)
 {

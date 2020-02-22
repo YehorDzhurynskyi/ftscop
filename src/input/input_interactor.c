@@ -19,7 +19,7 @@ t_scene_interactor  input_interactor_init(const t_scene *scene)
 {
     t_scene_interactor  interactor;
 
-    interactor.scene_target = scene;
+    interactor.scene_target = (t_scene*)scene;
     interactor.actor_selected = NULL;
     interactor.interaction_mode = TRANSLATION;
     return (interactor);
@@ -36,7 +36,8 @@ void    input_interactor_select_actor(t_scene_interactor *interactor, const t_ac
     assert(indices);
     // TODO: check null
 
-    mapped = (int*)glMapNamedBuffer(actor->mesh->ibo_faces, GL_READ_ONLY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->ibo_faces);
+    mapped = (int*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
     assert(mapped);
     // TODO: check null
 
@@ -52,7 +53,7 @@ void    input_interactor_select_actor(t_scene_interactor *interactor, const t_ac
         ++i;
     }
 
-    glUnmapNamedBuffer(actor->mesh->ibo_faces);
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
     program = &g_gfx_ctx.pool.noshading;
     glBindVertexArray(interactor->vao);
@@ -69,5 +70,5 @@ void    input_interactor_select_actor(t_scene_interactor *interactor, const t_ac
 
     FT_SAFE_FREE(indices);
 
-    interactor->actor_selected = actor;
+    interactor->actor_selected = (t_actor*)actor;
 }

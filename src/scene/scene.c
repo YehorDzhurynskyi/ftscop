@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "scene.h"
+#include "renderer/renderer.h"
 
 void    scene_delete(t_scene *scene)
 {

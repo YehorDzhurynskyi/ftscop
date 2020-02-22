@@ -96,7 +96,7 @@ void    renderer_delete_gfx_interactor(t_scene_interactor *interactor);
 void    renderer_draw_scene(const t_scene *scene);
 void    renderer_draw_interactor(const t_scene_interactor *interactor);
 void    renderer_draw_controls_translation(const t_scene_interactor *interactor, const t_mat4f *vp);
-void    renderer_draw_controls_orientation(const t_scene_interactor *interactor, const t_mat4f *vp);
+void	renderer_draw_controls_rotation(const t_scene_interactor *interactor, const t_mat4f *vp);
 void    renderer_draw_controls_scaling(const t_scene_interactor *interactor, const t_mat4f *vp);
 
 void    renderer_draw_circle(const t_mat4f *mvp, const t_vec4f *color, const unsigned int nsegments, const float radius);

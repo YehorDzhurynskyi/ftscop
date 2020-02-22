@@ -27,10 +27,10 @@ static void renderer_draw_outlines(const t_scene_interactor *interactor, const t
     model = mat4f_mat4f_mult(&model, vp);
     glUniformMatrix4fv(program->noshading.u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
 
-    const t_vec3f camera_pos = interactor->scene_target->camera.position;
-    const t_vec3f actor_pos = interactor->actor_selected->position;
-    const t_vec3f to_camera = vec3f_sub(&camera_pos, &actor_pos);
-    glLineWidth(6.0f / vec3f_length(&to_camera));
+    //const t_vec3f camera_pos = interactor->scene_target->camera.position;
+    //const t_vec3f actor_pos = interactor->actor_selected->position;
+    //const t_vec3f to_camera = vec3f_sub(&camera_pos, &actor_pos);
+    //glLineWidth(6.0f / vec3f_length(&to_camera));
 
     glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
 
