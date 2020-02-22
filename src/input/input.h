@@ -32,7 +32,6 @@ struct  s_scene_interactor
     t_actor                         *actor_selected;
 
     GLuint                          vao;
-    GLuint                          ibo_outline;
     GLuint                          vbo_outline_color;
 };
 

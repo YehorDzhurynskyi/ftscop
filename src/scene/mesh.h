@@ -49,6 +49,7 @@ struct  s_mesh
     GLuint      vbo_color_tint;
 	GLuint      vbo_color;
     GLuint      ibo_faces;
+	GLuint      ibo_wireframe;
 
     // TODO: add lines ibo for `l` param in .obj file
     // GLuint      ibo_lines;

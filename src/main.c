@@ -74,6 +74,7 @@ static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
     t_byte* buffer;
 
     buffer = (t_byte*)ft_read_file(filename);
+	// TODO: validate failed file reading
     t_bool result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh);
     free(buffer);
 
@@ -134,24 +135,46 @@ static void poll_events(t_scene_interactor *interactor)
                     } break;
                     case SDLK_z:
                     {
-						interactor->actor_selected->material.palette = CUSTOM;
-						mesh_colorize_rand(interactor->actor_selected->mesh);
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.palette = CUSTOM;
+							mesh_colorize_rand(interactor->actor_selected->mesh);
+						}
                     } break;
                     case SDLK_x:
                     {
-						interactor->actor_selected->material.palette = NATURE;
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.palette = NATURE;
+						}
                     } break;
                     case SDLK_c:
                     {
-						interactor->actor_selected->material.palette = FIRE;
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.palette = FIRE;
+						}
+                    } break;
+                    case SDLK_h:
+                    {
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.wireframe = !interactor->actor_selected->material.wireframe;
+						}
                     } break;
                     case SDLK_g:
                     {
-						interactor->actor_selected->material.grayscale = !interactor->actor_selected->material.grayscale;
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.grayscale = !interactor->actor_selected->material.grayscale;
+						}
                     } break;
                     case SDLK_f:
                     {
-						interactor->actor_selected->material.smooth = !interactor->actor_selected->material.smooth;
+                        if (interactor->actor_selected != NULL)
+                        {
+							interactor->actor_selected->material.smooth = !interactor->actor_selected->material.smooth;
+						}
                     } break;
                     }
                 }

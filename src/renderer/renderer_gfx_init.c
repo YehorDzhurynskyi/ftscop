@@ -12,6 +12,47 @@
 
 #include "renderer.h"
 
+static t_bool	renderer_init_gfx_mesh_wireframe_element_buffer(t_mesh *mesh)
+{
+    int             *mapped;
+    int             *indices;
+    int             i;
+
+    indices = malloc(mesh->nfaces * 6 * sizeof(int));
+	if (!indices)
+	{
+		return (FALSE);
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ibo_faces);
+    mapped = (int*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
+	if (!mapped)
+	{
+		return (FALSE);
+	}
+
+    i = 0;
+    while (i < mesh->nfaces)
+    {
+        indices[6 * i + 0] = mapped[3 * i + 0];
+        indices[6 * i + 1] = mapped[3 * i + 1];
+        indices[6 * i + 2] = mapped[3 * i + 0];
+        indices[6 * i + 3] = mapped[3 * i + 2];
+        indices[6 * i + 4] = mapped[3 * i + 1];
+        indices[6 * i + 5] = mapped[3 * i + 2];
+        ++i;
+    }
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBindVertexArray(mesh->vao);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ibo_wireframe);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nfaces * 6 * sizeof(int), indices, GL_STATIC_DRAW);
+
+    FT_SAFE_FREE(indices);
+	return (TRUE);
+}
+
 t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
 {
     t_gfx_program   *program;
@@ -20,11 +61,12 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
 
     glGenVertexArrays(1, &mesh->vao);
     glGenBuffers(1, &mesh->ibo_faces);
+	glGenBuffers(1, &mesh->ibo_wireframe);
     glGenBuffers(1, &mesh->vbo_vertex);
     glGenBuffers(1, &mesh->vbo_color_tint);
 	glGenBuffers(1, &mesh->vbo_color);
 
-    if (!mesh->vao || !mesh->ibo_faces ||
+    if (!mesh->vao || !mesh->ibo_faces || !mesh->ibo_wireframe ||
     !mesh->vbo_vertex || !mesh->vbo_color_tint)
     {
         renderer_delete_gfx_mesh(mesh);
@@ -35,6 +77,8 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ibo_faces);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nfaces * 3 * sizeof(int), mesh->faces, GL_STATIC_DRAW);
+
+	renderer_init_gfx_mesh_wireframe_element_buffer(mesh);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo_vertex);
     glBufferData(GL_ARRAY_BUFFER, mesh->nvertices * sizeof(t_vec4f), mesh->vertices, GL_STATIC_DRAW);
@@ -63,10 +107,9 @@ t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor)
     program = &g_gfx_ctx.pool.noshading;
 
     glGenVertexArrays(1, &interactor->vao);
-    glGenBuffers(1, &interactor->ibo_outline);
     glGenBuffers(1, &interactor->vbo_outline_color);
 
-    if (!interactor->vao || !interactor->ibo_outline)
+    if (!interactor->vao || !interactor->vbo_outline_color)
     {
         renderer_delete_gfx_interactor(interactor);
         return (FALSE);
@@ -74,7 +117,6 @@ t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor)
 
     glBindVertexArray(interactor->vao);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, interactor->ibo_outline);
     glBindBuffer(GL_ARRAY_BUFFER, interactor->vbo_outline_color);
     const t_vec4f color = (t_vec4f) { 0.05f, 0.05f, 0.05f, 1.0f };
     glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec4f), &color, GL_STATIC_DRAW);

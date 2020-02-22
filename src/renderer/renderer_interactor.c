@@ -32,6 +32,7 @@ static void renderer_draw_outlines(const t_scene_interactor *interactor, const t
     //const t_vec3f to_camera = vec3f_sub(&camera_pos, &actor_pos);
     //glLineWidth(6.0f / vec3f_length(&to_camera));
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, interactor->actor_selected->mesh->ibo_wireframe);
     glDrawElements(GL_LINES, interactor->actor_selected->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
 
     glBindVertexArray(0);

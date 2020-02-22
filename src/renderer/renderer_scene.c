@@ -56,7 +56,16 @@ static void renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
 	glUniform1i(program->phong.u_location_is_grayscale_mode_enabled, actor->material.grayscale);
 	glUniform1i(program->phong.u_location_is_smooth_mode_enabled, actor->material.smooth);
 
-    glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
+	if (actor->material.wireframe)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->ibo_wireframe);
+		glDrawElements(GL_LINES, actor->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
+	}
+	else
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->ibo_faces);
+		glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
+	}
 
     glBindVertexArray(0);
     glUseProgram(0);
