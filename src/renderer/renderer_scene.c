@@ -52,6 +52,9 @@ static void renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
     model = actor_calculate_matrix_model(actor);
     model = mat4f_mat4f_mult(&model, vp);
     glUniformMatrix4fv(program->phong.u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
+	glUniform1i(program->phong.u_location_palette, actor->material.palette);
+	glUniform1i(program->phong.u_location_is_grayscale_mode_enabled, actor->material.grayscale);
+	glUniform1i(program->phong.u_location_is_smooth_mode_enabled, actor->material.smooth);
 
     glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
 

@@ -132,6 +132,27 @@ static void poll_events(t_scene_interactor *interactor)
                             interactor->actor_selected = interactor->scene_target->actors;
                         }
                     } break;
+                    case SDLK_z:
+                    {
+						interactor->actor_selected->material.palette = CUSTOM;
+						mesh_colorize_rand(interactor->actor_selected->mesh);
+                    } break;
+                    case SDLK_x:
+                    {
+						interactor->actor_selected->material.palette = NATURE;
+                    } break;
+                    case SDLK_c:
+                    {
+						interactor->actor_selected->material.palette = FIRE;
+                    } break;
+                    case SDLK_g:
+                    {
+						interactor->actor_selected->material.grayscale = !interactor->actor_selected->material.grayscale;
+                    } break;
+                    case SDLK_f:
+                    {
+						interactor->actor_selected->material.smooth = !interactor->actor_selected->material.smooth;
+                    } break;
                     }
                 }
             } break;
@@ -215,7 +236,7 @@ int main(int argc, char* argv[])
 
     // TODO: remove magic
     mesh.vertices = malloc(sizeof(t_vec4f) * 256);
-    mesh.colors = malloc(sizeof(t_vec4f) * 256);
+    mesh.color_tints = malloc(sizeof(t_vec4f) * 256);
     mesh.nvertices = 0;
     mesh.faces = malloc(sizeof(int) * 3 * 256);
     mesh.nfaces = 0;
@@ -230,7 +251,7 @@ int main(int argc, char* argv[])
 
     FT_SAFE_FREE(mesh.faces);
     FT_SAFE_FREE(mesh.vertices);
-    FT_SAFE_FREE(mesh.colors);
+    FT_SAFE_FREE(mesh.color_tints);
 
     if (!res)
     {
@@ -251,13 +272,13 @@ int main(int argc, char* argv[])
         scene.meshes = malloc(sizeof(t_mesh) * 10);
         scene.nmeshes = 1;
 
-        scene.materials = malloc(sizeof(t_material) * 10);
-        scene.nmaterials = 0;
-
         memcpy(scene.meshes, &mesh, sizeof(t_mesh));
 
         t_actor actor;
-        actor.material = NULL;
+        actor.material.palette = CUSTOM;
+		actor.material.smooth = TRUE;
+		actor.material.wireframe = FALSE;
+		actor.material.grayscale = FALSE;
         actor.mesh = scene.meshes;
         actor.position = (t_vec3f) { 0.0f, 0.0f, 0.0f };
         actor.orientation = mat4f_identity();

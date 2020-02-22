@@ -29,7 +29,7 @@ void objparser_read_v(t_objparser_ctx *ctx)
     ctx->mesh->vertices[ctx->mesh->nvertices].w = objparser_read_float(ctx);
 #endif
     // TODO: could be followed by a color in r, g, b [0.0 - 1.0] format
-    ctx->mesh->colors[ctx->mesh->nvertices] = (t_vec4f) { rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, 1.0f };
+    ctx->mesh->color_tints[ctx->mesh->nvertices] = (t_vec4f) { 1.0f, 1.0f, 1.0f, 1.0f };
 
     ctx->mesh->nvertices++;
 }

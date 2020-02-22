@@ -38,7 +38,7 @@ struct  s_actor
     t_mat4f     orientation;
     t_vec3f     scale;
     t_mesh      *mesh;
-    t_material  *material;
+    t_material  material;
 };
 
 void    calculate_basis_from_rotation(const t_vec3f *rot, t_vec3f *i, t_vec3f *j, t_vec3f *k);
@@ -65,9 +65,6 @@ struct  s_scene
 
     t_mesh      *meshes;
     size_t      nmeshes;
-
-    t_material  *materials;
-    size_t      nmaterials;
 
     t_actor     *actors;
     size_t      nactors;

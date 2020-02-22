@@ -23,9 +23,13 @@ struct  s_gfx_program
         struct
         {
             GLint   u_location_mvp;
+			GLint	u_location_is_smooth_mode_enabled;
+			GLint	u_location_is_grayscale_mode_enabled;
+			GLint	u_location_palette;
 
             GLint   a_location_position;
             GLint   a_location_color_tint;
+			GLint   a_location_color;
         } phong;
         struct
         {

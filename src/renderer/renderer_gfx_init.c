@@ -22,6 +22,7 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
     glGenBuffers(1, &mesh->ibo_faces);
     glGenBuffers(1, &mesh->vbo_vertex);
     glGenBuffers(1, &mesh->vbo_color_tint);
+	glGenBuffers(1, &mesh->vbo_color);
 
     if (!mesh->vao || !mesh->ibo_faces ||
     !mesh->vbo_vertex || !mesh->vbo_color_tint)
@@ -41,9 +42,14 @@ t_bool  renderer_init_gfx_mesh(t_mesh *mesh)
     glVertexAttribPointer(program->phong.a_location_position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo_color_tint);
-    glBufferData(GL_ARRAY_BUFFER, mesh->nvertices * sizeof(t_vec4f), mesh->colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh->nvertices * sizeof(t_vec4f), mesh->color_tints, GL_STATIC_DRAW);
     glEnableVertexAttribArray(program->phong.a_location_color_tint);
     glVertexAttribPointer(program->phong.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo_color);
+    glBufferData(GL_ARRAY_BUFFER, mesh->nvertices * sizeof(t_vec4f), NULL, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(program->phong.a_location_color);
+    glVertexAttribPointer(program->phong.a_location_color, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindVertexArray(0);
 

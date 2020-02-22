@@ -12,6 +12,7 @@
 
 #include "mesh.h"
 #include <math.h>
+#include <assert.h>
 
 t_mesh  mesh_init(void)
 {
@@ -63,4 +64,42 @@ void    mesh_align(t_mesh *mesh)
         mesh->size.z = FT_MAX(mesh->size.z, fabsf(mesh->vertices[i].z));
         ++i;
     }
+}
+
+void	mesh_colorize_bw(t_mesh *mesh)
+{
+	unsigned int	i;
+	t_vec4f			*mapped;
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->vbo_color);
+    mapped = (t_vec4f*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+    assert(mapped);
+    // TODO: check null
+
+	i = 0;
+	while (i < mesh->nvertices)
+	{
+		mapped[i++] = (t_vec4f) { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+}
+
+void	mesh_colorize_rand(t_mesh *mesh)
+{
+	unsigned int	i;
+	t_vec4f			*mapped;
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->vbo_color);
+    mapped = (t_vec4f*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+    assert(mapped);
+    // TODO: check null
+
+	i = 0;
+	while (i < mesh->nvertices)
+	{
+		mapped[i++] = (t_vec4f) { rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, 1.0f };
+    }
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }

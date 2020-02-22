@@ -16,7 +16,8 @@ void    renderer_delete_gfx_mesh(t_mesh *mesh)
 {
     glDeleteBuffers(1, &mesh->vbo_vertex);
     glDeleteBuffers(1, &mesh->vbo_color_tint);
-    glDeleteBuffers(1, &mesh->ibo_faces);
+    glDeleteBuffers(1, &mesh->vbo_color);
+	glDeleteBuffers(1, &mesh->ibo_faces);
     glDeleteVertexArrays(1, &mesh->vao);
 }
 
