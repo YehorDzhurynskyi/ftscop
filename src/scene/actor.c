@@ -13,6 +13,7 @@
 #define _USE_MATH_DEFINES // TODO: remove
 #include <math.h>
 #include "scene.h"
+#include "renderer/renderer.h"
 
 void    calculate_basis_from_rotation(const t_vec3f *rot,
                                       t_vec3f *i,
@@ -123,4 +124,41 @@ float   actor_radius_max_get(const t_actor *actor)
 
     r = actor_radius_get(actor);
     return (FT_MAX(r.x, FT_MAX(r.y, r.z)));
+}
+
+void    actor_palette_set(t_actor *actor, const t_palette palette)
+{
+    if (palette == Palette_RANDOM)
+    {
+        mesh_colorize_rand(actor->mesh);
+    }
+
+    actor->material.palette = palette;
+}
+
+void    actor_init(t_actor *actor, const t_mesh *mesh, const t_texture *texture)
+{
+    actor->mesh = mesh;
+    actor->position = (t_vec3f){ 0.0f, 0.0f, 0.0f };
+    actor->orientation = mat4f_identity();
+    actor->scale = (t_vec3f){ 1.0f, 1.0f, 1.0f };
+    actor_palette_set(actor, Palette_RANDOM);
+    actor->material.smooth = TRUE;
+    actor->material.wireframe = FALSE;
+    actor->material.grayscale = FALSE;
+
+    glGenTextures(1, &actor->material.texture);
+    glBindTexture(GL_TEXTURE_2D, actor->material.texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_BGR, GL_UNSIGNED_BYTE, texture->raw);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void    actor_delete(t_actor* actor)
+{
+    glDeleteTextures(1, &actor->material.texture);
 }

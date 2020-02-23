@@ -14,8 +14,8 @@
 #include <SDL.h>
 #include <math.h> // TODO: remove
 
-#define CAM_SPEED		0.3
-#define CAM_ROT_SPEED	2.0
+#define CAM_SPEED		0.03
+#define CAM_ROT_SPEED	0.2
 
 void	input_handle_camera(t_camera *cam)
 {

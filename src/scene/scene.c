@@ -22,6 +22,11 @@ void    scene_delete(t_scene *scene)
     {
         renderer_delete_gfx_mesh(&scene->meshes[i++]);
     }
+    i = 0;
+    while (i < scene->nactors)
+    {
+        actor_delete(&scene->actors[i++]);
+    }
 
     FT_SAFE_FREE(scene->meshes);
     FT_SAFE_FREE(scene->actors);

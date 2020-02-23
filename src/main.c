@@ -31,7 +31,7 @@ t_bool g_IsRunning;
 #ifdef WIN32
 char* ft_read_file(const char* filename)
 {
-    FILE* file = fopen(filename, "r");
+    FILE* file = fopen(filename, "rb");
 
     t_byte* buffer = NULL;
 
@@ -137,22 +137,8 @@ static void poll_events(t_scene_interactor *interactor)
                     {
                         if (interactor->actor_selected != NULL)
                         {
-							interactor->actor_selected->material.palette = CUSTOM;
-							mesh_colorize_rand(interactor->actor_selected->mesh);
-						}
-                    } break;
-                    case SDLK_x:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-							interactor->actor_selected->material.palette = NATURE;
-						}
-                    } break;
-                    case SDLK_c:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-							interactor->actor_selected->material.palette = FIRE;
+                            const t_palette next_palette = (interactor->actor_selected->material.palette + 1) % Palette_COUNT;
+                            actor_palette_set(interactor->actor_selected, next_palette);
 						}
                     } break;
                     case SDLK_h:
@@ -258,10 +244,10 @@ int main(int argc, char* argv[])
     mesh = mesh_init();
 
     // TODO: remove magic
-    mesh.vertices = malloc(sizeof(t_vec4f) * 256);
-    mesh.color_tints = malloc(sizeof(t_vec4f) * 256);
+    mesh.vertices = malloc(sizeof(t_vec4f) * 10000);
+    mesh.color_tints = malloc(sizeof(t_vec4f) * 10000);
     mesh.nvertices = 0;
-    mesh.faces = malloc(sizeof(int) * 3 * 256);
+    mesh.faces = malloc(sizeof(int) * 3 * 10000);
     mesh.nfaces = 0;
 
     if ((g_IsRunning = load_obj_file(argv[1], &mesh)) != TRUE)
@@ -297,17 +283,17 @@ int main(int argc, char* argv[])
 
         memcpy(scene.meshes, &mesh, sizeof(t_mesh));
 
-        t_actor actor;
-        actor.material.palette = CUSTOM;
-		actor.material.smooth = TRUE;
-		actor.material.wireframe = FALSE;
-		actor.material.grayscale = FALSE;
-        actor.mesh = scene.meshes;
-        actor.position = (t_vec3f) { 0.0f, 0.0f, 0.0f };
-        actor.orientation = mat4f_identity();
-        actor.scale = (t_vec3f) { 1.0f, 1.0f, 1.0f };
+        t_texture t;
+        if (!texture_load_bmp("squidward.bmp", &t))
+        {
+            // TODO: delete all resources
+            // TODO: print error
+            return (-1);
+        }
 
-        memcpy(scene.actors, &actor, sizeof(t_actor));
+        actor_init(scene.actors, scene.meshes, &t);
+
+        texture_delete(&t);
     }
 
     t_scene_interactor interactor = input_interactor_init(&scene);
@@ -354,5 +340,7 @@ int main(int argc, char* argv[])
     SDL_GL_DeleteContext(glctx);
     SDL_DestroyWindow(win);
     SDL_Quit();
+
+    // TODO: check system("leaks")
     return (0);
 }

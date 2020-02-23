@@ -15,6 +15,19 @@
 
 # include "input/input.h"
 
+typedef struct	s_texture   t_texture;
+struct	s_texture
+{
+    t_byte      *raw;
+    uint32_t	width;
+    uint32_t	height;
+    uint32_t	pitch;
+    uint16_t	bpp;
+};
+
+t_bool  texture_load_bmp(const char* filename, t_texture* texture);
+void    texture_delete(t_texture *texture);
+
 typedef struct s_gfx_program    t_gfx_program;
 struct  s_gfx_program
 {
@@ -26,6 +39,7 @@ struct  s_gfx_program
 			GLint	u_location_is_smooth_mode_enabled;
 			GLint	u_location_is_grayscale_mode_enabled;
 			GLint	u_location_palette;
+            GLint	u_location_texture;
 
             GLint   a_location_position;
             GLint   a_location_color_tint;

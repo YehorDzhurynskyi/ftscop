@@ -55,6 +55,7 @@ static void renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
 	glUniform1i(program->phong.u_location_palette, actor->material.palette);
 	glUniform1i(program->phong.u_location_is_grayscale_mode_enabled, actor->material.grayscale);
 	glUniform1i(program->phong.u_location_is_smooth_mode_enabled, actor->material.smooth);
+    glBindTexture(GL_TEXTURE_2D, actor->material.texture);
 
 	if (actor->material.wireframe)
 	{

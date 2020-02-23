@@ -16,6 +16,8 @@
 # include "ft.h"
 # include "mesh.h"
 
+typedef struct s_texture    t_texture;
+
 typedef struct s_camera t_camera;
 struct s_camera
 {
@@ -57,6 +59,9 @@ t_mat4f transform_rotate_z(const t_mat4f* orien, const float rotz);
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
 t_vec3f actor_radius_get(const t_actor *actor);
 float   actor_radius_max_get(const t_actor *actor);
+void    actor_palette_set(t_actor* actor, const t_palette palette);
+void    actor_init(t_actor* actor, const t_mesh* mesh, const t_texture* texture);
+void    actor_delete(t_actor* actor);
 
 typedef struct s_scene  t_scene;
 struct  s_scene

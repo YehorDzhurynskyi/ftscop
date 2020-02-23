@@ -19,9 +19,12 @@
 typedef enum e_palette	t_palette;
 enum e_palette
 {
-	CUSTOM,
-	NATURE,
-	FIRE
+    Palette_RANDOM,
+    Palette_NATURE,
+    Palette_FIRE,
+    Palette_TEXTURE,
+
+    Palette_COUNT
 };
 
 typedef struct s_material   t_material;
@@ -31,6 +34,7 @@ struct  s_material
 	t_bool		smooth;
 	t_bool		grayscale;
 	t_palette	palette;
+    GLuint      texture;
 };
 
 typedef struct s_mesh   t_mesh;
@@ -57,7 +61,6 @@ struct  s_mesh
 
 t_mesh  mesh_init(void);
 void    mesh_align(t_mesh *mesh);
-void	mesh_colorize_bw(t_mesh *mesh);
 void	mesh_colorize_rand(t_mesh *mesh);
 
 #endif

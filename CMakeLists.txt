@@ -48,6 +48,7 @@ add_executable(scop
     src/renderer/renderer_procedure.c
     src/renderer/renderer_gfx_init.c
     src/renderer/renderer_gfx_delete.c
+    src/renderer/texture.c
 
     src/input/input.h
     src/input/input_camera_handler.c
