@@ -68,6 +68,26 @@ void            app_delete(t_app* app)
     SDL_Quit();
 }
 
+void            app_loop(t_app* app, t_scene *scene, t_scene_interactor *interactor)
+{
+    Uint64	start;
+    Uint64	freq;
+
+    freq = SDL_GetPerformanceFrequency();
+    app->is_running = TRUE;
+    while (app->is_running)
+    {
+        start = SDL_GetPerformanceCounter();
+        input_handle(interactor);
+        app_poll_events(app, interactor);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderer_draw_scene(scene);
+        renderer_draw_interactor(interactor);
+        SDL_GL_SwapWindow(app->win);
+        app->delta_time = (SDL_GetPerformanceCounter() - start) / (float)freq;
+    }
+}
+
 void            app_poll_events(t_app* app, t_scene_interactor* interactor)
 {
     SDL_Event eventBuffer[4];

@@ -73,6 +73,10 @@ static t_bool   startup(t_app *app,
             {
                 if (scene_interactor_init(interactor, scene))
                 {
+                    srand(time(NULL));
+                    glEnable(GL_DEPTH_TEST);
+                    glDepthFunc(GL_LESS);
+                    glClearColor(0.227f, 0.227f, 0.227f, 1.0f);
                     return (TRUE);
                 }
                 scene_delete(scene);
@@ -102,47 +106,16 @@ int main(int argc, char* argv[])
 
     if (argc <= 1)
     {
-        // TODO: print ("Incorrect number of arguments");
+        perror("Incorrect number of arguments!");
         return (-1);
     }
-    srand(time(NULL));
     if (!startup(&app, &scene, &interactor, argv[1]))
     {
         perror("Application error on startup!");
         return (-1);
     }
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glClearColor(0.227f, 0.227f, 0.227f, 1.0f);
-
-    Uint64	freq = SDL_GetPerformanceFrequency();
-    Uint64	start;
-    float elapsed_time = 0.0f;
-    app.is_running = TRUE;
-    while (app.is_running)
-    {
-        input_handle(&interactor);
-        app_poll_events(&app, &interactor);
-
-        // tick
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        start = SDL_GetPerformanceCounter();
-
-        // TODO: update vbos
-        // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->m_size * sizeof(T), (void*)this->m_data)
-
-        renderer_draw_scene(&scene);
-        renderer_draw_interactor(&interactor);
-
-        SDL_GL_SwapWindow(app.win);
-        app.delta_time = (SDL_GetPerformanceCounter() - start) / (float)freq;
-        elapsed_time += app.delta_time;
-    }
-
+    app_loop(&app, &scene, &interactor);
     shutdown(&app, &scene, &interactor);
-
     // TODO: check system("leaks")
     return (0);
 }

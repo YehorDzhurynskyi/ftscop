@@ -31,6 +31,7 @@ struct  s_app
 
 t_bool  app_init(t_app *app);
 void    app_delete(t_app *app);
+void    app_loop(t_app* app, t_scene* scene, t_scene_interactor* interactor);
 void    app_poll_events(t_app *app, t_scene_interactor *interactor);
 
 #endif

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "input.h"
-#include <SDL.h> // TODO: remove
-#include <assert.h>
 #include "renderer/renderer.h"
 
 t_bool  scene_interactor_init(t_scene_interactor *interactor, const t_scene *scene)
