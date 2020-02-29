@@ -35,6 +35,7 @@ struct  s_material
 	t_bool		grayscale;
 	t_palette	palette;
     GLuint      texture;
+    t_vec4f     *color_target;
 };
 
 typedef struct s_mesh   t_mesh;
@@ -54,14 +55,10 @@ struct  s_mesh
 	GLuint      vbo_color;
     GLuint      ibo_faces;
 	GLuint      ibo_wireframe;
-
-    // TODO: add lines ibo for `l` param in .obj file
-    // GLuint      ibo_lines;
 };
 
 t_bool  mesh_load_objfile(const char* filename, t_mesh* out_mesh);
 void    mesh_delete(t_mesh* mesh);
 void    mesh_align(t_mesh *mesh);
-void    mesh_colorize_rand(t_mesh *mesh);
 
 #endif

@@ -17,6 +17,9 @@
 
 void    mesh_delete(t_mesh* mesh)
 {
+    FT_SAFE_FREE(mesh->faces);
+    FT_SAFE_FREE(mesh->vertices);
+    FT_SAFE_FREE(mesh->color_tints);
     renderer_delete_gfx_mesh(mesh);
 }
 
@@ -64,25 +67,6 @@ void    mesh_align(t_mesh *mesh)
     }
 }
 
-void	mesh_colorize_rand(t_mesh *mesh)
-{
-	unsigned int	i;
-	t_vec4f			*mapped;
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->vbo_color);
-    mapped = (t_vec4f*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-    assert(mapped);
-    // TODO: check null
-
-	i = 0;
-	while (i < mesh->nvertices)
-	{
-		mapped[i++] = (t_vec4f) { rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, 1.0f };
-    }
-
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-}
-
 t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
 {
     t_bool  result;
@@ -90,7 +74,7 @@ t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
 
     if ((buffer = (t_byte*)ft_read_file(filename)) == FALSE)
     {
-        // TODO: print "Invalid file error"
+        perror("Invalid file!");
         return (FALSE);
     }
     // TODO: remove magic
@@ -102,17 +86,6 @@ t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
     {
         mesh_align(out_mesh);
         result = renderer_init_gfx_mesh(out_mesh);
-        if (!result)
-        {
-            // TODO: print failed on mesh's graphical context initialization
-        }
-        FT_SAFE_FREE(out_mesh->faces);
-        FT_SAFE_FREE(out_mesh->vertices);
-        FT_SAFE_FREE(out_mesh->color_tints);
-    }
-    else
-    {
-        // TODO: print invalid file format error
     }
     free(buffer);
     return (result);

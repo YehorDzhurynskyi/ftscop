@@ -37,7 +37,6 @@ struct  s_gfx_program
         {
             GLint   u_location_mvp;
 			GLint	u_location_is_smooth_mode_enabled;
-			GLint	u_location_is_grayscale_mode_enabled;
 			GLint	u_location_palette;
             GLint	u_location_texture;
 

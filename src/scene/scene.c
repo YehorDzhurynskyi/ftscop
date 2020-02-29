@@ -20,12 +20,13 @@ t_bool  scene_init(t_scene* scene, const char *objfile)
 
     if (mesh_load_objfile(objfile, &scene->mesh) == FALSE)
     {
+        perror("Mesh loading error!");
         return (FALSE);
     }
     if (!texture_load_bmp("squidward.bmp", &t))
     {
         // TODO: test error path
-        // TODO: print error
+        perror("Texture loading error!");
         mesh_delete(&scene->mesh);
         return (FALSE);
     }
@@ -52,4 +53,26 @@ void    scene_camera_reset(t_scene *scene)
     scene->camera.ar = WIN_SZ_X / (float)WIN_SZ_Y;
     scene->camera.near = 0.1f;
     scene->camera.far = 100.0f;
+}
+
+void    scene_update(t_scene* scene, float dt)
+{
+    t_vec4f *mapped;
+    t_vec4f color_diff;
+    int	    i;
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->mesh.vbo_color);
+    if ((mapped = (t_vec4f*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_WRITE)) == NULL)
+    {
+        return;
+    }
+    i = 0;
+    while (i < (int)scene->mesh.nvertices)
+    {
+        color_diff = vec4f_sub(&scene->actor.material.color_target[i], &mapped[i]);
+        color_diff = vec4f_scalar(&color_diff, dt * 2.0f);
+        mapped[i] = vec4f_add(&mapped[i], &color_diff);
+        ++i;
+    }
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }

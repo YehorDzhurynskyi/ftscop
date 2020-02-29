@@ -128,25 +128,32 @@ float   actor_radius_max_get(const t_actor *actor)
 
 void    actor_palette_set(t_actor *actor, const t_palette palette)
 {
+    actor->material.palette = palette;
     if (palette == Palette_RANDOM)
     {
-        mesh_colorize_rand(actor->mesh);
+        actor_colorize_random(actor);
     }
-
-    actor->material.palette = palette;
+    else if (palette == Palette_NATURE)
+    {
+        actor_colorize_nature(actor);
+    }
+    else if (palette == Palette_FIRE)
+    {
+        actor_colorize_fire(actor);
+    }
 }
 
-void    actor_init(t_actor *actor, const t_mesh *mesh, const t_texture *texture)
+void    actor_init(t_actor *actor, t_mesh *mesh, const t_texture *texture)
 {
     actor->mesh = mesh;
     actor->position = (t_vec3f){ 0.0f, 0.0f, 0.0f };
     actor->orientation = mat4f_identity();
     actor->scale = (t_vec3f){ 1.0f, 1.0f, 1.0f };
-    actor_palette_set(actor, Palette_RANDOM);
     actor->material.smooth = TRUE;
     actor->material.wireframe = FALSE;
     actor->material.grayscale = FALSE;
-
+    actor->material.color_target = malloc(sizeof(t_vec4f) * mesh->nvertices);
+    actor_palette_set(actor, Palette_RANDOM);
     glGenTextures(1, &actor->material.texture);
     glBindTexture(GL_TEXTURE_2D, actor->material.texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -160,5 +167,6 @@ void    actor_init(t_actor *actor, const t_mesh *mesh, const t_texture *texture)
 
 void    actor_delete(t_actor* actor)
 {
+    FT_SAFE_FREE(actor->material.color_target);
     glDeleteTextures(1, &actor->material.texture);
 }

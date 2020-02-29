@@ -56,12 +56,16 @@ t_mat4f transform_rotate_x(const t_mat4f* orien, const float rotx);
 t_mat4f transform_rotate_y(const t_mat4f* orien, const float roty);
 t_mat4f transform_rotate_z(const t_mat4f* orien, const float rotz);
 
+void    actor_init(t_actor* actor, t_mesh* mesh, const t_texture* texture);
+void    actor_delete(t_actor* actor);
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
 t_vec3f actor_radius_get(const t_actor *actor);
 float   actor_radius_max_get(const t_actor *actor);
 void    actor_palette_set(t_actor* actor, const t_palette palette);
-void    actor_init(t_actor* actor, const t_mesh* mesh, const t_texture* texture);
-void    actor_delete(t_actor* actor);
+
+void	actor_colorize_random(t_actor* actor);
+void    actor_colorize_nature(t_actor* actor);
+void    actor_colorize_fire(t_actor* actor);
 
 typedef struct s_scene  t_scene;
 struct  s_scene
@@ -74,5 +78,6 @@ struct  s_scene
 t_bool  scene_init(t_scene* scene, const char* objfile);
 void    scene_delete(t_scene *scene);
 void    scene_camera_reset(t_scene* scene);
+void    scene_update(t_scene* scene, float dt);
 
 #endif

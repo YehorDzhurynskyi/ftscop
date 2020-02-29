@@ -48,7 +48,6 @@ static t_bool   init_phong_program(t_gfx_program *program)
 
     program->phong.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
 	program->phong.u_location_is_smooth_mode_enabled = glGetUniformLocation(program->id, "u_is_smooth_mode_enabled");
-	program->phong.u_location_is_grayscale_mode_enabled = glGetUniformLocation(program->id, "u_is_grayscale_mode_enabled");
     program->phong.u_location_texture = glGetUniformLocation(program->id, "u_texture");
 	program->phong.u_location_palette = glGetUniformLocation(program->id, "u_palette");
     program->phong.a_location_position = glGetAttribLocation(program->id, "a_position");
@@ -59,7 +58,6 @@ static t_bool   init_phong_program(t_gfx_program *program)
 		program->phong.a_location_color < 0 ||
         program->phong.u_location_mvp < 0 ||
 		program->phong.u_location_is_smooth_mode_enabled < 0 ||
-		program->phong.u_location_is_grayscale_mode_enabled < 0 ||
 		program->phong.u_location_texture < 0 ||
         program->phong.u_location_palette < 0)
     {
