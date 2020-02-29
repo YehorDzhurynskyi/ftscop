@@ -15,17 +15,26 @@
 #include <assert.h>
 #include "renderer/renderer.h"
 
-t_scene_interactor  input_interactor_init(const t_scene *scene)
+t_bool  scene_interactor_init(t_scene_interactor *interactor, const t_scene *scene)
 {
-    t_scene_interactor  interactor;
+    t_bool result;
 
-    interactor.scene_target = (t_scene*)scene;
-    interactor.actor_selected = NULL;
-    interactor.interaction_mode = TRANSLATION;
-    return (interactor);
+    interactor->scene_target = (t_scene*)scene;
+    interactor->actor_selected = NULL;
+    interactor->interaction_mode = TRANSLATION;
+    if ((result = renderer_init_gfx_interactor(interactor)) == TRUE)
+    {
+        scene_interactor_select_actor(interactor, &scene->actor);
+    }
+    return (result);
 }
 
-void    input_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor)
+void    scene_interactor_delete(t_scene_interactor *interactor)
+{
+    renderer_delete_gfx_interactor(interactor);
+}
+
+void    scene_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor)
 {
     t_gfx_program   *program;
 

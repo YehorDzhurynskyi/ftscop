@@ -52,12 +52,6 @@ t_bool          app_init(t_app* app)
         app_delete(app);
         return (FALSE);
     }
-    gladLoadGL();
-    if (!renderer_init(&g_gfx_ctx))
-    {
-        app_delete(app);
-        return (FALSE);
-    }
     return (TRUE);
 }
 

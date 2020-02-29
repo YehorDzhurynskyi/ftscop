@@ -11,19 +11,11 @@
 /* ************************************************************************** */
 
 #include "app.h"
-#include <glad/glad.h>
-#include "ft.h"
-#include "objparser/objparser.h"
-#include "input/input.h"
 #include "renderer/renderer.h"
-#include <stdlib.h>
-#include "stdio.h"
-#include <assert.h>
-#include <time.h>
 
 #ifdef WIN32
 #undef main
-
+#include "stdio.h"
 char* ft_read_file(const char* filename)
 {
     FILE* file = fopen(filename, "rb");
@@ -68,38 +60,57 @@ char* ft_read_file(const char* filename)
 }
 #endif
 
+static t_bool   startup(t_app *app,
+                        t_scene *scene,
+                        t_scene_interactor *interactor,
+                        const char *filename)
+{
+    if (app_init(app))
+    {
+        if (gladLoadGL() && renderer_init(&g_gfx_ctx))
+        {
+            if (scene_init(scene, filename))
+            {
+                if (scene_interactor_init(interactor, scene))
+                {
+                    return (TRUE);
+                }
+                scene_delete(scene);
+            }
+            renderer_delete(&g_gfx_ctx);
+        }
+        app_delete(app);
+    }
+    return (FALSE);
+}
+
+static void     shutdown(t_app* app,
+                         t_scene* scene,
+                         t_scene_interactor* interactor)
+{
+    scene_interactor_delete(interactor);
+    scene_delete(scene);
+    renderer_delete(&g_gfx_ctx);
+    app_delete(app);
+}
+
 int main(int argc, char* argv[])
 {
-    srand(time(NULL)); // just for rofl
+    t_app               app;
+    t_scene             scene;
+    t_scene_interactor  interactor;
 
     if (argc <= 1)
     {
-        perror("Incorrect number of arguments");
+        // TODO: print ("Incorrect number of arguments");
         return (-1);
     }
-
-    t_app app;
-    if (!app_init(&app))
+    srand(time(NULL));
+    if (!startup(&app, &scene, &interactor, argv[1]))
     {
-        // TODO: print ("Couldn't initialize SDL application");
+        perror("Application error on startup!");
         return (-1);
     }
-
-    t_scene scene;
-    if (!scene_init(&scene, argv[1]))
-    {
-        // TODO: delete resources
-        return (-1);
-    }
-
-    t_scene_interactor interactor = input_interactor_init(&scene);
-    if (!renderer_init_gfx_interactor(&interactor))
-    {
-        assert("ERROR");
-        // TODO: release resources
-        return (-1);
-    }
-    input_interactor_select_actor(&interactor, &scene.actor);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -130,11 +141,7 @@ int main(int argc, char* argv[])
         elapsed_time += app.delta_time;
     }
 
-    scene_delete(&scene);
-    renderer_delete_gfx_interactor(&interactor);
-    renderer_delete(&g_gfx_ctx);
-
-    app_delete(&app);
+    shutdown(&app, &scene, &interactor);
 
     // TODO: check system("leaks")
     return (0);
