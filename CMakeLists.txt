@@ -26,9 +26,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/SDL2-src
 
 add_executable(scop
     src/main.c
-
-    src/shader.h
-    src/shader.c
+    src/app.h
+    src/app.c
 
     src/scene/scene.h
     src/scene/scene.c
@@ -40,6 +39,9 @@ add_executable(scop
 
     src/renderer/renderer.h
     src/renderer/renderer.c
+    src/renderer/shader.h
+    src/renderer/shader.c
+    src/renderer/texture.c
     src/renderer/renderer_scene.c
     src/renderer/renderer_interactor.c
     src/renderer/renderer_interactor_translation.c
@@ -48,7 +50,6 @@ add_executable(scop
     src/renderer/renderer_procedure.c
     src/renderer/renderer_gfx_init.c
     src/renderer/renderer_gfx_delete.c
-    src/renderer/texture.c
 
     src/input/input.h
     src/input/input_camera_handler.c

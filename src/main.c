@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <SDL.h>
+#include "app.h"
 #include <glad/glad.h>
 #include "ft.h"
 #include "objparser/objparser.h"
@@ -22,13 +22,8 @@
 #include <time.h>
 
 #ifdef WIN32
-# undef main
-#endif
+#undef main
 
-float g_dt;
-t_bool g_IsRunning;
-
-#ifdef WIN32
 char* ft_read_file(const char* filename)
 {
     FILE* file = fopen(filename, "rb");
@@ -73,96 +68,6 @@ char* ft_read_file(const char* filename)
 }
 #endif
 
-static void poll_events(t_scene_interactor *interactor)
-{
-    SDL_Event eventBuffer[4];
-    SDL_PumpEvents();
-    while (TRUE)
-    {
-        const int eventsCount = SDL_PeepEvents(eventBuffer,
-                                               sizeof(eventBuffer) / sizeof(eventBuffer[0]),
-                                               SDL_GETEVENT,
-                                               SDL_FIRSTEVENT,
-                                               SDL_LASTEVENT);
-        if (eventsCount <= 0)
-        {
-            if (eventsCount < 0)
-            {
-                perror("SDL event handling error");
-                g_IsRunning = FALSE;
-            }
-
-            break;
-        }
-
-        for (int index = 0; index < eventsCount; ++index)
-        {
-            SDL_Event* event = &eventBuffer[index];
-            switch (event->type)
-            {
-            case SDL_KEYDOWN:
-            {
-                if (event->key.state == SDL_PRESSED)
-                {
-                    switch (event->key.keysym.sym)
-                    {
-                    case SDLK_LEFTBRACKET:
-                    {
-                        if (interactor->actor_selected == NULL)
-                        {
-                            interactor->actor_selected = &interactor->scene_target->actor;
-                        }
-                    } break;
-                    case SDLK_RIGHTBRACKET:
-                    {
-                        if (interactor->actor_selected == NULL)
-                        {
-                            interactor->actor_selected = &interactor->scene_target->actor;
-                        }
-                    } break;
-                    case SDLK_z:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-                            const t_palette next_palette = (interactor->actor_selected->material.palette + 1) % Palette_COUNT;
-                            actor_palette_set(interactor->actor_selected, next_palette);
-						}
-                    } break;
-                    case SDLK_h:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-							interactor->actor_selected->material.wireframe = !interactor->actor_selected->material.wireframe;
-						}
-                    } break;
-                    case SDLK_g:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-							interactor->actor_selected->material.grayscale = !interactor->actor_selected->material.grayscale;
-						}
-                    } break;
-                    case SDLK_f:
-                    {
-                        if (interactor->actor_selected != NULL)
-                        {
-							interactor->actor_selected->material.smooth = !interactor->actor_selected->material.smooth;
-						}
-                    } break;
-                    }
-                }
-            } break;
-            case SDL_QUIT:
-            {
-                // TODO: it doesn't work properly
-                // X or alt+f4 don't work
-                g_IsRunning = FALSE;
-            } break;
-            }
-        }
-    }
-}
-
 int main(int argc, char* argv[])
 {
     srand(time(NULL)); // just for rofl
@@ -173,37 +78,10 @@ int main(int argc, char* argv[])
         return (-1);
     }
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+    t_app app;
+    if (!app_init(&app))
     {
-        perror("Couldn't initialize SDL");
-        return (-1);
-    }
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
-
-    SDL_Window* win = SDL_CreateWindow("Scop", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIN_SZ_X, WIN_SZ_Y, SDL_WINDOW_OPENGL);
-	if (!win)
-		return (-1);
-
-    SDL_GLContext* glctx = SDL_GL_CreateContext(win);
-	if (!glctx)
-		return (-1);
-
-    gladLoadGL();
-
-    if (!renderer_init(&g_gfx_ctx))
-    {
-        assert("ERROR");
-        // TODO: release resources
+        // TODO: print ("Couldn't initialize SDL application");
         return (-1);
     }
 
@@ -230,11 +108,11 @@ int main(int argc, char* argv[])
     Uint64	freq = SDL_GetPerformanceFrequency();
     Uint64	start;
     float elapsed_time = 0.0f;
-    g_IsRunning = TRUE;
-    while (g_IsRunning)
+    app.is_running = TRUE;
+    while (app.is_running)
     {
         input_handle(&interactor);
-        poll_events(&interactor);
+        app_poll_events(&app, &interactor);
 
         // tick
 
@@ -247,18 +125,16 @@ int main(int argc, char* argv[])
         renderer_draw_scene(&scene);
         renderer_draw_interactor(&interactor);
 
-        SDL_GL_SwapWindow(win);
-        g_dt = (SDL_GetPerformanceCounter() - start) / (float)freq;
-        elapsed_time += g_dt;
+        SDL_GL_SwapWindow(app.win);
+        app.delta_time = (SDL_GetPerformanceCounter() - start) / (float)freq;
+        elapsed_time += app.delta_time;
     }
 
     scene_delete(&scene);
     renderer_delete_gfx_interactor(&interactor);
     renderer_delete(&g_gfx_ctx);
 
-    SDL_GL_DeleteContext(glctx);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
+    app_delete(&app);
 
     // TODO: check system("leaks")
     return (0);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
+#include "app.h"
 #include "renderer/renderer.h"
 
 t_bool  scene_init(t_scene* scene, const char *objfile)

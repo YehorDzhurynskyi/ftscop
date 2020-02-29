@@ -16,9 +16,6 @@
 # include "ft.h"
 # include "mesh.h"
 
-# define WIN_SZ_X 800
-# define WIN_SZ_Y 600
-
 typedef struct s_texture    t_texture;
 
 typedef struct s_camera t_camera;
