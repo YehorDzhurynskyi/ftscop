@@ -28,6 +28,7 @@ add_executable(scop
     src/main.c
     src/app.h
     src/app.c
+    src/app_poll_events.c
 
     src/scene/scene.h
     src/scene/scene.c
