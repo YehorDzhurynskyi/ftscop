@@ -32,6 +32,10 @@ t_bool g_IsRunning;
 char* ft_read_file(const char* filename)
 {
     FILE* file = fopen(filename, "rb");
+    if (!file)
+    {
+        return (NULL);
+    }
 
     t_byte* buffer = NULL;
 
@@ -68,23 +72,6 @@ char* ft_read_file(const char* filename)
     return (buffer);
 }
 #endif
-
-static t_bool load_obj_file(const char* filename, t_mesh* out_mesh)
-{
-    t_byte* buffer;
-
-    buffer = (t_byte*)ft_read_file(filename);
-	// TODO: validate failed file reading
-    t_bool result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh);
-    free(buffer);
-
-    if (result)
-    {
-        mesh_align(out_mesh);
-    }
-
-    return (result);
-}
 
 static void poll_events(t_scene_interactor *interactor)
 {
@@ -123,14 +110,14 @@ static void poll_events(t_scene_interactor *interactor)
                     {
                         if (interactor->actor_selected == NULL)
                         {
-                            interactor->actor_selected = interactor->scene_target->actors;
+                            interactor->actor_selected = &interactor->scene_target->actor;
                         }
                     } break;
                     case SDLK_RIGHTBRACKET:
                     {
                         if (interactor->actor_selected == NULL)
                         {
-                            interactor->actor_selected = interactor->scene_target->actors;
+                            interactor->actor_selected = &interactor->scene_target->actor;
                         }
                     } break;
                     case SDLK_z:
@@ -176,26 +163,6 @@ static void poll_events(t_scene_interactor *interactor)
     }
 }
 
-const int g_win_width = 800;
-const int g_win_height = 600;
-
-static t_camera create_default_camera()
-{
-    t_camera cam;
-
-    t_vec3f pos = (t_vec3f){ 5.0f, 5.0f, 5.0f }; // TODO: set pos according to maximum radius of input meshes
-    t_vec3f poi = (t_vec3f){ 0.0f, 0.0f, 0.0f };
-    t_vec3f up = (t_vec3f){0.0f, 1.0f, 0.0f};
-
-    camera_look_at(&cam, &pos, &poi, &up);
-    cam.fov = 90.0f;
-    cam.ar = g_win_width / (float)g_win_height;
-    cam.near = 0.1f;
-    cam.far = 100.0f;
-
-    return (cam);
-}
-
 int main(int argc, char* argv[])
 {
     srand(time(NULL)); // just for rofl
@@ -223,7 +190,7 @@ int main(int argc, char* argv[])
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
-    SDL_Window* win = SDL_CreateWindow("Scop", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, g_win_width, g_win_height, SDL_WINDOW_OPENGL);
+    SDL_Window* win = SDL_CreateWindow("Scop", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIN_SZ_X, WIN_SZ_Y, SDL_WINDOW_OPENGL);
 	if (!win)
 		return (-1);
 
@@ -240,60 +207,11 @@ int main(int argc, char* argv[])
         return (-1);
     }
 
-    t_mesh mesh;
-    mesh = mesh_init();
-
-    // TODO: remove magic
-    mesh.vertices = malloc(sizeof(t_vec4f) * 10000);
-    mesh.color_tints = malloc(sizeof(t_vec4f) * 10000);
-    mesh.nvertices = 0;
-    mesh.faces = malloc(sizeof(int) * 3 * 10000);
-    mesh.nfaces = 0;
-
-    if ((g_IsRunning = load_obj_file(argv[1], &mesh)) != TRUE)
-    {
-        perror("Invalid input file");
-        return (-1);
-    }
-
-    const t_bool res = renderer_init_gfx_mesh(&mesh);
-
-    FT_SAFE_FREE(mesh.faces);
-    FT_SAFE_FREE(mesh.vertices);
-    FT_SAFE_FREE(mesh.color_tints);
-
-    if (!res)
-    {
-        assert("ERROR");
-        // TODO: release resources
-        return (-1);
-    }
-
     t_scene scene;
+    if (!scene_init(&scene, argv[1]))
     {
-        // TODO: create abstraction for scene creation
-
-        scene.camera = create_default_camera();
-
-        scene.actors = malloc(sizeof(t_actor) * 10);
-        scene.nactors = 1;
-
-        scene.meshes = malloc(sizeof(t_mesh) * 10);
-        scene.nmeshes = 1;
-
-        memcpy(scene.meshes, &mesh, sizeof(t_mesh));
-
-        t_texture t;
-        if (!texture_load_bmp("squidward.bmp", &t))
-        {
-            // TODO: delete all resources
-            // TODO: print error
-            return (-1);
-        }
-
-        actor_init(scene.actors, scene.meshes, &t);
-
-        texture_delete(&t);
+        // TODO: delete resources
+        return (-1);
     }
 
     t_scene_interactor interactor = input_interactor_init(&scene);
@@ -303,7 +221,7 @@ int main(int argc, char* argv[])
         // TODO: release resources
         return (-1);
     }
-    input_interactor_select_actor(&interactor, scene.actors);
+    input_interactor_select_actor(&interactor, &scene.actor);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -312,6 +230,7 @@ int main(int argc, char* argv[])
     Uint64	freq = SDL_GetPerformanceFrequency();
     Uint64	start;
     float elapsed_time = 0.0f;
+    g_IsRunning = TRUE;
     while (g_IsRunning)
     {
         input_handle(&interactor);

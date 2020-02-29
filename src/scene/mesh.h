@@ -59,8 +59,9 @@ struct  s_mesh
     // GLuint      ibo_lines;
 };
 
-t_mesh  mesh_init(void);
+t_bool  mesh_load_objfile(const char* filename, t_mesh* out_mesh);
+void    mesh_delete(t_mesh* mesh);
 void    mesh_align(t_mesh *mesh);
-void	mesh_colorize_rand(t_mesh *mesh);
+void    mesh_colorize_rand(t_mesh *mesh);
 
 #endif

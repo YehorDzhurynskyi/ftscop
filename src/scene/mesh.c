@@ -11,15 +11,13 @@
 /* ************************************************************************** */
 
 #include "mesh.h"
+#include "renderer/renderer.h"
 #include <math.h>
 #include <assert.h>
 
-t_mesh  mesh_init(void)
+void    mesh_delete(t_mesh* mesh)
 {
-    t_mesh  mesh;
-
-    ft_memset(&mesh, 0x0, sizeof(t_mesh));
-    return (mesh);
+    renderer_delete_gfx_mesh(mesh);
 }
 
 static t_vec4f determine_origin(const t_mesh *mesh)
@@ -83,4 +81,39 @@ void	mesh_colorize_rand(t_mesh *mesh)
     }
 
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+}
+
+t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
+{
+    t_bool  result;
+    t_byte *buffer;
+
+    if ((buffer = (t_byte*)ft_read_file(filename)) == FALSE)
+    {
+        // TODO: print "Invalid file error"
+        return (FALSE);
+    }
+    // TODO: remove magic
+    ft_memset(out_mesh, 0x0, sizeof(t_mesh));
+    out_mesh->vertices = malloc(sizeof(t_vec4f) * 10000);
+    out_mesh->color_tints = malloc(sizeof(t_vec4f) * 10000);
+    out_mesh->faces = malloc(sizeof(int) * 3 * 10000);
+    if (result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh))
+    {
+        mesh_align(out_mesh);
+        result = renderer_init_gfx_mesh(out_mesh);
+        if (!result)
+        {
+            // TODO: print failed on mesh's graphical context initialization
+        }
+        FT_SAFE_FREE(out_mesh->faces);
+        FT_SAFE_FREE(out_mesh->vertices);
+        FT_SAFE_FREE(out_mesh->color_tints);
+    }
+    else
+    {
+        // TODO: print invalid file format error
+    }
+    free(buffer);
+    return (result);
 }

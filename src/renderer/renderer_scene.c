@@ -82,10 +82,5 @@ void        renderer_draw_scene(const t_scene *scene)
     proj = camera_calculate_matrix_proj(&scene->camera);
     view = mat4f_mat4f_mult(&view, &proj);
     renderer_draw_grid(&view);
-
-    i = 0;
-    while (i < scene->nactors)
-    {
-        renderer_draw_actor(&scene->actors[i++], &view);
-    }
+    renderer_draw_actor(&scene->actor, &view);
 }

@@ -16,6 +16,9 @@
 # include "ft.h"
 # include "mesh.h"
 
+# define WIN_SZ_X 800
+# define WIN_SZ_Y 600
+
 typedef struct s_texture    t_texture;
 
 typedef struct s_camera t_camera;
@@ -67,14 +70,12 @@ typedef struct s_scene  t_scene;
 struct  s_scene
 {
     t_camera    camera;
-
-    t_mesh      *meshes;
-    size_t      nmeshes;
-
-    t_actor     *actors;
-    size_t      nactors;
+    t_mesh      mesh;
+    t_actor     actor;
 };
 
+t_bool  scene_init(t_scene* scene, const char* objfile);
 void    scene_delete(t_scene *scene);
+void    scene_camera_reset(t_scene* scene);
 
 #endif
