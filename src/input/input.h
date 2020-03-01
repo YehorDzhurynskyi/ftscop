@@ -35,11 +35,13 @@ struct  s_scene_interactor
     GLuint                          vbo_outline_color;
 };
 
-void	input_handle(t_scene_interactor *interactor);
-void	input_handle_camera(t_camera *camera);
+typedef struct s_app    t_app;
 
-t_bool              scene_interactor_init(t_scene_interactor* interactor, const t_scene* scene);
-void                scene_interactor_delete(t_scene_interactor* interactor);
-void                scene_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor);
+void	input_handle(t_app *app, t_scene_interactor *interactor);
+void	input_handle_camera(t_app* app, t_camera *camera);
+
+t_bool  scene_interactor_init(t_scene_interactor* interactor, const t_scene* scene);
+void    scene_interactor_delete(t_scene_interactor* interactor);
+void    scene_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor);
 
 #endif

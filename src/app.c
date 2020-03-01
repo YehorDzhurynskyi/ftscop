@@ -78,7 +78,7 @@ void            app_loop(t_app* app, t_scene *scene, t_scene_interactor *interac
     while (app->is_running)
     {
         start = SDL_GetPerformanceCounter();
-        input_handle(interactor);
+        input_handle(app, interactor);
         app_poll_events(app, interactor);
         scene_update(scene, app->delta_time);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
