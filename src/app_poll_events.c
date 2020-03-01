@@ -37,7 +37,7 @@ static void process_key_event(SDL_Event* event, t_app* app, t_scene_interactor* 
             event->key.keysym.sym == SDLK_RIGHTBRACKET)
             interactor->actor_selected = &interactor->scene_target->actor;
     }
-    if (event->key.keysym.sym == SDLK_r)
+    if (event->key.keysym.sym == SDLK_j)
         scene_camera_reset(interactor->scene_target);
 }
 
