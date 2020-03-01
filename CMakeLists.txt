@@ -24,7 +24,7 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/SDL2-src
                  ${CMAKE_CURRENT_BINARY_DIR}/SDL2-build
                  EXCLUDE_FROM_ALL)
 
-add_library(scop STATIC
+add_executable(scop
     src/main.c
     src/app.h
     src/app.c
@@ -188,6 +188,7 @@ if (UNIX)
 	)
 endif ()
 
+if (0)
 add_executable(scop_test
     test/scop_test_main.cpp
     test/scop_test.cpp
@@ -207,6 +208,7 @@ set_target_properties(scop_test
         CXX_EXTENSIONS NO
 )
 add_test(NAME scoptest COMMAND scop_test)
+endif()
 
 add_custom_command(TARGET scop POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:SDL2> $<TARGET_FILE_DIR:scop>

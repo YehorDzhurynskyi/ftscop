@@ -98,7 +98,9 @@ static void     shutdown(t_app* app,
     app_delete(app);
 }
 
-int scopmain(int argc, char* argv[])
+// TODO: print error messages on invalid parsing
+// TODO: remove magic numbers in mesh initialization
+int main(int argc, char* argv[])
 {
     t_app               app;
     t_scene             scene;
