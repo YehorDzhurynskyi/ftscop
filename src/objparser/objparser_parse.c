@@ -60,7 +60,8 @@ t_bool objparser_parse_mesh(const t_byte *buff, const size_t sz, t_mesh *out)
     ctx.end = (t_byte*)&buff[sz];
     ctx.total_size = sz;
     ctx.mesh = out;
-    while (ctx.current < ctx.end)
+    ctx.invalid = FALSE;
+    while (!objparser_eos(&ctx))
     {
         objparser_skip_ws(&ctx);
         if (*ctx.current == '#')
@@ -104,10 +105,14 @@ t_bool objparser_parse_mesh(const t_byte *buff, const size_t sz, t_mesh *out)
         else OBJPARSER_READ(f)
         else
         {
-            assert(!"Unhandled case");
-            // TODO: release mesh
+            mesh_delete(out);
             return (FALSE);
         }
+    }
+    if (ctx.invalid || !out->nvertices || !out->nfaces)
+    {
+        mesh_delete(out);
+        return (FALSE);
     }
     return (TRUE);
 }

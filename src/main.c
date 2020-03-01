@@ -98,7 +98,7 @@ static void     shutdown(t_app* app,
     app_delete(app);
 }
 
-int main(int argc, char* argv[])
+int scopmain(int argc, char* argv[])
 {
     t_app               app;
     t_scene             scene;

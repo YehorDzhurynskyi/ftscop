@@ -30,11 +30,11 @@ struct  s_objparser_ctx
     t_byte *end;
     size_t  total_size;
 
+    t_bool  invalid;
     t_mesh  *mesh;
 };
 
 t_bool  objparser_parse_mesh(const t_byte* buff, const size_t sz, t_mesh* out);
-t_bool  objparser_parse_material(const t_byte* buff, const size_t sz, t_material* out);
 
 /*
 ** Common

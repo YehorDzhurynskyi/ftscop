@@ -19,17 +19,11 @@ OBJPARSER_NOT_IMPLEMENTED(vn)
 
 void objparser_read_v(t_objparser_ctx *ctx)
 {
+    assert(!objparser_eos(ctx));
     ctx->mesh->vertices[ctx->mesh->nvertices].x = objparser_read_float(ctx);
     ctx->mesh->vertices[ctx->mesh->nvertices].y = objparser_read_float(ctx);
     ctx->mesh->vertices[ctx->mesh->nvertices].z = objparser_read_float(ctx);
-#if 1
-    // TODO: handle optional W coord
-    ctx->mesh->vertices[ctx->mesh->nvertices].w = 1.0f;
-#else
-    ctx->mesh->vertices[ctx->mesh->nvertices].w = objparser_read_float(ctx);
-#endif
-    // TODO: could be followed by a color in r, g, b [0.0 - 1.0] format
+    ctx->mesh->vertices[ctx->mesh->nvertices].w = objparser_next_is_float(ctx) ? objparser_read_float(ctx) : 1.0f;
     ctx->mesh->color_tints[ctx->mesh->nvertices] = (t_vec4f) { 1.0f, 1.0f, 1.0f, 1.0f };
-
     ctx->mesh->nvertices++;
 }

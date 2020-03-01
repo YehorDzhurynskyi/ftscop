@@ -24,7 +24,7 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/SDL2-src
                  ${CMAKE_CURRENT_BINARY_DIR}/SDL2-build
                  EXCLUDE_FROM_ALL)
 
-add_executable(scop
+add_library(scop STATIC
     src/main.c
     src/app.h
     src/app.c
@@ -122,6 +122,31 @@ function(epi_pack_sources)
     endforeach()
 endfunction()
 
+# Download and unpack googletest at configure time
+configure_file(gtest_Extern.txt.in googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+if(result)
+  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+if(result)
+  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+endif()
+
+# Prevent overriding the parent project's compiler/linker
+# settings on Windows
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
+                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
+                 EXCLUDE_FROM_ALL)
+
 get_target_property(scop_SRCs scop SOURCES)
 epi_pack_sources(${scop_SRCs})
 
@@ -130,6 +155,12 @@ target_link_libraries(scop
         glad
         SDL2
 )
+
+set_target_properties(scop
+	PROPERTIES
+		LINKER_LANGUAGE "C"
+)
+
 
 target_include_directories(scop
     PUBLIC
@@ -156,6 +187,26 @@ if (UNIX)
 			-Wall -Werror -Wunused
 	)
 endif ()
+
+add_executable(scop_test
+    test/scop_test_main.cpp
+    test/scop_test.cpp
+    test/scop_test.h
+)
+target_link_libraries(scop_test
+    PUBLIC
+        scop
+        gtest
+)
+
+set_target_properties(scop_test
+	PROPERTIES
+		LINKER_LANGUAGE "CXX"
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+)
+add_test(NAME scoptest COMMAND scop_test)
 
 add_custom_command(TARGET scop POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:SDL2> $<TARGET_FILE_DIR:scop>

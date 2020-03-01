@@ -15,6 +15,8 @@
 float objparser_read_float(t_objparser_ctx *ctx)
 {
     assert(objparser_isvalid(ctx));
+    if (objparser_eos(ctx))
+        return (0.0f);
 
     double	nb;
     double	f;
@@ -23,6 +25,8 @@ float objparser_read_float(t_objparser_ctx *ctx)
 
     sign = *ctx->current == '-' ? -1 : 1;
     nb = (float)objparser_read_int(ctx);
+    if (objparser_eos(ctx))
+        return (0.0f);
     if (*ctx->current != '.')
     {
         objparser_skip_ws(ctx);
@@ -38,4 +42,13 @@ float objparser_read_float(t_objparser_ctx *ctx)
     }
     objparser_skip_ws(ctx);
     return (nb + (f * sign));
+}
+
+t_bool  objparser_next_is_float(t_objparser_ctx* ctx)
+{
+    t_objparser_ctx temp;
+
+    temp = *ctx;
+    objparser_read_float(&temp);
+    return (!temp.invalid);
 }

@@ -21,6 +21,7 @@ void    mesh_delete(t_mesh* mesh)
     FT_SAFE_FREE(mesh->vertices);
     FT_SAFE_FREE(mesh->color_tints);
     renderer_delete_gfx_mesh(mesh);
+    ft_memset(mesh, 0x0, sizeof(t_mesh));
 }
 
 static t_vec4f determine_origin(const t_mesh *mesh)

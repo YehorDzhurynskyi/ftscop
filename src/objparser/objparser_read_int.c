@@ -15,6 +15,8 @@
 int objparser_read_int(t_objparser_ctx *ctx)
 {
     assert(objparser_isvalid(ctx));
+    if (objparser_eos(ctx))
+        return (0);
 
     int     nb;
     int     sign;
@@ -28,8 +30,12 @@ int objparser_read_int(t_objparser_ctx *ctx)
     }
     else if (*ctx->current == '+')
         ctx->current++;
+    ctx->invalid = TRUE;
     while (*ctx->current >= '0' && *ctx->current <= '9')
+    {
         nb = nb * 10 + *ctx->current++ - '0';
+        ctx->invalid = FALSE;
+    }
     objparser_skip_ws(ctx);
     return (nb * sign);
 }

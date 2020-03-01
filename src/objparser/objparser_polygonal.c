@@ -15,32 +15,44 @@
 OBJPARSER_NOT_IMPLEMENTED(p)
 OBJPARSER_NOT_IMPLEMENTED(l)
 
-void objparser_read_f(t_objparser_ctx *ctx)
+static void form_triangle_fan(t_objparser_ctx* ctx, int *face, int count)
 {
-    // TODO: test cases "f 4 3 1 {EOF}", "f 4 3 1{EOF}"
-    int face[4];
-    int index = 0;
+    int temp[3];
+    int i;
+
+    i = 0;
+    while (i < count)
+    {
+        temp[0] = face[2 + i];
+        temp[1] = face[3 + i];
+        temp[2] = face[0];
+        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, temp, sizeof(int) * 3);
+        ++i;
+    }
+}
+
+void        objparser_read_f(t_objparser_ctx *ctx)
+{
+    assert(!objparser_eos(ctx));
+    int face[256];
+    int index;
+
+    index = 0;
     while (ctx->current < ctx->end && ft_isdigit(*ctx->current))
     {
-        const int vertexid = objparser_read_int(ctx);
-        assert(vertexid > 0); // TODO: handle negative values
-        face[index++] = vertexid - 1;
+        face[index++] = objparser_read_int(ctx) - 1;
     }
-
-    assert(index == 3 || index == 4);
-    if (index == 3)
+    if (index < 3)
+    {
+        ctx->invalid = TRUE;
+        return ;
+    }
+    if (index >= 3)
     {
         ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, face, sizeof(int) * 3);
-    }
-    else if (index == 4)
-    {
-        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, face, sizeof(int) * 3);
-        int temp[] = { face[2], face[3], face[0] };
-        ft_memcpy(ctx->mesh->faces + 3 * ctx->mesh->nfaces++, temp, sizeof(int) * 3);
-    }
-    else
-    {
-        // NOTE: convert to triangles to handle > 4 faces
-        assert(!"Unhandled case"); // TODO: handle
+        if (index > 3)
+        {
+            form_triangle_fan(ctx, face, index - 3);
+        }
     }
 }
