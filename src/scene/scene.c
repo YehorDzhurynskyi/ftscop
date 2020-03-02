@@ -24,7 +24,6 @@ t_bool  scene_init(t_scene* scene, const char *objfile)
     }
     if (!texture_load_bmp("squidward.bmp", &t))
     {
-        // TODO: test error path
         perror("Texture loading error!");
         mesh_delete(&scene->mesh);
         return (FALSE);

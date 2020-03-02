@@ -16,7 +16,6 @@
 # include "ft.h"
 # include <glad/glad.h>
 
-typedef enum e_palette	t_palette;
 enum e_palette
 {
     Palette_RANDOM,
@@ -30,12 +29,12 @@ enum e_palette
 typedef struct s_material   t_material;
 struct  s_material
 {
-	t_bool		wireframe;
-	t_bool		smooth;
-	t_bool		grayscale;
-	t_palette	palette;
-    GLuint      texture;
-    t_vec4f     *color_target;
+	t_bool			wireframe;
+	t_bool			smooth;
+	t_bool			grayscale;
+	enum e_palette	palette;
+    GLuint      	texture;
+    t_vec4f     	*color_target;
 };
 
 typedef struct s_mesh   t_mesh;

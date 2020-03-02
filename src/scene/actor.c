@@ -126,7 +126,7 @@ float   actor_radius_max_get(const t_actor *actor)
     return (FT_MAX(r.x, FT_MAX(r.y, r.z)));
 }
 
-void    actor_palette_set(t_actor *actor, const t_palette palette)
+void    actor_palette_set(t_actor *actor, const enum e_palette palette)
 {
     actor->material.palette = palette;
     if (palette == Palette_RANDOM)

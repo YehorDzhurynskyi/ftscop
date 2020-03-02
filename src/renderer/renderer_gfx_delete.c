@@ -12,24 +12,24 @@
 
 #include "renderer.h"
 
-void    renderer_delete_gfx_mesh(t_mesh *mesh)
+void	renderer_delete_gfx_mesh(t_mesh *mesh)
 {
-    if (mesh->vbo_vertex)
-        glDeleteBuffers(1, &mesh->vbo_vertex);
-    if (mesh->vbo_color_tint)
-        glDeleteBuffers(1, &mesh->vbo_color_tint);
-    if (mesh->vbo_color)
-        glDeleteBuffers(1, &mesh->vbo_color);
-    if (mesh->ibo_faces)
-	    glDeleteBuffers(1, &mesh->ibo_faces);
-    if (mesh->ibo_wireframe)
-	    glDeleteBuffers(1, &mesh->ibo_wireframe);
-    if (mesh->vao)
-        glDeleteVertexArrays(1, &mesh->vao);
+	if (mesh->vbo_vertex)
+		glDeleteBuffers(1, &mesh->vbo_vertex);
+	if (mesh->vbo_color_tint)
+		glDeleteBuffers(1, &mesh->vbo_color_tint);
+	if (mesh->vbo_color)
+		glDeleteBuffers(1, &mesh->vbo_color);
+	if (mesh->ibo_faces)
+		glDeleteBuffers(1, &mesh->ibo_faces);
+	if (mesh->ibo_wireframe)
+		glDeleteBuffers(1, &mesh->ibo_wireframe);
+	if (mesh->vao)
+		glDeleteVertexArrays(1, &mesh->vao);
 }
 
-void    renderer_delete_gfx_interactor(t_scene_interactor *interactor)
+void	renderer_delete_gfx_interactor(t_scene_interactor *interactor)
 {
-    glDeleteBuffers(1, &interactor->vbo_outline_color);
-    glDeleteVertexArrays(1, &interactor->vao);
+	glDeleteBuffers(1, &interactor->vbo_outline_color);
+	glDeleteVertexArrays(1, &interactor->vao);
 }

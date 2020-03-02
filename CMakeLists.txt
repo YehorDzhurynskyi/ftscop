@@ -189,6 +189,12 @@ if (UNIX)
 endif ()
 
 if (0)
+set_target_properties(gtest
+	PROPERTIES
+		LINKER_LANGUAGE "CXX"
+        CXX_STANDARD 17
+)
+
 add_executable(scop_test
     test/scop_test_main.cpp
     test/scop_test.cpp

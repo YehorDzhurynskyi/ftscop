@@ -119,6 +119,6 @@ int main(int argc, char* argv[])
     }
     app_loop(&app, &scene, &interactor);
     shutdown(&app, &scene, &interactor);
-    system("leaks scop");
+    system("leaks scop"); // TODO: remove
     return (0);
 }

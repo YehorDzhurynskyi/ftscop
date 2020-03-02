@@ -61,7 +61,7 @@ void    actor_delete(t_actor* actor);
 t_mat4f actor_calculate_matrix_model(const t_actor *actor);
 t_vec3f actor_radius_get(const t_actor *actor);
 float   actor_radius_max_get(const t_actor *actor);
-void    actor_palette_set(t_actor* actor, const t_palette palette);
+void    actor_palette_set(t_actor* actor, const enum e_palette palette);
 
 void	actor_colorize_random(t_actor* actor);
 void    actor_colorize_nature(t_actor* actor);
