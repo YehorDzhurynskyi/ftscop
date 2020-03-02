@@ -12,6 +12,7 @@
 
 #include "app.h"
 #include "renderer/renderer.h"
+#include "time.h"
 
 #ifdef WIN32
 #undef main
@@ -118,6 +119,6 @@ int main(int argc, char* argv[])
     }
     app_loop(&app, &scene, &interactor);
     shutdown(&app, &scene, &interactor);
-    // TODO: check system("leaks")
+    system("leaks scop");
     return (0);
 }

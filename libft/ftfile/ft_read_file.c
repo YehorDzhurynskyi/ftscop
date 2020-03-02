@@ -12,34 +12,47 @@
 
 #include "libft.h"
 #include <fcntl.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #undef BUFF_SIZE
-#define BUFF_SIZE	1024
+#define BUFF_SIZE	4096
 
-char	*ft_read_file(const char *filename)
+static char	*myrealloc(char *oldptr, size_t oldsize, size_t newsize)
+{
+	char	*newptr;
+
+	newptr = (char*)malloc(newsize);
+	if (oldptr)
+	{
+		ft_memcpy(newptr, oldptr, oldsize);
+		free(oldptr);
+	}
+	return (newptr);
+}
+
+char		*ft_read_file(const char *filename, size_t *size)
 {
 	char	buff[BUFF_SIZE + 1];
 	int		fd;
 	ssize_t	ret;
 	char	*result;
-	char	*temp;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (NULL);
-	result = ft_strdup("");
+	result = NULL;
+	*size = 0;
 	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
 	{
-		buff[ret] = '\0';
-		temp = ft_strjoin(result, buff);
-		free(result);
-		result = temp;
+		result = (char*)myrealloc(result, *size, *size + ret + 1);
+		ft_memcpy(result + *size, buff, ret);
+		*size += ret;
+		result[*size] = '\0';
 	}
 	if (ret < 0)
 	{
 		free(result);
+		close(fd);
 		return (NULL);
 	}
 	close(fd);

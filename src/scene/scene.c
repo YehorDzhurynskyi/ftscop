@@ -15,7 +15,6 @@
 
 t_bool  scene_init(t_scene* scene, const char *objfile)
 {
-    t_bool      result;
     t_texture   t;
 
     if (mesh_load_objfile(objfile, &scene->mesh) == FALSE)

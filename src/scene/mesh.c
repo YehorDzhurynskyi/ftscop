@@ -12,8 +12,10 @@
 
 #include "mesh.h"
 #include "renderer/renderer.h"
+#include "objparser/objparser.h"
 #include <math.h>
 #include <assert.h>
+#include <stdio.h>
 
 void    mesh_delete(t_mesh* mesh)
 {
@@ -71,9 +73,10 @@ void    mesh_align(t_mesh *mesh)
 t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
 {
     t_bool  result;
+	size_t	filesize;
     t_byte *buffer;
 
-    if ((buffer = (t_byte*)ft_read_file(filename)) == FALSE)
+    if ((buffer = (t_byte*)ft_read_file(filename, &filesize)) == FALSE)
     {
         perror("Invalid file!");
         return (FALSE);
@@ -83,7 +86,7 @@ t_bool mesh_load_objfile(const char *filename, t_mesh *out_mesh)
     out_mesh->vertices = malloc(sizeof(t_vec4f) * 10000);
     out_mesh->color_tints = malloc(sizeof(t_vec4f) * 10000);
     out_mesh->faces = malloc(sizeof(int) * 3 * 10000);
-    if (result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh))
+    if ((result = objparser_parse_mesh(buffer, ft_strlen((const char*)buffer), out_mesh)) == TRUE)
     {
         mesh_align(out_mesh);
         result = renderer_init_gfx_mesh(out_mesh);

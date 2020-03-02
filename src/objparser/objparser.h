@@ -49,6 +49,7 @@ t_bool  objparser_skip_if_match_ex(t_objparser_ctx *ctx, const char *str, size_t
 
 int     objparser_read_int(t_objparser_ctx *ctx);
 float   objparser_read_float(t_objparser_ctx *ctx);
+t_bool	objparser_next_is_float(t_objparser_ctx *ctx);
 
 /*
 ** Commands

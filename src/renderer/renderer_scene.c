@@ -75,7 +75,6 @@ void        renderer_draw_scene(const t_scene *scene)
 {
     t_mat4f view;
     t_mat4f proj;
-    int     i;
 
     view = camera_calculate_matrix_view(&scene->camera);
     proj = camera_calculate_matrix_proj(&scene->camera);

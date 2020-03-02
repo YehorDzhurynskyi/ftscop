@@ -42,14 +42,18 @@ t_bool  texture_load_bmp(const char *filename, t_texture *texture)
 {
     t_byte      *raw;
     uint32_t    offset;
+	size_t		filesize;
+	t_bool		result;
 
     texture->raw = NULL;
-    raw = (t_byte*)ft_read_file(filename);
-    if (!raw || !parse_bmp_header(raw, texture, &offset) || !parse_bmp_body(&raw[offset], texture))
+    raw = (t_byte*)ft_read_file(filename, &filesize);
+    if (!raw)
     {
         return (FALSE);
     }
-    return (TRUE);
+	result = parse_bmp_header(raw, texture, &offset) && parse_bmp_body(&raw[offset], texture);
+	free(raw);
+    return (result);
 }
 
 void    texture_delete(t_texture* texture)

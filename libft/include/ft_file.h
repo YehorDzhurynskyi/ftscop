@@ -13,9 +13,11 @@
 #ifndef FT_FILE_H
 # define FT_FILE_H
 
+# include <stdlib.h>
+
 char	*ft_merge_file_names(const char *s1, const char *s2);
 char	*ft_get_dir_part(const char *filepath);
 char	*ft_get_basename_part(const char *filepath);
-char	*ft_read_file(const char *filename);
+char	*ft_read_file(const char *filename, size_t *size);
 
 #endif

@@ -91,10 +91,11 @@ GLuint  shader_load(const char *vert_filename, const char *frag_filename, const 
     const char  *vert_code;
     const char  *frag_code;
     const char  *geom_code;
+	size_t		filesize;
 
-    vert_code = ft_read_file(vert_filename);
-    frag_code = ft_read_file(frag_filename);
-    geom_code = !geom_filename ? NULL : ft_read_file(geom_filename);
+    vert_code = ft_read_file(vert_filename, &filesize);
+    frag_code = ft_read_file(frag_filename, &filesize);
+    geom_code = !geom_filename ? NULL : ft_read_file(geom_filename, &filesize);
     if (!vert_code || !frag_code || (geom_filename && !geom_code))
     {
         FT_SAFE_FREE(vert_code);
