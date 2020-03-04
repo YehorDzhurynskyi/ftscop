@@ -52,6 +52,12 @@ add_executable(scop
     src/renderer/renderer_procedure.c
     src/renderer/renderer_gfx_init.c
     src/renderer/renderer_gfx_delete.c
+    src/renderer/renderer_init_circle.c
+    src/renderer/renderer_init_cone.c
+    src/renderer/renderer_init_cube.c
+    src/renderer/renderer_init_grid.c
+    src/renderer/renderer_init_noshading.c
+    src/renderer/renderer_init_phong.c
 
     src/input/input.h
     src/input/input_camera_handler.c

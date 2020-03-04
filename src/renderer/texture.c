@@ -38,7 +38,7 @@ static t_bool   parse_bmp_body(const t_byte *raw, t_texture* texture)
     return (TRUE);
 }
 
-t_bool  texture_load_bmp(const char *filename, t_texture *texture)
+t_bool          texture_load_bmp(const char *filename, t_texture *texture)
 {
     t_byte      *raw;
     uint32_t    offset;
@@ -56,7 +56,7 @@ t_bool  texture_load_bmp(const char *filename, t_texture *texture)
     return (result);
 }
 
-void    texture_delete(t_texture* texture)
+void            texture_delete(t_texture* texture)
 {
     FT_SAFE_FREE(texture->raw);
 }

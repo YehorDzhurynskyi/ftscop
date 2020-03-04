@@ -49,16 +49,12 @@ static void	renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
 	glUniform1i(program->phong.u_location_palette, actor->material.palette);
 	glUniform1i(program->phong.u_location_is_smooth_mode_enabled, actor->material.smooth);
 	glBindTexture(GL_TEXTURE_2D, actor->material.texture);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->material.wireframe ?
+	actor->mesh->ibo_wireframe : actor->mesh->ibo_faces);
 	if (actor->material.wireframe)
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->ibo_wireframe);
 		glDrawElements(GL_LINES, actor->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
-	}
 	else
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->mesh->ibo_faces);
 		glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
-	}
 	glBindVertexArray(0);
 	glUseProgram(0);
 }

@@ -105,6 +105,13 @@ extern t_gfx_ctx    g_gfx_ctx;
 t_bool  renderer_init(t_gfx_ctx* ctx);
 void    renderer_delete(t_gfx_ctx* ctx);
 
+t_bool  renderer_init_noshading_program(t_gfx_program* program);
+t_bool  renderer_init_phong_program(t_gfx_program* program);
+t_bool  renderer_init_grid_program(t_gfx_program* program);
+t_bool  renderer_init_circle_program(t_gfx_program* program);
+t_bool  renderer_init_cone_program(t_gfx_program* program);
+t_bool  renderer_init_cube_program(t_gfx_program* program);
+
 t_bool  renderer_init_gfx_mesh(t_mesh *mesh);
 t_bool  renderer_init_gfx_interactor(t_scene_interactor *interactor);
 void    renderer_delete_gfx_mesh(t_mesh *mesh);

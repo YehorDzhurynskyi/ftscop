@@ -60,46 +60,52 @@ void	renderer_draw_cube(const t_mat4f *mvp, const t_vec4f *color, const float si
 	glUseProgram(0);
 }
 
+static void	do_draw(t_gfx_program *program, t_vec4f *b, int *i)
+{
+	GLuint	vao;
+	GLuint	buffers[3];
+
+	program = &g_gfx_ctx.pool.noshading;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glGenBuffers(3, buffers);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), i, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(t_vec4f), b, GL_STATIC_DRAW);
+	glVertexAttribPointer(program->noshading.a_location_position,
+	4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(program->noshading.a_location_position);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(t_vec4f), b, GL_STATIC_DRAW);
+	glVertexAttribPointer(program->noshading.a_location_color_tint,
+	4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(program->noshading.a_location_color_tint);
+	glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, NULL);
+	glDeleteBuffers(3, buffers);
+	glDeleteVertexArrays(1, &vao);
+	glBindVertexArray(0);
+}
+
 void	renderer_draw_actor_basis(const t_actor *actor, const t_mat4f *vp)
 {
 	t_gfx_program	*program;
 	t_mat4f			mvp;
 	t_vec3f			origin;
 	t_vec3f			radius;
+	t_vec4f			basis[4];
 
 	program = &g_gfx_ctx.pool.noshading;
 	glUseProgram(program->id);
-	GLuint tempvao;
-	glGenVertexArrays(1, &tempvao);
-	glBindVertexArray(tempvao);
 	origin = (t_vec3f) { 0.0f, 0.0f, 0.0f };
 	mvp = renderer_calculate_local_mvp(actor, vp, &origin, &origin);
 	radius = actor_radius_get(actor);
-	glUniformMatrix4fv(program->noshading.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
-	t_vec4f basis[4];
+	glUniformMatrix4fv(program->noshading.u_location_mvp,
+	1, GL_FALSE, &mvp.data[0][0]);
 	basis[0] = (t_vec4f) { 1.0f + radius.x, 0.0f, 0.0f, 1.0f };
 	basis[1] = (t_vec4f) { 0.0f, 1.0f + radius.y, 0.0f, 1.0f };
 	basis[2] = (t_vec4f) { 0.0f, 0.0f, 1.0f + radius.z, 1.0f };
 	basis[3] = (t_vec4f) { 0.0f, 0.0f, 0.0f, 1.0f };
-	int indices[6] = { 3, 0, 3, 1, 3, 2 };
-	GLuint ibo;
-	glGenBuffers(1, &ibo);
-	GLuint vbos[2];
-	glGenBuffers(2, vbos);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), indices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(t_vec4f), basis, GL_STATIC_DRAW);
-	glVertexAttribPointer(program->noshading.a_location_position, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(program->noshading.a_location_position);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(t_vec4f), basis, GL_STATIC_DRAW);
-	glVertexAttribPointer(program->noshading.a_location_color_tint, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(program->noshading.a_location_color_tint);
-	glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, NULL);
-	glDeleteBuffers(2, vbos);
-	glDeleteBuffers(1, &ibo);
-	glDeleteVertexArrays(1, &tempvao);
-	glBindVertexArray(0);
+	do_draw(program, basis, (int[]){ 3, 0, 3, 1, 3, 2 });
 	glUseProgram(0);
 }

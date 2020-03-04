@@ -38,13 +38,10 @@ void    scene_interactor_select_actor(t_scene_interactor *interactor, const t_ac
 
     program = &g_gfx_ctx.pool.noshading;
     glBindVertexArray(interactor->vao);
-
     glBindBuffer(GL_ARRAY_BUFFER, actor->mesh->vbo_vertex);
     glEnableVertexAttribArray(program->noshading.a_location_position);
     glVertexAttribPointer(program->noshading.a_location_position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glVertexAttribDivisor(program->noshading.a_location_color_tint, actor->mesh->nfaces * 6);
-
     glBindVertexArray(0);
-
     interactor->actor_selected = (t_actor*)actor;
 }
