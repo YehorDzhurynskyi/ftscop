@@ -16,32 +16,34 @@
 # include "scene/scene.h"
 # include <glad/glad.h>
 
-enum e_actor_interaction_mode
+enum	e_actor_interaction_mode
 {
-    TRANSLATION,
-    ROTATION,
-    SCALING
+	TRANSLATION,
+	ROTATION,
+	SCALING
 };
 
-typedef struct s_scene_interactor    t_scene_interactor;
-struct  s_scene_interactor
+typedef struct s_scene_interactor	t_scene_interactor;
+struct	s_scene_interactor
 {
-    t_scene                         *scene_target;
+	t_scene							*scene_target;
 
-    enum e_actor_interaction_mode   interaction_mode;
-    t_actor                         *actor_selected;
+	enum e_actor_interaction_mode	interaction_mode;
+	t_actor							*actor_selected;
 
-    GLuint                          vao;
-    GLuint                          vbo_outline_color;
+	GLuint							vao;
+	GLuint							vbo_outline_color;
 };
 
-typedef struct s_app    t_app;
+typedef struct s_app	t_app;
 
 void	input_handle(t_app *app, t_scene_interactor *interactor);
-void	input_handle_camera(t_app* app, t_camera *camera);
+void	input_handle_camera(t_app *app, t_camera *camera);
 
-t_bool  scene_interactor_init(t_scene_interactor* interactor, const t_scene* scene);
-void    scene_interactor_delete(t_scene_interactor* interactor);
-void    scene_interactor_select_actor(t_scene_interactor *interactor, const t_actor *actor);
+t_bool	scene_interactor_init(t_scene_interactor *interactor,
+const t_scene *scene);
+void	scene_interactor_delete(t_scene_interactor *interactor);
+void	scene_interactor_select_actor(t_scene_interactor *interactor,
+const t_actor *actor);
 
 #endif

@@ -20,18 +20,18 @@
 # define WIN_SZ_X 800
 # define WIN_SZ_Y 600
 
-typedef struct s_app    t_app;
-struct  s_app
+typedef struct s_app	t_app;
+struct	s_app
 {
-    SDL_Window      *win;
-    SDL_GLContext   *glctx;
-    float           delta_time;
-    t_bool          is_running;
+	SDL_Window		*win;
+	SDL_GLContext	*glctx;
+	float			delta_time;
+	t_bool			is_running;
 };
 
-t_bool  app_init(t_app *app);
-void    app_delete(t_app *app);
-void    app_loop(t_app* app, t_scene* scene, t_scene_interactor* interactor);
-void    app_poll_events(t_app *app, t_scene_interactor *interactor);
+t_bool	app_init(t_app *app);
+void	app_delete(t_app *app);
+void	app_loop(t_app *app, t_scene *scene, t_scene_interactor *interactor);
+void	app_poll_events(t_app *app, t_scene_interactor *interactor);
 
 #endif

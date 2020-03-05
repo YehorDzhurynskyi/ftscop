@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   renderer_init_grid_program.c                       :+:      :+:    :+:   */
+/*   actor_translate.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ydzhuryn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,27 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "renderer.h"
+#include <math.h>
+#include "scene.h"
 
-t_bool	renderer_init_grid_program(t_gfx_program_grid *p)
+t_vec3f			transform_translate(const t_mat4f *orien, const t_vec3f *dpos)
 {
-	p->id = shader_load("shaders/grid.vert",
-						"shaders/grid.frag",
-						"shaders/grid.geom");
-	if (!p->id)
-	{
-		return (FALSE);
-	}
-	p->u_location_mvp = glGetUniformLocation(p->id, "u_mvp");
-	p->u_location_dimension = glGetUniformLocation(p->id, "u_dimension");
-	p->u_location_nsteps = glGetUniformLocation(p->id, "u_nsteps");
-	p->u_location_color_tint = glGetUniformLocation(p->id, "u_color_tint");
-	if (p->u_location_mvp < 0 || p->u_location_dimension < 0 ||
-		p->u_location_nsteps < 0 || p->u_location_color_tint < 0)
-	{
-		glDeleteProgram(p->id);
-		p->id = 0;
-		return (FALSE);
-	}
-	return (TRUE);
+	t_vec3f translate;
+	t_vec3f i;
+	t_vec3f j;
+	t_vec3f k;
+
+	calculate_basis_from_orientation(orien, &i, &j, &k);
+	translate.x = dpos->x * i.x + dpos->y * j.x + dpos->z * k.x;
+	translate.y = dpos->x * i.y + dpos->y * j.y + dpos->z * k.y;
+	translate.z = dpos->x * i.z + dpos->y * j.z + dpos->z * k.z;
+	return (translate);
 }

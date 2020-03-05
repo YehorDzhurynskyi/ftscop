@@ -34,8 +34,11 @@ add_executable(scop
     src/scene/scene.c
     src/scene/mesh.h
     src/scene/mesh.c
-    src/scene/actor.c
-    src/scene/actor_transform.c
+	src/scene/actor.c
+	src/scene/actor_trs.c
+	src/scene/actor_init.c
+	src/scene/actor_translate.c
+	src/scene/actor_rotate.c
     src/scene/actor_colorize.c
     src/scene/camera.c
 

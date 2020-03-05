@@ -12,23 +12,24 @@
 
 #include "renderer.h"
 
-t_bool   renderer_init_noshading_program(t_gfx_program* program)
+t_bool	renderer_init_noshading_program(t_gfx_program_noshading *p)
 {
-    program->id = shader_load("shaders/noshading.vert", "shaders/noshading.frag", NULL);
-    if (!program->id)
-    {
-        return (FALSE);
-    }
-    program->noshading.u_location_mvp = glGetUniformLocation(program->id, "u_mvp");
-    program->noshading.a_location_position = glGetAttribLocation(program->id, "a_position");
-    program->noshading.a_location_color_tint = glGetAttribLocation(program->id, "a_color_tint");
-    if (program->noshading.a_location_position < 0 ||
-        program->noshading.a_location_color_tint < 0 ||
-        program->noshading.u_location_mvp < 0)
-    {
-        glDeleteProgram(program->id);
-        program->id = 0;
-        return (FALSE);
-    }
-    return (TRUE);
+	p->id = shader_load("shaders/noshading.vert",
+						"shaders/noshading.frag",
+						NULL);
+	if (!p->id)
+	{
+		return (FALSE);
+	}
+	p->u_location_mvp = glGetUniformLocation(p->id, "u_mvp");
+	p->a_location_position = glGetAttribLocation(p->id, "a_position");
+	p->a_location_color_tint = glGetAttribLocation(p->id, "a_color_tint");
+	if (p->a_location_position < 0 || p->a_location_color_tint < 0 ||
+		p->u_location_mvp < 0)
+	{
+		glDeleteProgram(p->id);
+		p->id = 0;
+		return (FALSE);
+	}
+	return (TRUE);
 }

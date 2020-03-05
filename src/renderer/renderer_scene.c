@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _USE_MATH_DEFINES // TODO: remove
 #include <math.h>
 #include "renderer.h"
 
 static void	renderer_draw_grid(const t_mat4f *vp)
 {
-	t_gfx_program   *program;
-	t_mat4f         model;
-	t_mat4f         mvp;
+	t_gfx_program_grid	*program;
+	t_mat4f				model;
+	t_mat4f				mvp;
 
 	program = &g_gfx_ctx.pool.grid;
 	glUseProgram(program->id);
@@ -26,10 +25,10 @@ static void	renderer_draw_grid(const t_mat4f *vp)
 	model = mat4f_identity();
 	model = transform_rotate_x(&model, M_PI_2);
 	mvp = mat4f_mat4f_mult(&model, vp);
-	glUniformMatrix4fv(program->grid.u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
-	glUniform1f(program->grid.u_location_dimension, 50.0f);
-	glUniform1i(program->grid.u_location_nsteps, 50);
-	glUniform4f(program->grid.u_location_color_tint, 0.55f, 0.55f, 0.55f, 1.0f);
+	glUniformMatrix4fv(program->u_location_mvp, 1, GL_FALSE, &mvp.data[0][0]);
+	glUniform1f(program->u_location_dimension, 50.0f);
+	glUniform1i(program->u_location_nsteps, 50);
+	glUniform4f(program->u_location_color_tint, 0.55f, 0.55f, 0.55f, 1.0f);
 	glDrawArrays(GL_POINTS, 0, 1);
 	glBindVertexArray(0);
 	glUseProgram(0);
@@ -37,24 +36,27 @@ static void	renderer_draw_grid(const t_mat4f *vp)
 
 static void	renderer_draw_actor(const t_actor *actor, const t_mat4f *vp)
 {
-	t_gfx_program   *program;
-	t_mat4f         model;
+	t_gfx_program_phong	*program;
+	t_mat4f				model;
 
 	program = &g_gfx_ctx.pool.phong;
 	glUseProgram(program->id);
 	glBindVertexArray(actor->mesh->vao);
 	model = actor_calculate_matrix_model(actor);
 	model = mat4f_mat4f_mult(&model, vp);
-	glUniformMatrix4fv(program->phong.u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
-	glUniform1i(program->phong.u_location_palette, actor->material.palette);
-	glUniform1i(program->phong.u_location_is_smooth_mode_enabled, actor->material.smooth);
+	glUniformMatrix4fv(program->u_location_mvp, 1, GL_FALSE, &model.data[0][0]);
+	glUniform1i(program->u_location_palette, actor->material.palette);
+	glUniform1i(program->u_location_is_smooth_mode_enabled,
+	actor->material.smooth);
 	glBindTexture(GL_TEXTURE_2D, actor->material.texture);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, actor->material.wireframe ?
 	actor->mesh->ibo_wireframe : actor->mesh->ibo_faces);
 	if (actor->material.wireframe)
-		glDrawElements(GL_LINES, actor->mesh->nfaces * 6, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_LINES, actor->mesh->nfaces * 6,
+		GL_UNSIGNED_INT, NULL);
 	else
-		glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, actor->mesh->nfaces * 3,
+		GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
