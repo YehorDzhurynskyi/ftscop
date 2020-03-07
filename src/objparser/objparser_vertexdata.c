@@ -61,5 +61,5 @@ void objparser_read_v(t_objparser_ctx *ctx)
 		}
 	}
 	ctx->invalid = TRUE;
-	ft_printf_fd(2, "[Scop][ObjParsing] incomplete vertex!");
+	ft_printf_fd(2, "[Scop][ObjParsing] incomplete vertex!\n");
 }

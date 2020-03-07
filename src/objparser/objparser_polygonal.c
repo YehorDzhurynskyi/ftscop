@@ -69,7 +69,7 @@ void		objparser_read_f(t_objparser_ctx *ctx)
 	}
 	if (index < 3)
 	{
-		ft_printf_fd(2, "[Scop][ObjParsing] incomplete face!");
+		ft_printf_fd(2, "[Scop][ObjParsing] incomplete face!\n");
 		ctx->invalid = TRUE;
 		return ;
 	}

@@ -57,7 +57,7 @@ static t_bool   objparser_not_implemented(t_objparser_ctx *ctx)
     {
         if (objparser_skip_if_match(ctx, g_not_implemented[i]))
         {
-            ft_printf_fd(2, "[Scop][ObjParsing] unsupported option: %s", g_not_implemented[i]);
+            ft_printf_fd(2, "[Scop][ObjParsing] unsupported option: %s\n", g_not_implemented[i]);
             return (TRUE);
         }
         ++i;
@@ -87,7 +87,7 @@ t_bool          objparser_parse_mesh(const t_byte *buff, const size_t sz, t_mesh
             objparser_skip_until_nl(&ctx);
         else
         {
-            ft_printf_fd(2, "[Scop][ObjParsing] unrecognized option: '%*.32s'", ctx.end - ctx.current, ctx.current);
+            ft_printf_fd(2, "[Scop][ObjParsing] unrecognized option: '%*.32s'\n", ctx.end - ctx.current, ctx.current);
             mesh_delete(out);
             return (FALSE);
         }

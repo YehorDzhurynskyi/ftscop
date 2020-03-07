@@ -100,7 +100,6 @@ static void     shutdown(t_app* app,
 }
 
 // TODO: remove libft from src
-// TODO: remove magic numbers in mesh initialization
 int main(int argc, char* argv[])
 {
     t_app               app;
@@ -109,12 +108,12 @@ int main(int argc, char* argv[])
 
     if (argc <= 1)
     {
-        ft_printf_fd(2, "[Scop] incorrect number of arguments!");
+        ft_printf_fd(2, "[Scop] incorrect number of arguments!\n");
         return (-1);
     }
     if (!startup(&app, &scene, &interactor, argv[1]))
     {
-        ft_printf_fd(2, "[Scop] application error on startup! (%d: %s)", errno, strerror(errno));
+        ft_printf_fd(2, "[Scop] application error on startup! (%d: %s)\n", errno, strerror(errno));
         return (-1);
     }
     app_loop(&app, &scene, &interactor);
