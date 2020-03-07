@@ -12,9 +12,6 @@
 
 #include "objparser.h"
 
-OBJPARSER_NOT_IMPLEMENTED(p)
-OBJPARSER_NOT_IMPLEMENTED(l)
-
 static void	form_triangle_fan(t_objparser_ctx* ctx, int *face, int count)
 {
 	int	temp[3];
@@ -45,6 +42,7 @@ void		objparser_read_f(t_objparser_ctx *ctx)
 	}
 	if (index < 3)
 	{
+		ft_printf_fd(2, "[Scop][ObjParsing] incomplete face!");
 		ctx->invalid = TRUE;
 		return ;
 	}

@@ -67,7 +67,7 @@ void		app_poll_events(t_app *app, t_scene_interactor *interactor)
 	}
 	if (event_count < 0)
 	{
-		perror("SDL event handling error!");
+		ft_printf_fd(2, "[Scop][SDL] event handling error!");
 		app->is_running = FALSE;
 	}
 }

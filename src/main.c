@@ -99,7 +99,7 @@ static void     shutdown(t_app* app,
     app_delete(app);
 }
 
-// TODO: print error messages on invalid parsing
+// TODO: remove libft from src
 // TODO: remove magic numbers in mesh initialization
 int main(int argc, char* argv[])
 {
@@ -109,12 +109,12 @@ int main(int argc, char* argv[])
 
     if (argc <= 1)
     {
-        perror("Incorrect number of arguments!");
+        ft_printf_fd(2, "[Scop] incorrect number of arguments!");
         return (-1);
     }
     if (!startup(&app, &scene, &interactor, argv[1]))
     {
-        perror("Application error on startup!");
+        ft_printf_fd(2, "[Scop] application error on startup! (%d: %s)", errno, strerror(errno));
         return (-1);
     }
     app_loop(&app, &scene, &interactor);

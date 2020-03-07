@@ -26,4 +26,11 @@
 # include "include/rect.h"
 # include "include/libft.h"
 
+// TODO: REMOVE ME
+#ifndef WIN32
+#error "REMOVE ME"
+#endif
+#include <stdio.h>
+#define ft_printf_fd(_, x, ...) printf(x, ##__VA_ARGS__)
+
 #endif

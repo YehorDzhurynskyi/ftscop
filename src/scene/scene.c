@@ -19,12 +19,12 @@ t_bool	scene_init(t_scene *scene, const char *objfile)
 
 	if (mesh_load_objfile(objfile, &scene->mesh) == FALSE)
 	{
-		perror("Mesh loading error!");
+		ft_printf_fd(2, "[Scop] mesh loading error! (%d: %s)", errno, strerror(errno));
 		return (FALSE);
 	}
 	if (!texture_load_bmp("squidward.bmp", &t))
 	{
-		perror("Texture loading error!");
+		ft_printf_fd(2, "[Scop] texture loading error! (%d: %s)", errno, strerror(errno));
 		mesh_delete(&scene->mesh);
 		return (FALSE);
 	}

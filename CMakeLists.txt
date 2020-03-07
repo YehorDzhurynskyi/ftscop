@@ -69,6 +69,7 @@ add_executable(scop
 
     src/objparser/objparser.h
     src/objparser/objparser_common.c
+    src/objparser/objparser_skip_if_match.c
     src/objparser/objparser_read_int.c
     src/objparser/objparser_read_float.c
     src/objparser/objparser_parse.c

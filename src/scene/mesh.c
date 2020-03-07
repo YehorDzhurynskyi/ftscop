@@ -78,7 +78,7 @@ t_bool			mesh_load_objfile(const char *filename, t_mesh *out_mesh)
 
 	if ((buffer = (t_byte*)ft_read_file(filename, &filesize)) == FALSE)
 	{
-		perror("Invalid file!");
+		ft_printf_fd(2, "[Scop] invalid mesh file! (%d: %s)", errno, strerror(errno));
 		return (FALSE);
 	}
 	ft_memset(out_mesh, 0x0, sizeof(t_mesh));
