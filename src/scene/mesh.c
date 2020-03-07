@@ -82,9 +82,6 @@ t_bool			mesh_load_objfile(const char *filename, t_mesh *out_mesh)
 		return (FALSE);
 	}
 	ft_memset(out_mesh, 0x0, sizeof(t_mesh));
-	out_mesh->vertices = malloc(sizeof(t_vec4f) * 10000);
-	out_mesh->color_tints = malloc(sizeof(t_vec4f) * 10000);
-	out_mesh->faces = malloc(sizeof(int) * 3 * 10000);
 	if ((result = objparser_parse_mesh(buffer,
 	ft_strlen((const char*)buffer), out_mesh)) == TRUE)
 	{
